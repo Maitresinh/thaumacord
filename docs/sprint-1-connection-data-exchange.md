@@ -28,6 +28,16 @@ Acceptance criteria:
 - Response includes `error: "Validation failed"`.
 - Response includes field-level `issues`.
 
+### Order Synchronized Updates
+
+As a synchronized client, I can order audit and live updates without guessing.
+
+Acceptance criteria:
+
+- Each audit entry has an `id`.
+- Each audit entry has a monotonic per-session `sequence`.
+- Live state-change broadcasts include the sequenced audit entry.
+
 ### Register Device
 
 As a table device, I can register in a session so that Thaumacord can identify the source of future data.

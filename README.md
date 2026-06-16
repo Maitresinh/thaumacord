@@ -76,6 +76,8 @@ Live clients receive a read model filtered for their audience: dashboard clients
 
 Devices can report heartbeat/disconnect events. Thaumacord updates `connected`, `lastSeenAt`, audit, and live clients.
 
+Audit entries include a stable `id` and monotonic `sequence` per session. Live broadcasts carry those audit entries when they represent state changes, so clients can order updates.
+
 Structured events can also execute module actions by sending `actionId` to `POST /sessions/:code/events`. The prototype currently validates role, phase, resource costs, and applies the first supported effects: `adjustResource`, `setState`, `message`, and `revealContactHint`.
 
 Malformed request bodies return `400` with `error: "Validation failed"` and per-field `issues`, so mobile clients can display or recover from payload mistakes.

@@ -117,6 +117,21 @@ test("returns a dashboard read model with the complete live state", async () => 
   assert.equal(Array.isArray(dashboard.audit), true);
 });
 
+test("assigns monotonic audit sequence numbers within a session", async () => {
+  const session = await createSession();
+  const code = session.code;
+  const device = await createDevice(code, "Telephone sonar");
+  const participant = await createParticipant(code, "Station sonar");
+  await bindDevice(code, device.device.id, participant.participant.id);
+  const dashboard = await injectJson("GET", `/sessions/${code}/read-models/dashboard`);
+
+  assert.deepEqual(
+    dashboard.audit.map((entry: JsonObject) => entry.sequence),
+    [1, 2, 3, 4]
+  );
+  assert.equal(dashboard.audit[0].id, `${code}-1`);
+});
+
 test("returns structured validation errors for malformed mobile payloads", async () => {
   const session = await createSession();
   const code = session.code;
@@ -210,8 +225,9 @@ test("broadcasts device heartbeat updates to live audiences", async () => {
     deviceAudience.messages.map((message) => message.readModel.readModel),
     ["device.unbound", "device.unbound"]
   );
-  assert.equal(dashboard.messages.at(-1)?.payload.connected, false);
-  assert.equal(deviceAudience.messages.at(-1)?.payload.connected, false);
+  assert.equal(dashboard.messages.at(-1)?.payload.sequence, 3);
+  assert.equal(dashboard.messages.at(-1)?.payload.payload.connected, false);
+  assert.equal(deviceAudience.messages.at(-1)?.payload.payload.connected, false);
 });
 
 test("exposes participant actions with availability reasons", async () => {
@@ -596,6 +612,7 @@ test("broadcasts live updates with read models filtered per audience", async () 
     dashboard.messages.map((message) => message.readModel.readModel),
     ["dashboard", "dashboard"]
   );
+  assert.equal(dashboard.messages.at(-1)?.payload.sequence, 6);
   assert.deepEqual(
     unbound.messages.map((message) => message.readModel.readModel),
     ["device.unbound", "device.unbound"]

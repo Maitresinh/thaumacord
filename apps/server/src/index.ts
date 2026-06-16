@@ -105,6 +105,8 @@ type Participant = {
 };
 
 type AuditEntry = {
+  id: string;
+  sequence: number;
   at: string;
   type: string;
   payload: unknown;
@@ -122,6 +124,7 @@ type Session = {
   participants: Participant[];
   unlockedPhases: string[];
   risks: Record<string, number>;
+  nextAuditSequence: number;
   audit: AuditEntry[];
 };
 
@@ -278,7 +281,15 @@ function currentPhase(session: Session): z.infer<typeof phaseSchema> {
 }
 
 function audit(session: Session, type: string, payload: unknown): void {
-  session.audit.push({ at: new Date().toISOString(), type, payload });
+  const sequence = session.nextAuditSequence;
+  session.nextAuditSequence += 1;
+  session.audit.push({
+    id: `${session.code}-${sequence}`,
+    sequence,
+    at: new Date().toISOString(),
+    type,
+    payload
+  });
 }
 
 function getDevice(session: Session, deviceId?: string): Device | undefined {
@@ -307,7 +318,7 @@ function markDeviceConnection(session: Session, device: Device, connected: boole
     lastSeenAt: device.lastSeenAt
   };
   audit(session, connected ? "device.heartbeat" : "device.disconnected", payload);
-  broadcast(session, connected ? "device.heartbeat" : "device.disconnected", payload);
+  broadcast(session, connected ? "device.heartbeat" : "device.disconnected", session.audit.at(-1));
   return payload;
 }
 
@@ -884,6 +895,7 @@ app.post("/sessions", async (request, reply) => {
     participants: [],
     unlockedPhases: [module.phases[0].id],
     risks: {},
+    nextAuditSequence: 1,
     audit: []
   };
 

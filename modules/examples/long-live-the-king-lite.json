@@ -1,0 +1,72 @@
+{
+  "id": "long-live-the-king-lite",
+  "name": "Long Live the King Lite",
+  "version": "0.1.0",
+  "players": {
+    "min": 4,
+    "max": 7
+  },
+  "resources": [
+    { "id": "gold", "name": "Ducats d'or", "visibility": "private", "min": 0 },
+    { "id": "favor", "name": "Faveur", "visibility": "private", "min": 0 },
+    { "id": "status", "name": "Statut", "visibility": "public", "min": 0 }
+  ],
+  "phases": [
+    { "id": "audience", "name": "Audience", "durationSeconds": 180 },
+    { "id": "diplomacy", "name": "Diplomatie", "durationSeconds": 900 },
+    { "id": "council", "name": "Conseil", "durationSeconds": 420 },
+    { "id": "archive", "name": "Archivage", "durationSeconds": 120 }
+  ],
+  "roles": [
+    {
+      "id": "queen",
+      "name": "Reine",
+      "startingResources": { "gold": 5, "favor": 7, "status": 4 },
+      "victoryCondition": { "type": "text", "text": "Gagne si elle termine regente et si un joueur a plus de statut que le Tresorier." }
+    },
+    {
+      "id": "baron",
+      "name": "Baron",
+      "startingResources": { "gold": 3, "favor": 6, "status": 3 },
+      "victoryCondition": { "type": "text", "text": "Gagne sans heritier si les 5 cartes de mobilisation sont actives." }
+    },
+    {
+      "id": "treasurer",
+      "name": "Tresorier",
+      "startingResources": { "gold": 7, "favor": 7, "status": 1 },
+      "victoryCondition": { "type": "text", "text": "Gagne avec un heritier et plus de statut que tous les autres joueurs." }
+    }
+  ],
+  "actions": [
+    {
+      "id": "submit-petition",
+      "name": "Deposer une petition",
+      "phase": "council",
+      "actor": "any",
+      "target": "game",
+      "effect": { "type": "openVote", "weightResource": "favor" }
+    },
+    {
+      "id": "transfer-gold",
+      "name": "Transferer des ducats",
+      "phase": "diplomacy",
+      "actor": "any",
+      "target": "player",
+      "effect": { "type": "transferResource", "resource": "gold" },
+      "gesture": "touch-phones",
+      "fallback": "manual-confirmation"
+    }
+  ],
+  "zones": [
+    {
+      "id": "throne-room",
+      "name": "Salle du trone",
+      "fictionalType": "court",
+      "presenceMethod": "manual",
+      "effects": [
+        { "type": "unlockAction", "action": "submit-petition" }
+      ]
+    }
+  ]
+}
+

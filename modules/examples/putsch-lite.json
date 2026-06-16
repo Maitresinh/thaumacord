@@ -1,0 +1,78 @@
+{
+  "id": "putsch-lite",
+  "name": "Putsch Lite",
+  "version": "0.1.0",
+  "players": {
+    "min": 4,
+    "max": 12
+  },
+  "resources": [
+    { "id": "money", "name": "Argent", "visibility": "private", "min": 0 },
+    { "id": "weapons", "name": "Armes", "visibility": "private", "min": 0 },
+    { "id": "ammo", "name": "Munitions", "visibility": "private", "min": 0 },
+    { "id": "influence", "name": "Influence", "visibility": "private", "min": 0 }
+  ],
+  "phases": [
+    { "id": "market", "name": "Marche", "durationSeconds": 600 },
+    { "id": "intrigue", "name": "Intrigue", "durationSeconds": 900 },
+    { "id": "coup", "name": "Coup d'Etat", "durationSeconds": 300 },
+    { "id": "resolution", "name": "Resolution", "durationSeconds": 180 }
+  ],
+  "roles": [
+    {
+      "id": "general",
+      "name": "General",
+      "startingResources": { "money": 8, "weapons": 2, "ammo": 2, "influence": 2 },
+      "victoryCondition": { "type": "text", "text": "Gagne par richesse et controle politique en fin de partie." }
+    },
+    {
+      "id": "dealer",
+      "name": "Marchand",
+      "startingResources": { "money": 12, "weapons": 1, "ammo": 3, "influence": 1 },
+      "victoryCondition": { "type": "text", "text": "Gagne par accumulation de richesse et ventes strategiques." }
+    }
+  ],
+  "actions": [
+    {
+      "id": "sell-weapons",
+      "name": "Vendre des armes",
+      "phase": "market",
+      "actor": "any",
+      "target": "player",
+      "effect": { "type": "transferBundle", "resources": ["money", "weapons"] },
+      "gesture": "touch-phones",
+      "fallback": "manual-confirmation"
+    },
+    {
+      "id": "attempt-coup",
+      "name": "Tenter un coup d'Etat",
+      "phase": "coup",
+      "actor": "any",
+      "target": "game",
+      "effect": { "type": "contestedBid", "resources": ["weapons", "ammo", "influence"] },
+      "gesture": "strike-phone",
+      "fallback": "manual-confirmation"
+    }
+  ],
+  "zones": [
+    {
+      "id": "black-market",
+      "name": "Marche noir",
+      "fictionalType": "market",
+      "presenceMethod": "qr",
+      "effects": [
+        { "type": "unlockAction", "action": "sell-weapons" }
+      ]
+    },
+    {
+      "id": "palace",
+      "name": "Palais presidentiel",
+      "fictionalType": "seat-of-power",
+      "presenceMethod": "manual",
+      "effects": [
+        { "type": "unlockAction", "action": "attempt-coup" }
+      ]
+    }
+  ]
+}
+

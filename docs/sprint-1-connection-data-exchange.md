@@ -86,3 +86,16 @@ Acceptance criteria:
 - Response includes recent audit.
 - It does not require a GM/player distinction.
 
+### Receive Live Updates
+
+As a connected device or dashboard, I can subscribe to a session stream so that I receive updates when another device sends data.
+
+Acceptance criteria:
+
+- WebSocket endpoint exists at `/sessions/:code/live`.
+- Client receives `live.connected` on subscription.
+- Client receives `device.registered`.
+- Client receives `participant.created`.
+- Client receives `participant.bound_to_device`.
+- Client receives `event.accepted`.
+- Broadcast payload includes the dashboard read model for the current prototype.

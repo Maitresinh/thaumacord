@@ -65,6 +65,7 @@ Sprint 1 focuses on the generic transmission loop. The API now also exposes:
 - `POST /sessions/:code/events`
 - `GET /sessions/:code/read-models/dashboard`
 - `GET /sessions/:code/read-models/participant/:participantId`
+- `WS /sessions/:code/live`
 
 The Android app is a native skeleton. Open `apps/android` in Android Studio after installing Android Studio/Gradle tooling.
 

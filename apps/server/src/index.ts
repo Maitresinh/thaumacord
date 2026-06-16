@@ -106,6 +106,7 @@ type Session = {
 
 const modules = new Map<string, GameModule>();
 const sessions = new Map<string, Session>();
+const liveClients = new Map<string, Set<{ send: (payload: string) => void }>>();
 
 const createSessionSchema = z.object({
   moduleId: z.string().min(1)
@@ -180,6 +181,30 @@ function currentPhase(session: Session): z.infer<typeof phaseSchema> {
 
 function audit(session: Session, type: string, payload: unknown): void {
   session.audit.push({ at: new Date().toISOString(), type, payload });
+}
+
+function livePayload(session: Session, type: string, payload: unknown = {}): string {
+  return JSON.stringify({
+    type,
+    payload,
+    dashboard: dashboardReadModel(session)
+  });
+}
+
+function broadcast(session: Session, type: string, payload: unknown = {}): void {
+  const clients = liveClients.get(session.code);
+  if (!clients) {
+    return;
+  }
+
+  const message = livePayload(session, type, payload);
+  for (const client of clients) {
+    try {
+      client.send(message);
+    } catch {
+      clients.delete(client);
+    }
+  }
 }
 
 function defaultResources(module: GameModule, roleId?: string): Record<string, number> {
@@ -293,9 +318,32 @@ function renderIndex(): string {
       <div id="summary"></div>
       <pre id="state">Aucune session chargee.</pre>
     </section>
+    <section>
+      <h2>Live</h2>
+      <pre id="live">Aucun flux connecte.</pre>
+    </section>
   </main>
   <script>
     let sessionCode = "";
+    let liveSocket;
+    function connectLive(code) {
+      if (liveSocket) liveSocket.close();
+      const protocol = location.protocol === "https:" ? "wss" : "ws";
+      liveSocket = new WebSocket(protocol + "://" + location.host + "/sessions/" + code + "/live");
+      liveSocket.addEventListener("open", () => {
+        document.querySelector("#live").textContent = "Flux connecte pour " + code;
+      });
+      liveSocket.addEventListener("message", async (event) => {
+        const data = JSON.parse(event.data);
+        document.querySelector("#live").textContent = JSON.stringify(data, null, 2);
+        if (data.dashboard) {
+          document.querySelector("#state").textContent = JSON.stringify(data.dashboard, null, 2);
+        }
+      });
+      liveSocket.addEventListener("close", () => {
+        document.querySelector("#live").textContent += "\\nFlux ferme.";
+      });
+    }
     async function api(url, options) {
       const res = await fetch(url, { headers: { "content-type": "application/json" }, ...options });
       if (!res.ok) throw new Error(await res.text());
@@ -325,6 +373,7 @@ function renderIndex(): string {
       const session = await api("/sessions", { method: "POST", body: JSON.stringify({ moduleId }) });
       sessionCode = session.code;
       document.querySelector("#code").value = session.code;
+      connectLive(session.code);
       await refresh();
     });
     document.querySelector("#join").addEventListener("click", async () => {
@@ -350,6 +399,33 @@ await loadModules();
 
 app.get("/", async (_request, reply) => reply.type("text/html").send(renderIndex()));
 app.get("/health", async () => ({ ok: true, service: "thaumacord-server" }));
+
+app.get("/sessions/:code/live", { websocket: true }, (connection, request) => {
+  const { code } = request.params as { code: string };
+  const session = getSession(code);
+  if (!session) {
+    connection.close();
+    return;
+  }
+
+  const client = {
+    send: (payload: string) => connection.send(payload)
+  };
+  const clients = liveClients.get(session.code) ?? new Set<{ send: (payload: string) => void }>();
+  clients.add(client);
+  liveClients.set(session.code, clients);
+
+  client.send(livePayload(session, "live.connected", { code: session.code }));
+
+  connection.on("message", (message: Buffer) => {
+    audit(session, "live.message", { raw: message.toString() });
+    broadcast(session, "audit.appended", session.audit.at(-1));
+  });
+
+  connection.on("close", () => {
+    clients.delete(client);
+  });
+});
 
 app.get("/modules", async () =>
   [...modules.values()].map((module) => ({
@@ -451,6 +527,7 @@ app.post("/sessions/:code/devices", async (request, reply) => {
 
   session.devices.push(device);
   audit(session, "device.registered", { deviceId: device.id, name: device.name });
+  broadcast(session, "device.registered", { deviceId: device.id });
   return reply.code(201).send({ device, sessionCode: session.code });
 });
 
@@ -474,6 +551,7 @@ app.post("/sessions/:code/devices/:deviceId/bind", async (request, reply) => {
   device.participantId = participant.id;
   device.lastSeenAt = new Date().toISOString();
   audit(session, "participant.bound_to_device", { participantId: participant.id, deviceId: device.id });
+  broadcast(session, "participant.bound_to_device", { participantId: participant.id, deviceId: device.id });
   return dashboardReadModel(session);
 });
 
@@ -489,6 +567,7 @@ app.post("/sessions/:code/participants", async (request, reply) => {
   const participant = createParticipant(module, input);
   session.participants.push(participant);
   audit(session, "participant.created", { participantId: participant.id, kind: participant.kind, name: participant.name });
+  broadcast(session, "participant.created", { participantId: participant.id });
   return reply.code(201).send({ participant, sessionCode: session.code });
 });
 
@@ -535,6 +614,7 @@ app.post("/sessions/:code/events", async (request, reply) => {
     participantId: event.participantId,
     payload: event.payload
   });
+  broadcast(session, "event.accepted", session.audit.at(-1));
 
   return reply.code(202).send({
     accepted: true,
@@ -553,6 +633,7 @@ app.post("/sessions/:code/phases/advance", async (request, reply) => {
   const module = getModuleOrThrow(session.moduleId);
   session.phaseIndex = (session.phaseIndex + 1) % module.phases.length;
   audit(session, "phase.changed", { phaseId: currentPhase(session).id, phaseIndex: session.phaseIndex });
+  broadcast(session, "phase.changed", { phaseId: currentPhase(session).id, phaseIndex: session.phaseIndex });
   return visibleSession(session);
 });
 
@@ -578,6 +659,7 @@ app.post("/sessions/:code/players/:playerId/role", async (request, reply) => {
   participant.roleId = role.id;
   participant.resources = defaultResources(module, role.id);
   audit(session, "role.assigned", { participantId: participant.id, roleId: role.id });
+  broadcast(session, "role.assigned", { participantId: participant.id, roleId: role.id });
   return visibleSession(session);
 });
 
@@ -608,6 +690,7 @@ app.post("/sessions/:code/players/:playerId/resources", async (request, reply) =
 
   participant.resources[input.resourceId] = input.value;
   audit(session, "resource.changed", { participantId: participant.id, resourceId: input.resourceId, value: input.value });
+  broadcast(session, "resource.changed", { participantId: participant.id, resourceId: input.resourceId, value: input.value });
   return visibleSession(session);
 });
 

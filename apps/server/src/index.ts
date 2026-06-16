@@ -8,6 +8,20 @@ import { z } from "zod";
 export const app = Fastify({ logger: process.env.THAUMACORD_LOGGER === "true" });
 await app.register(websocket);
 
+app.setErrorHandler((error, _request, reply) => {
+  if (error instanceof z.ZodError) {
+    return reply.code(400).send({
+      error: "Validation failed",
+      issues: error.issues.map((issue) => ({
+        path: issue.path.join("."),
+        message: issue.message
+      }))
+    });
+  }
+
+  return reply.code(500).send({ error: "Internal server error" });
+});
+
 const resourceSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),

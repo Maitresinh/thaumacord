@@ -117,6 +117,39 @@ test("returns a dashboard read model with the complete live state", async () => 
   assert.equal(Array.isArray(dashboard.audit), true);
 });
 
+test("returns structured validation errors for malformed mobile payloads", async () => {
+  const session = await createSession();
+  const code = session.code;
+
+  const missingDeviceName = await app.inject({
+    method: "POST",
+    url: `/sessions/${code}/devices`,
+    payload: {}
+  });
+  assert.equal(missingDeviceName.statusCode, 400);
+  assert.equal(missingDeviceName.json<JsonObject>().error, "Validation failed");
+  assert.equal(missingDeviceName.json<JsonObject>().issues[0].path, "name");
+
+  const invalidEventPayload = await app.inject({
+    method: "POST",
+    url: `/sessions/${code}/events`,
+    payload: { type: "gesture.detected", payload: "phone-face-down" }
+  });
+  assert.equal(invalidEventPayload.statusCode, 400);
+  assert.equal(invalidEventPayload.json<JsonObject>().error, "Validation failed");
+  assert.equal(invalidEventPayload.json<JsonObject>().issues[0].path, "payload");
+
+  const participant = await createParticipant(code, "Station sonar");
+  const invalidResourceValue = await app.inject({
+    method: "POST",
+    url: `/sessions/${code}/players/${participant.participant.id}/resources`,
+    payload: { resourceId: "battery", value: "full" }
+  });
+  assert.equal(invalidResourceValue.statusCode, 400);
+  assert.equal(invalidResourceValue.json<JsonObject>().error, "Validation failed");
+  assert.equal(invalidResourceValue.json<JsonObject>().issues[0].path, "value");
+});
+
 test("tracks device heartbeat and disconnection state", async () => {
   const session = await createSession();
   const code = session.code;

@@ -18,6 +18,16 @@ device connects -> device binds to participant -> device sends event -> server v
 
 ## User Stories
 
+### Receive Validation Feedback
+
+As a mobile client, I receive structured validation errors when I send an invalid payload.
+
+Acceptance criteria:
+
+- Malformed JSON-shaped payloads return `400`.
+- Response includes `error: "Validation failed"`.
+- Response includes field-level `issues`.
+
 ### Register Device
 
 As a table device, I can register in a session so that Thaumacord can identify the source of future data.

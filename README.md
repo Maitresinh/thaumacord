@@ -78,6 +78,8 @@ Devices can report heartbeat/disconnect events. Thaumacord updates `connected`, 
 
 Structured events can also execute module actions by sending `actionId` to `POST /sessions/:code/events`. The prototype currently validates role, phase, resource costs, and applies the first supported effects: `adjustResource`, `setState`, `message`, and `revealContactHint`.
 
+Malformed request bodies return `400` with `error: "Validation failed"` and per-field `issues`, so mobile clients can display or recover from payload mistakes.
+
 Participant/device read models include `availableActions`, a table-ready list of module actions with gesture metadata and blocking reasons such as `role`, `phase`, or `resource:battery`.
 
 Gesture events can be sent as `type: "gesture.detected"` with `gesture` or `payload.gesture`. The server resolves the gesture to the first currently available module action for the participant.

@@ -1,10 +1,11 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import Fastify from "fastify";
 import websocket from "@fastify/websocket";
 import { z } from "zod";
 
-const app = Fastify({ logger: true });
+export const app = Fastify({ logger: process.env.THAUMACORD_LOGGER === "true" });
 await app.register(websocket);
 
 const resourceSchema = z.object({
@@ -111,6 +112,11 @@ type Session = {
 const modules = new Map<string, GameModule>();
 const sessions = new Map<string, Session>();
 const liveClients = new Map<string, Set<{ audience: Audience; send: (payload: string) => void }>>();
+
+export function resetRuntimeState(): void {
+  sessions.clear();
+  liveClients.clear();
+}
 
 const createSessionSchema = z.object({
   moduleId: z.string().min(1)
@@ -766,4 +772,7 @@ app.post("/sessions/:code/players/:playerId/resources", async (request, reply) =
   return visibleSession(session);
 });
 
-app.listen({ port: Number(process.env.PORT ?? 3333), host: "0.0.0.0" });
+const isEntrypoint = process.argv[1] ? path.resolve(process.argv[1]) === fileURLToPath(import.meta.url) : false;
+if (isEntrypoint) {
+  await app.listen({ port: Number(process.env.PORT ?? 3333), host: "0.0.0.0" });
+}

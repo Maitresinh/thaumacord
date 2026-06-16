@@ -55,6 +55,8 @@ npm install
 npm run dev
 ```
 
+Then open `http://localhost:3333/` to use the browser-based GM/player prototype. The API also exposes `GET /modules`, `POST /sessions`, `POST /sessions/:code/join`, and `POST /sessions/:code/phases/advance`.
+
 The Android app is a native skeleton. Open `apps/android` in Android Studio after installing Android Studio/Gradle tooling.
 
 ## GitHub

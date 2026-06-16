@@ -297,6 +297,19 @@ function audit(session: Session, type: string, payload: unknown): void {
   });
 }
 
+function auditCatchUp(session: Session, after: number, limit: number): Record<string, unknown> {
+  const entries = session.audit.filter((entry) => entry.sequence > after).slice(0, limit);
+  const latestSequence = session.nextAuditSequence - 1;
+  return {
+    code: session.code,
+    after,
+    limit,
+    latestSequence,
+    hasMore: entries.at(-1)?.sequence !== undefined && entries.at(-1)!.sequence < latestSequence,
+    entries
+  };
+}
+
 function getDevice(session: Session, deviceId?: string): Device | undefined {
   return deviceId ? session.devices.find((device) => device.id === deviceId) : undefined;
 }
@@ -1090,15 +1103,23 @@ app.get("/sessions/:code/audit", async (request, reply) => {
   }
 
   const query = auditQuerySchema.parse(request.query);
-  const entries = session.audit.filter((entry) => entry.sequence > query.after).slice(0, query.limit);
-  const latestSequence = session.nextAuditSequence - 1;
+  return auditCatchUp(session, query.after, query.limit);
+});
+
+app.get("/sessions/:code/devices/:deviceId/sync", async (request, reply) => {
+  const { code, deviceId } = request.params as { code: string; deviceId: string };
+  const session = getSession(code);
+  if (!session) {
+    return reply.code(404).send({ error: "Session not found" });
+  }
+  if (!getDevice(session, deviceId)) {
+    return reply.code(404).send({ error: "Device not found" });
+  }
+
+  const query = auditQuerySchema.parse(request.query);
   return {
-    code: session.code,
-    after: query.after,
-    limit: query.limit,
-    latestSequence,
-    hasMore: entries.at(-1)?.sequence !== undefined && entries.at(-1)!.sequence < latestSequence,
-    entries
+    readModel: readModelForAudience(session, { kind: "device", deviceId }),
+    audit: auditCatchUp(session, query.after, query.limit)
   };
 });
 

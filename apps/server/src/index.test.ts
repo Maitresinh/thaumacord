@@ -157,6 +157,28 @@ test("returns audit catch-up entries after a client sequence", async () => {
   );
 });
 
+test("returns device sync package with filtered read model and audit catch-up", async () => {
+  const session = await createSession();
+  const code = session.code;
+  const device = await createDevice(code, "Telephone sonar");
+  const reserve = await createDevice(code, "Telephone reserve");
+  const participant = await createParticipant(code, "Station sonar");
+  await bindDevice(code, device.device.id, participant.participant.id);
+
+  const boundSync = await injectJson("GET", `/sessions/${code}/devices/${device.device.id}/sync?after=2&limit=10`);
+  assert.equal(boundSync.readModel.readModel, "device.participant");
+  assert.equal(boundSync.readModel.participant.id, participant.participant.id);
+  assert.equal(boundSync.audit.latestSequence, 5);
+  assert.deepEqual(
+    boundSync.audit.entries.map((entry: JsonObject) => entry.sequence),
+    [3, 4, 5]
+  );
+
+  const unboundSync = await injectJson("GET", `/sessions/${code}/devices/${reserve.device.id}/sync?after=5`);
+  assert.equal(unboundSync.readModel.readModel, "device.unbound");
+  assert.deepEqual(unboundSync.audit.entries, []);
+});
+
 test("returns structured validation errors for malformed mobile payloads", async () => {
   const session = await createSession();
   const code = session.code;
@@ -196,6 +218,13 @@ test("returns structured validation errors for malformed mobile payloads", async
   assert.equal(invalidAuditQuery.statusCode, 400);
   assert.equal(invalidAuditQuery.json<JsonObject>().error, "Validation failed");
   assert.equal(invalidAuditQuery.json<JsonObject>().issues[0].path, "after");
+
+  const missingSyncDevice = await app.inject({
+    method: "GET",
+    url: `/sessions/${code}/devices/missing-device/sync`
+  });
+  assert.equal(missingSyncDevice.statusCode, 404);
+  assert.equal(missingSyncDevice.json<JsonObject>().error, "Device not found");
 });
 
 test("tracks device heartbeat and disconnection state", async () => {

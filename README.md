@@ -64,6 +64,7 @@ Sprint 1 focuses on the generic transmission loop. The API now also exposes:
 - `POST /sessions/:code/devices/:deviceId/bind`
 - `POST /sessions/:code/devices/:deviceId/heartbeat`
 - `POST /sessions/:code/devices/:deviceId/disconnect`
+- `GET /sessions/:code/devices/:deviceId/sync?after=:sequence&limit=:limit`
 - `POST /sessions/:code/zones/:zoneId/presence`
 - `POST /sessions/:code/events`
 - `GET /sessions/:code/audit?after=:sequence&limit=:limit`
@@ -80,6 +81,8 @@ Devices can report heartbeat/disconnect events. Thaumacord updates `connected`, 
 Audit entries include a stable `id` and monotonic `sequence` per session. Live broadcasts carry those audit entries when they represent state changes, so clients can order updates.
 
 Clients that miss WebSocket messages can call the audit catch-up endpoint with their last applied sequence.
+
+Device sync returns both the filtered device read model and audit catch-up entries in one request, which is the preferred reconnect path for mobile clients.
 
 Structured events can also execute module actions by sending `actionId` to `POST /sessions/:code/events`. The prototype currently validates role, phase, resource costs, and applies the first supported effects: `adjustResource`, `setState`, `message`, and `revealContactHint`.
 

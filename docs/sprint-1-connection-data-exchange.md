@@ -38,6 +38,7 @@ Acceptance criteria:
 - Each audit entry has a monotonic per-session `sequence`.
 - Live state-change broadcasts include the sequenced audit entry.
 - Clients can request audit entries after their last applied sequence.
+- Device clients can request read model and catch-up audit in one sync call.
 
 ### Register Device
 

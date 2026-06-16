@@ -11,23 +11,26 @@
 ## Sprint 1: Session Spine
 
 - Create session.
-- Join by code.
-- Assign player identity.
-- Broadcast session state.
-- Audit session events.
+- Register devices.
+- Bind devices to participants.
+- Send structured events.
+- Broadcast filtered session state.
+- Audit transmission events.
 
-## Sprint 2: Module Loading
+## Sprint 2: Module Loading and State Model
 
 - Load example module.
 - Validate roles, resources, phases, and actions.
 - Start a session from a module.
+- Represent participants, devices, resources, statuses, zones, and permissions.
 
-## Sprint 3: Player and Game Master Views
+## Sprint 3: Read Models and Dashboard
 
-- Player private state.
-- Game master global state.
+- Device-specific filtered state.
+- Complete dashboard read model.
 - Phase progression.
 - Resource updates.
+- Status updates.
 
 ## Sprint 4: Actions, Votes, Petitions
 
@@ -55,6 +58,5 @@ Mandragore has an API and arrives at the end of the project.
 - Filter hidden information.
 - Add replaceable API connector.
 - Add rule-help mode.
-- Add game master arbitration mode.
-- Add optional player strategy mode.
-
+- Add facilitator arbitration mode.
+- Add optional participant strategy mode.

@@ -12,23 +12,25 @@
 
 - Feature is implemented.
 - Tests are added for rule behavior when applicable.
-- Game master and player visibility are checked.
+- Device, participant, and visibility behavior are checked.
 - Audit log entries are created for important actions.
 - Documentation or module examples are updated.
 - Feature can be demonstrated in a sprint review.
 
 ## Epics
 
-### Epic 1: Game Session Spine
+### Epic 1: Transmission Core
 
-As a game master, I can create a session from a module so that players can join a playable game.
+As a table device, I can connect to a session, identify myself, send structured events, and receive only the synchronized state I am allowed to see.
 
 Acceptance criteria:
 
 - A session has a code.
-- Players can join by code.
-- The game master sees the player list.
-- The audit log records creation and joins.
+- Devices can join by code.
+- Devices can be bound to participants.
+- Incoming events are normalized before they affect state.
+- Every accepted event is logged.
+- Each connected device receives a filtered update.
 
 ### Epic 2: Module Import
 
@@ -40,39 +42,43 @@ Acceptance criteria:
 - Invalid modules return readable errors.
 - The same engine can load at least two example modules.
 
-### Epic 3: Player Interface
+### Epic 3: Participant State Model
 
-As a player, I can see my role, private resources, available actions, and current phase.
-
-Acceptance criteria:
-
-- Hidden information from other players is not shown.
-- Actions are filtered by phase and role.
-- Resource changes update in real time.
-
-### Epic 4: Game Master Interface
-
-As a game master, I can inspect the whole state, advance phases, resolve votes, and override mistakes.
+As a module, I can define participants that own state, regardless of whether they are players, teams, stations, NPCs, locations, or objects.
 
 Acceptance criteria:
 
-- The game master can view all resources and roles.
-- Phase changes are broadcast.
+- A participant can own resources, statuses, cards, permissions, and location.
+- A participant can be controlled by one or more devices.
+- A participant can be visible, hidden, shared, or dashboard-only.
+- State changes are represented as auditable events.
+
+### Epic 4: Dashboard Read Model
+
+As an operator dashboard, I can receive a complete read model of the session so that the human facilitator can understand and correct the table state.
+
+Acceptance criteria:
+
+- The dashboard receives all state allowed by the module.
+- It shows devices, participants, resources, statuses, locations, events, and audit.
 - Manual corrections are logged.
+- It is implemented as a projection of the transmission core, not as a special case.
 
-### Epic 5: Votes and Petitions
+### Epic 5: Action and Rule Events
 
-As a player, I can submit and vote on petitions according to the module rules.
+As a module, I can declare actions that consume events, apply rules, and update state.
 
 Acceptance criteria:
 
+- Actions can be available or unavailable depending on state.
+- Actions can target participants, resources, zones, cards, or the whole session.
 - Vote weight can use a resource such as favor.
 - Special role exceptions can be represented.
 - The result is logged and visible according to rules.
 
 ### Epic 6: Physical Gestures
 
-As a player, I can perform selected actions through phone gestures.
+As a device, I can turn physical gestures into structured events.
 
 Acceptance criteria:
 
@@ -82,7 +88,7 @@ Acceptance criteria:
 
 ### Epic 7: Hybrid Mapping
 
-As a game master, I can map real places to imaginary zones with game effects.
+As a module or facilitator, I can map real places to imaginary zones with game effects.
 
 Acceptance criteria:
 
@@ -92,7 +98,7 @@ Acceptance criteria:
 
 ### Epic 8: Mandragore API
 
-As a player or game master, I can ask Mandragore for rule help or strategic suggestions at the end of the roadmap.
+As a connected surface, I can ask Mandragore for rule help or strategic suggestions at the end of the roadmap.
 
 Acceptance criteria:
 
@@ -100,3 +106,13 @@ Acceptance criteria:
 - The API connector is replaceable.
 - Answers distinguish rules from interpretation.
 
+### Epic 9: Table-First Character Surfaces
+
+As a participant device, I can display a table-first active sheet that shows current actions and state without making the user search through a form.
+
+Acceptance criteria:
+
+- The surface is generated from participant state and module rules.
+- It prioritizes current actions, statuses, resources, and alerts.
+- Any change emits a structured event to the transmission core.
+- The dashboard receives the corresponding update.

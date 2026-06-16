@@ -30,6 +30,18 @@ Acceptance criteria:
 - Device connection metadata is stored.
 - `device.registered` is added to audit.
 
+### Track Device Connection
+
+As a table device, I can report that I am still present or explicitly disconnected.
+
+Acceptance criteria:
+
+- Unknown device is rejected.
+- Heartbeat marks the device connected.
+- Disconnect marks the device disconnected.
+- `lastSeenAt` is updated.
+- Change is audited and broadcast.
+
 ### Create Participant
 
 As a facilitator or module, I can create a participant so that game state has an owner.

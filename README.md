@@ -62,6 +62,8 @@ Sprint 1 focuses on the generic transmission loop. The API now also exposes:
 - `POST /sessions/:code/devices`
 - `POST /sessions/:code/participants`
 - `POST /sessions/:code/devices/:deviceId/bind`
+- `POST /sessions/:code/devices/:deviceId/heartbeat`
+- `POST /sessions/:code/devices/:deviceId/disconnect`
 - `POST /sessions/:code/zones/:zoneId/presence`
 - `POST /sessions/:code/events`
 - `GET /sessions/:code/read-models/dashboard`
@@ -71,6 +73,8 @@ Sprint 1 focuses on the generic transmission loop. The API now also exposes:
 - `WS /sessions/:code/live?deviceId=:deviceId`
 
 Live clients receive a read model filtered for their audience: dashboard clients receive the full dashboard state, unbound devices receive a minimal public pairing state, and bound devices receive their participant-specific state.
+
+Devices can report heartbeat/disconnect events. Thaumacord updates `connected`, `lastSeenAt`, audit, and live clients.
 
 Structured events can also execute module actions by sending `actionId` to `POST /sessions/:code/events`. The prototype currently validates role, phase, resource costs, and applies the first supported effects: `adjustResource`, `setState`, `message`, and `revealContactHint`.
 

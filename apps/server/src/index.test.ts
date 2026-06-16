@@ -3,6 +3,7 @@ import { after, before, beforeEach, test } from "node:test";
 import { app, resetRuntimeState } from "./index.js";
 
 type JsonObject = Record<string, any>;
+let liveAddress = "";
 
 async function injectJson(method: "GET" | "POST", url: string, payload?: unknown): Promise<JsonObject> {
   const response = await app.inject({
@@ -32,6 +33,14 @@ async function createParticipant(code: string, name: string, roleId = "sonar"): 
 
 async function bindDevice(code: string, deviceId: string, participantId: string): Promise<JsonObject> {
   return injectJson("POST", `/sessions/${code}/devices/${deviceId}/bind`, { participantId });
+}
+
+async function heartbeatDevice(code: string, deviceId: string): Promise<JsonObject> {
+  return injectJson("POST", `/sessions/${code}/devices/${deviceId}/heartbeat`, {});
+}
+
+async function disconnectDevice(code: string, deviceId: string): Promise<JsonObject> {
+  return injectJson("POST", `/sessions/${code}/devices/${deviceId}/disconnect`, {});
 }
 
 async function setResource(code: string, participantId: string, resourceId: string, value: number): Promise<JsonObject> {
@@ -70,7 +79,7 @@ function collectLiveMessages(url: string, expectedCount = 2): Promise<{ socket: 
 }
 
 before(async () => {
-  await app.ready();
+  liveAddress = await app.listen({ port: 0, host: "127.0.0.1" });
 });
 
 beforeEach(() => {
@@ -108,6 +117,23 @@ test("returns a dashboard read model with the complete live state", async () => 
   assert.equal(Array.isArray(dashboard.audit), true);
 });
 
+test("tracks device heartbeat and disconnection state", async () => {
+  const session = await createSession();
+  const code = session.code;
+  const deviceResult = await createDevice(code, "Telephone sonar");
+
+  const disconnect = await disconnectDevice(code, deviceResult.device.id);
+  const disconnectedDevice = disconnect.dashboard.devices.find((device: JsonObject) => device.id === deviceResult.device.id);
+  assert.equal(disconnectedDevice.connected, false);
+  assert.equal(disconnect.disconnect.connected, false);
+
+  const heartbeat = await heartbeatDevice(code, deviceResult.device.id);
+  const connectedDevice = heartbeat.readModel.devices.find((device: JsonObject) => device.id === deviceResult.device.id);
+  assert.equal(connectedDevice.connected, true);
+  assert.equal(heartbeat.heartbeat.connected, true);
+  assert.equal(heartbeat.heartbeat.wasConnected, false);
+});
+
 test("filters device read models for unbound and bound devices", async () => {
   const session = await createSession();
   const code = session.code;
@@ -126,6 +152,33 @@ test("filters device read models for unbound and bound devices", async () => {
   assert.equal(boundModel.participant.name, "Station sonar");
   assert.equal(Array.isArray(boundModel.availableActions), true);
   assert.equal(Array.isArray(boundModel.recentAudit), true);
+});
+
+test("broadcasts device heartbeat updates to live audiences", async () => {
+  const session = await createSession();
+  const code = session.code;
+  const device = await createDevice(code, "Telephone sonar");
+
+  const dashboardLive = collectLiveMessages(`${liveAddress}/sessions/${code}/live?dashboard=true`);
+  const deviceLive = collectLiveMessages(`${liveAddress}/sessions/${code}/live?deviceId=${device.device.id}`);
+  await new Promise((resolve) => setTimeout(resolve, 150));
+
+  await disconnectDevice(code, device.device.id);
+
+  const [dashboard, deviceAudience] = await Promise.all([dashboardLive, deviceLive]);
+  dashboard.socket.close();
+  deviceAudience.socket.close();
+
+  assert.deepEqual(
+    dashboard.messages.map((message) => message.readModel.readModel),
+    ["dashboard", "dashboard"]
+  );
+  assert.deepEqual(
+    deviceAudience.messages.map((message) => message.readModel.readModel),
+    ["device.unbound", "device.unbound"]
+  );
+  assert.equal(dashboard.messages.at(-1)?.payload.connected, false);
+  assert.equal(deviceAudience.messages.at(-1)?.payload.connected, false);
 });
 
 test("exposes participant actions with availability reasons", async () => {
@@ -477,7 +530,6 @@ test("rejects configured actions when role, phase, or resources do not allow the
 });
 
 test("broadcasts live updates with read models filtered per audience", async () => {
-  const address = await app.listen({ port: 0, host: "127.0.0.1" });
   const session = await createSession();
   const code = session.code;
   const boundDevice = await createDevice(code, "Telephone sonar");
@@ -485,9 +537,9 @@ test("broadcasts live updates with read models filtered per audience", async () 
   const participant = await createParticipant(code, "Station sonar");
   await bindDevice(code, boundDevice.device.id, participant.participant.id);
 
-  const dashboardLive = collectLiveMessages(`${address}/sessions/${code}/live?dashboard=true`);
-  const unboundLive = collectLiveMessages(`${address}/sessions/${code}/live?deviceId=${unboundDevice.device.id}`);
-  const boundLive = collectLiveMessages(`${address}/sessions/${code}/live?deviceId=${boundDevice.device.id}`);
+  const dashboardLive = collectLiveMessages(`${liveAddress}/sessions/${code}/live?dashboard=true`);
+  const unboundLive = collectLiveMessages(`${liveAddress}/sessions/${code}/live?deviceId=${unboundDevice.device.id}`);
+  const boundLive = collectLiveMessages(`${liveAddress}/sessions/${code}/live?deviceId=${boundDevice.device.id}`);
 
   await new Promise((resolve) => setTimeout(resolve, 150));
   const eventResponse = await app.inject({

@@ -282,6 +282,21 @@ function participantExists(session: Session, participantId?: string): boolean {
   return Boolean(participantId && session.participants.some((participant) => participant.id === participantId));
 }
 
+function markDeviceConnection(session: Session, device: Device, connected: boolean): Record<string, unknown> {
+  const wasConnected = device.connected;
+  device.connected = connected;
+  device.lastSeenAt = new Date().toISOString();
+  const payload = {
+    deviceId: device.id,
+    connected: device.connected,
+    wasConnected,
+    lastSeenAt: device.lastSeenAt
+  };
+  audit(session, connected ? "device.heartbeat" : "device.disconnected", payload);
+  broadcast(session, connected ? "device.heartbeat" : "device.disconnected", payload);
+  return payload;
+}
+
 function withInferredParticipant(session: Session, event: EventInput): EventInput {
   return {
     ...event,
@@ -945,6 +960,44 @@ app.post("/sessions/:code/devices/:deviceId/bind", async (request, reply) => {
   audit(session, "participant.bound_to_device", { participantId: participant.id, deviceId: device.id });
   broadcast(session, "participant.bound_to_device", { participantId: participant.id, deviceId: device.id });
   return dashboardReadModel(session);
+});
+
+app.post("/sessions/:code/devices/:deviceId/heartbeat", async (request, reply) => {
+  const { code, deviceId } = request.params as { code: string; deviceId: string };
+  const session = getSession(code);
+  if (!session) {
+    return reply.code(404).send({ error: "Session not found" });
+  }
+
+  const device = getDevice(session, deviceId);
+  if (!device) {
+    return reply.code(404).send({ error: "Device not found" });
+  }
+
+  const heartbeat = markDeviceConnection(session, device, true);
+  return {
+    heartbeat,
+    readModel: readModelForAudience(session, { kind: "device", deviceId })
+  };
+});
+
+app.post("/sessions/:code/devices/:deviceId/disconnect", async (request, reply) => {
+  const { code, deviceId } = request.params as { code: string; deviceId: string };
+  const session = getSession(code);
+  if (!session) {
+    return reply.code(404).send({ error: "Session not found" });
+  }
+
+  const device = getDevice(session, deviceId);
+  if (!device) {
+    return reply.code(404).send({ error: "Device not found" });
+  }
+
+  const disconnect = markDeviceConnection(session, device, false);
+  return {
+    disconnect,
+    dashboard: dashboardReadModel(session)
+  };
 });
 
 app.post("/sessions/:code/participants", async (request, reply) => {

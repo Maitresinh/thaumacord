@@ -109,6 +109,16 @@ type Session = {
   audit: AuditEntry[];
 };
 
+type ActionAvailability = {
+  id: string;
+  name: string;
+  phase: string;
+  gesture?: string;
+  fallback?: string;
+  available: boolean;
+  blockedBy: string[];
+};
+
 const modules = new Map<string, GameModule>();
 const sessions = new Map<string, Session>();
 const liveClients = new Map<string, Set<{ audience: Audience; send: (payload: string) => void }>>();
@@ -334,6 +344,43 @@ function applyActionEvent(session: Session, event: EventInput): Record<string, u
   };
 }
 
+function actionBlockedBy(session: Session, participant: Participant, action: GameModule["actions"][number]): string[] {
+  const module = getModuleOrThrow(session.moduleId);
+  const blockedBy: string[] = [];
+
+  if (action.actor !== "*" && participant.roleId !== action.actor) {
+    blockedBy.push("role");
+  }
+  if (action.phase !== "*" && action.phase !== currentPhase(session).id) {
+    blockedBy.push("phase");
+  }
+  for (const [resourceId, cost] of Object.entries(action.cost ?? {})) {
+    try {
+      assertResourceChange(module, participant, resourceId, -cost);
+    } catch {
+      blockedBy.push(`resource:${resourceId}`);
+    }
+  }
+
+  return blockedBy;
+}
+
+function actionAvailability(session: Session, participant: Participant): ActionAvailability[] {
+  const module = getModuleOrThrow(session.moduleId);
+  return module.actions.map((action) => {
+    const blockedBy = actionBlockedBy(session, participant, action);
+    return {
+      id: action.id,
+      name: action.name,
+      phase: action.phase,
+      gesture: action.gesture,
+      fallback: action.fallback,
+      available: blockedBy.length === 0,
+      blockedBy
+    };
+  });
+}
+
 function minimalReadModel(session: Session): Record<string, unknown> {
   const module = getModuleOrThrow(session.moduleId);
   return {
@@ -447,6 +494,7 @@ function participantReadModel(session: Session, participantId: string): Record<s
     },
     phase: currentPhase(session),
     participant,
+    availableActions: actionAvailability(session, participant),
     visibleParticipants: session.participants.map((candidate) => ({
       id: candidate.id,
       kind: candidate.kind,

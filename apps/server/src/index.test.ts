@@ -117,7 +117,33 @@ test("filters device read models for unbound and bound devices", async () => {
   assert.equal(unboundModel.devices.length, 2);
   assert.equal(boundModel.readModel, "device.participant");
   assert.equal(boundModel.participant.name, "Station sonar");
+  assert.equal(Array.isArray(boundModel.availableActions), true);
   assert.equal(Array.isArray(boundModel.recentAudit), true);
+});
+
+test("exposes participant actions with availability reasons", async () => {
+  const session = await createSession();
+  const code = session.code;
+  const device = await createDevice(code, "Telephone machine");
+  const participant = await createParticipant(code, "Machiniste", "engineer");
+  await bindDevice(code, device.device.id, participant.participant.id);
+
+  const briefingModel = await injectJson("GET", `/sessions/${code}/read-models/device/${device.device.id}`);
+  const quietInBriefing = briefingModel.availableActions.find((action: JsonObject) => action.id === "quiet-engines");
+  assert.equal(quietInBriefing.available, false);
+  assert.deepEqual(quietInBriefing.blockedBy, ["phase", "resource:battery"]);
+
+  await setResource(code, participant.participant.id, "battery", 1);
+  await advancePhase(code);
+  const runningModel = await injectJson("GET", `/sessions/${code}/read-models/device/${device.device.id}`);
+  const quietRunning = runningModel.availableActions.find((action: JsonObject) => action.id === "quiet-engines");
+  const sonarSweep = runningModel.availableActions.find((action: JsonObject) => action.id === "sonar-sweep");
+
+  assert.equal(quietRunning.available, true);
+  assert.deepEqual(quietRunning.blockedBy, []);
+  assert.equal(quietRunning.gesture, "phone-face-down");
+  assert.equal(sonarSweep.available, false);
+  assert.equal(sonarSweep.blockedBy.includes("role"), true);
 });
 
 test("rejects structured events from unknown devices or participants", async () => {

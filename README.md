@@ -73,6 +73,8 @@ Live clients receive a read model filtered for their audience: dashboard clients
 
 Structured events can also execute module actions by sending `actionId` to `POST /sessions/:code/events`. The prototype currently validates role, phase, resource costs, and applies the first supported effects: `adjustResource`, `setState`, `message`, and `revealContactHint`.
 
+Participant/device read models include `availableActions`, a table-ready list of module actions with gesture metadata and blocking reasons such as `role`, `phase`, or `resource:battery`.
+
 Run the server tests with:
 
 ```bash

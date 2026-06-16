@@ -90,3 +90,5 @@ Supported effects:
 - `setState`: writes a value to participant `statuses`;
 - `message`: stores a simple last message status;
 - `revealContactHint`: stores a contact hint status.
+
+Participant read models expose `availableActions` derived from module actions. Each item contains `id`, `name`, `phase`, optional `gesture`, optional `fallback`, `available`, and `blockedBy`.

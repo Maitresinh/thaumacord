@@ -86,6 +86,8 @@ As a participant-bound surface, I can request my filtered read model.
 Acceptance criteria:
 
 - Response includes my participant state.
+- Response includes available actions for my current role, phase, and resources.
+- Blocked actions include blocking reasons so the interface can hide or disable them.
 - Response includes public identity of other participants.
 - Response includes recent audit.
 - It does not require a GM/player distinction.

@@ -95,6 +95,10 @@ type AuditEntry = {
   payload: unknown;
 };
 
+type Audience =
+  | { kind: "dashboard" }
+  | { kind: "device"; deviceId?: string };
+
 type Session = {
   code: string;
   moduleId: string;
@@ -106,7 +110,7 @@ type Session = {
 
 const modules = new Map<string, GameModule>();
 const sessions = new Map<string, Session>();
-const liveClients = new Map<string, Set<{ send: (payload: string) => void }>>();
+const liveClients = new Map<string, Set<{ audience: Audience; send: (payload: string) => void }>>();
 
 const createSessionSchema = z.object({
   moduleId: z.string().min(1)
@@ -183,11 +187,64 @@ function audit(session: Session, type: string, payload: unknown): void {
   session.audit.push({ at: new Date().toISOString(), type, payload });
 }
 
-function livePayload(session: Session, type: string, payload: unknown = {}): string {
+function minimalReadModel(session: Session): Record<string, unknown> {
+  const module = getModuleOrThrow(session.moduleId);
+  return {
+    code: session.code,
+    readModel: "device.unbound",
+    module: {
+      id: module.id,
+      name: module.name
+    },
+    phase: currentPhase(session),
+    devices: session.devices.map((device) => ({
+      id: device.id,
+      name: device.name,
+      bound: Boolean(device.participantId),
+      connected: device.connected
+    })),
+    participants: session.participants.map((participant) => ({
+      id: participant.id,
+      kind: participant.kind,
+      name: participant.name,
+      roleId: participant.roleId
+    }))
+  };
+}
+
+function readModelForAudience(session: Session, audience: Audience): Record<string, unknown> {
+  if (audience.kind === "dashboard") {
+    return dashboardReadModel(session);
+  }
+
+  const device = audience.deviceId ? session.devices.find((candidate) => candidate.id === audience.deviceId) : undefined;
+  if (!device?.participantId) {
+    return {
+      ...minimalReadModel(session),
+      deviceId: audience.deviceId
+    };
+  }
+
+  const participantModel = participantReadModel(session, device.participantId);
+  if (!participantModel) {
+    return {
+      ...minimalReadModel(session),
+      deviceId: device.id
+    };
+  }
+
+  return {
+    readModel: "device.participant",
+    deviceId: device.id,
+    ...participantModel
+  };
+}
+
+function livePayload(session: Session, type: string, audience: Audience, payload: unknown = {}): string {
   return JSON.stringify({
     type,
     payload,
-    dashboard: dashboardReadModel(session)
+    readModel: readModelForAudience(session, audience)
   });
 }
 
@@ -197,9 +254,9 @@ function broadcast(session: Session, type: string, payload: unknown = {}): void 
     return;
   }
 
-  const message = livePayload(session, type, payload);
   for (const client of clients) {
     try {
+      const message = livePayload(session, type, client.audience, payload);
       client.send(message);
     } catch {
       clients.delete(client);
@@ -228,7 +285,7 @@ function dashboardReadModel(session: Session): ReturnType<typeof visibleSession>
   };
 }
 
-function participantReadModel(session: Session, participantId: string): unknown {
+function participantReadModel(session: Session, participantId: string): Record<string, unknown> | undefined {
   const participant = session.participants.find((candidate) => candidate.id === participantId);
   if (!participant) {
     return undefined;
@@ -329,15 +386,15 @@ function renderIndex(): string {
     function connectLive(code) {
       if (liveSocket) liveSocket.close();
       const protocol = location.protocol === "https:" ? "wss" : "ws";
-      liveSocket = new WebSocket(protocol + "://" + location.host + "/sessions/" + code + "/live");
+      liveSocket = new WebSocket(protocol + "://" + location.host + "/sessions/" + code + "/live?dashboard=true");
       liveSocket.addEventListener("open", () => {
         document.querySelector("#live").textContent = "Flux connecte pour " + code;
       });
       liveSocket.addEventListener("message", async (event) => {
         const data = JSON.parse(event.data);
         document.querySelector("#live").textContent = JSON.stringify(data, null, 2);
-        if (data.dashboard) {
-          document.querySelector("#state").textContent = JSON.stringify(data.dashboard, null, 2);
+        if (data.readModel) {
+          document.querySelector("#state").textContent = JSON.stringify(data.readModel, null, 2);
         }
       });
       liveSocket.addEventListener("close", () => {
@@ -402,20 +459,23 @@ app.get("/health", async () => ({ ok: true, service: "thaumacord-server" }));
 
 app.get("/sessions/:code/live", { websocket: true }, (connection, request) => {
   const { code } = request.params as { code: string };
+  const query = request.query as { deviceId?: string; dashboard?: string };
   const session = getSession(code);
   if (!session) {
     connection.close();
     return;
   }
 
+  const audience: Audience = query.dashboard === "true" ? { kind: "dashboard" } : { kind: "device", deviceId: query.deviceId };
   const client = {
+    audience,
     send: (payload: string) => connection.send(payload)
   };
-  const clients = liveClients.get(session.code) ?? new Set<{ send: (payload: string) => void }>();
+  const clients = liveClients.get(session.code) ?? new Set<{ audience: Audience; send: (payload: string) => void }>();
   clients.add(client);
   liveClients.set(session.code, clients);
 
-  client.send(livePayload(session, "live.connected", { code: session.code }));
+  client.send(livePayload(session, "live.connected", audience, { code: session.code }));
 
   connection.on("message", (message: Buffer) => {
     audit(session, "live.message", { raw: message.toString() });
@@ -592,6 +652,18 @@ app.get("/sessions/:code/read-models/participant/:participantId", async (request
     return reply.code(404).send({ error: "Participant not found" });
   }
   return readModel;
+});
+
+app.get("/sessions/:code/read-models/device/:deviceId", async (request, reply) => {
+  const { code, deviceId } = request.params as { code: string; deviceId: string };
+  const session = getSession(code);
+  if (!session) {
+    return reply.code(404).send({ error: "Session not found" });
+  }
+  if (!session.devices.some((device) => device.id === deviceId)) {
+    return reply.code(404).send({ error: "Device not found" });
+  }
+  return readModelForAudience(session, { kind: "device", deviceId });
 });
 
 app.post("/sessions/:code/events", async (request, reply) => {

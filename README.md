@@ -55,7 +55,7 @@ npm install
 npm run dev
 ```
 
-Then open `http://localhost:3333/` to use the browser-based GM/player prototype. The API also exposes `GET /modules`, `POST /sessions`, `POST /sessions/:code/join`, and `POST /sessions/:code/phases/advance`.
+Then open `http://localhost:3333/` to use the browser-based dashboard prototype. The API also exposes `GET /modules`, `POST /sessions`, `POST /sessions/:code/join`, and `POST /sessions/:code/phases/advance`.
 
 Sprint 1 focuses on the generic transmission loop. The API now also exposes:
 
@@ -65,7 +65,11 @@ Sprint 1 focuses on the generic transmission loop. The API now also exposes:
 - `POST /sessions/:code/events`
 - `GET /sessions/:code/read-models/dashboard`
 - `GET /sessions/:code/read-models/participant/:participantId`
-- `WS /sessions/:code/live`
+- `GET /sessions/:code/read-models/device/:deviceId`
+- `WS /sessions/:code/live?dashboard=true`
+- `WS /sessions/:code/live?deviceId=:deviceId`
+
+Live clients receive a read model filtered for their audience: dashboard clients receive the full dashboard state, unbound devices receive a minimal public pairing state, and bound devices receive their participant-specific state.
 
 The Android app is a native skeleton. Open `apps/android` in Android Studio after installing Android Studio/Gradle tooling.
 

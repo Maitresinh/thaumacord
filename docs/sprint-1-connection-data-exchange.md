@@ -93,9 +93,22 @@ As a connected device or dashboard, I can subscribe to a session stream so that 
 Acceptance criteria:
 
 - WebSocket endpoint exists at `/sessions/:code/live`.
+- Dashboard clients can subscribe with `?dashboard=true`.
+- Device clients can subscribe with `?deviceId=:deviceId`.
 - Client receives `live.connected` on subscription.
 - Client receives `device.registered`.
 - Client receives `participant.created`.
 - Client receives `participant.bound_to_device`.
 - Client receives `event.accepted`.
-- Broadcast payload includes the dashboard read model for the current prototype.
+- Broadcast payload includes a read model filtered for the subscribing audience.
+
+### Read Device State
+
+As a connected device, I can request the state that this physical phone is allowed to see.
+
+Acceptance criteria:
+
+- Unknown device is rejected.
+- Unbound device receives minimal public pairing state.
+- Bound device receives its participant-specific read model.
+- Dashboard-only data is not exposed to device read models.

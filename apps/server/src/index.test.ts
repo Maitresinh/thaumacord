@@ -58,6 +58,10 @@ async function enterZone(code: string, zoneId: string, participantId: string, so
   });
 }
 
+async function createExchange(code: string, payload: JsonObject): Promise<JsonObject> {
+  return injectJson("POST", `/sessions/${code}/exchanges`, payload);
+}
+
 function collectLiveMessages(url: string, expectedCount = 2): Promise<{ socket: WebSocket; messages: JsonObject[] }> {
   return new Promise((resolve, reject) => {
     const socket = new WebSocket(url);
@@ -317,6 +321,91 @@ test("exposes participant actions with availability reasons", async () => {
   assert.equal(sonarSweep.blockedBy.includes("role"), true);
 });
 
+test("transfers resources between participants and filters exchange read models", async () => {
+  const session = await createSession();
+  const code = session.code;
+  const sonarDevice = await createDevice(code, "Telephone sonar");
+  const engineerDevice = await createDevice(code, "Telephone machines");
+  const captainDevice = await createDevice(code, "Telephone capitaine");
+  const sonar = await createParticipant(code, "Station sonar", "sonar");
+  const engineer = await createParticipant(code, "Station machines", "engineer");
+  const captain = await createParticipant(code, "Capitaine", "captain");
+  await bindDevice(code, sonarDevice.device.id, sonar.participant.id);
+  await bindDevice(code, engineerDevice.device.id, engineer.participant.id);
+  await bindDevice(code, captainDevice.device.id, captain.participant.id);
+  await setResource(code, sonar.participant.id, "battery", 3);
+
+  const exchange = await createExchange(code, {
+    sourceDeviceId: sonarDevice.device.id,
+    toParticipantId: engineer.participant.id,
+    resources: { battery: 2 }
+  });
+
+  assert.equal(exchange.accepted, true);
+  assert.equal(exchange.exchangeResult.exchange.fromParticipantId, sonar.participant.id);
+  assert.equal(exchange.exchangeResult.exchange.toParticipantId, engineer.participant.id);
+  assert.deepEqual(exchange.exchangeResult.exchange.resources, { battery: 2 });
+  assert.equal(exchange.dashboard.participants.find((candidate: JsonObject) => candidate.id === sonar.participant.id).resources.battery, 1);
+  assert.equal(exchange.dashboard.participants.find((candidate: JsonObject) => candidate.id === engineer.participant.id).resources.battery, 2);
+  assert.equal(exchange.dashboard.exchanges.length, 1);
+
+  const sonarModel = await injectJson("GET", `/sessions/${code}/read-models/device/${sonarDevice.device.id}`);
+  const engineerModel = await injectJson("GET", `/sessions/${code}/read-models/device/${engineerDevice.device.id}`);
+  const captainModel = await injectJson("GET", `/sessions/${code}/read-models/device/${captainDevice.device.id}`);
+  assert.equal(sonarModel.exchanges.length, 1);
+  assert.equal(engineerModel.exchanges.length, 1);
+  assert.deepEqual(captainModel.exchanges, []);
+});
+
+test("rejects invalid participant exchanges without partially applying resources", async () => {
+  const session = await createSession();
+  const code = session.code;
+  const source = await createParticipant(code, "Station sonar", "sonar");
+  const target = await createParticipant(code, "Station machines", "engineer");
+  await setResource(code, source.participant.id, "battery", 1);
+
+  const insufficient = await app.inject({
+    method: "POST",
+    url: `/sessions/${code}/exchanges`,
+    payload: {
+      fromParticipantId: source.participant.id,
+      toParticipantId: target.participant.id,
+      resources: { battery: 2 }
+    }
+  });
+  assert.equal(insufficient.statusCode, 400);
+  assert.match(insufficient.json<JsonObject>().error, /outside bounds/);
+
+  const unknownResource = await app.inject({
+    method: "POST",
+    url: `/sessions/${code}/exchanges`,
+    payload: {
+      fromParticipantId: source.participant.id,
+      toParticipantId: target.participant.id,
+      resources: { relic: 1 }
+    }
+  });
+  assert.equal(unknownResource.statusCode, 400);
+  assert.equal(unknownResource.json<JsonObject>().error, "Unknown resource: relic");
+
+  const selfExchange = await app.inject({
+    method: "POST",
+    url: `/sessions/${code}/exchanges`,
+    payload: {
+      fromParticipantId: source.participant.id,
+      toParticipantId: source.participant.id,
+      resources: { battery: 1 }
+    }
+  });
+  assert.equal(selfExchange.statusCode, 400);
+  assert.equal(selfExchange.json<JsonObject>().error, "Exchange requires two different participants");
+
+  const dashboard = await injectJson("GET", `/sessions/${code}/read-models/dashboard`);
+  assert.equal(dashboard.participants.find((candidate: JsonObject) => candidate.id === source.participant.id).resources.battery, 1);
+  assert.equal(dashboard.participants.find((candidate: JsonObject) => candidate.id === target.participant.id).resources.battery, 0);
+  assert.deepEqual(dashboard.exchanges, []);
+});
+
 test("maps participant presence to imaginary zones and applies zone effects", async () => {
   const session = await createSession();
   const code = session.code;
@@ -334,7 +423,7 @@ test("maps participant presence to imaginary zones and applies zone effects", as
   assert.equal(zoneResponse.zoneResult.effects.length, 2);
 });
 
-test("records pending zone hazards and filters them for bound devices", async () => {
+test("records pending zone resolutions and filters them for bound devices", async () => {
   const session = await createSession();
   const code = session.code;
   const sonarDevice = await createDevice(code, "Telephone sonar");
@@ -349,16 +438,17 @@ test("records pending zone hazards and filters them for bound devices", async ()
   const pendingEffect = zoneResponse.zoneResult.effects.find((effect: JsonObject) => effect.type === "periodicDamageCheck");
   assert.equal(pendingEffect.pending, true);
   assert.equal(pendingEffect.resource, "hull");
-  assert.equal(zoneResponse.dashboard.pendingHazards.length, 1);
-  assert.equal(zoneResponse.dashboard.pendingHazards[0].id, pendingEffect.hazardId);
-  assert.equal(zoneResponse.dashboard.pendingHazards[0].participantId, sonar.participant.id);
-  assert.equal(zoneResponse.dashboard.pendingHazards[0].zoneId, "depth-charge-field");
+  assert.equal(zoneResponse.dashboard.pendingResolutions.length, 1);
+  assert.equal(zoneResponse.dashboard.pendingResolutions[0].id, pendingEffect.resolutionId);
+  assert.equal(zoneResponse.dashboard.pendingResolutions[0].type, "periodicDamageCheck");
+  assert.equal(zoneResponse.dashboard.pendingResolutions[0].participantId, sonar.participant.id);
+  assert.equal(zoneResponse.dashboard.pendingResolutions[0].zoneId, "depth-charge-field");
 
   const sonarModel = await injectJson("GET", `/sessions/${code}/read-models/device/${sonarDevice.device.id}`);
   const engineerModel = await injectJson("GET", `/sessions/${code}/read-models/device/${engineerDevice.device.id}`);
-  assert.equal(sonarModel.pendingHazards.length, 1);
-  assert.equal(sonarModel.pendingHazards[0].resourceId, "hull");
-  assert.deepEqual(engineerModel.pendingHazards, []);
+  assert.equal(sonarModel.pendingResolutions.length, 1);
+  assert.equal(sonarModel.pendingResolutions[0].resourceId, "hull");
+  assert.deepEqual(engineerModel.pendingResolutions, []);
 });
 
 test("infers participant from a bound device for zone presence", async () => {

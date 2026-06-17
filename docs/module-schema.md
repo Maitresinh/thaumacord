@@ -97,6 +97,25 @@ Gesture events can omit `actionId` when the module action has a matching `gestur
 
 For mobile clients, `sourceDeviceId` can stand in for `participantId` after the device has been bound to a participant.
 
+## Participant Exchanges In Prototype
+
+`POST /sessions/:code/exchanges` transfers declared resources from one participant to another.
+
+Payload:
+
+- `fromParticipantId` or a bound `sourceDeviceId`;
+- `toParticipantId`;
+- `resources`, a map of resource ids to positive integer amounts.
+
+The server validates:
+
+- source device, when provided;
+- source and target participants;
+- known resources;
+- source debit and target credit against module resource bounds.
+
+Accepted exchanges are recorded in `exchanges`, added to audit as `exchange.completed`, and broadcast with filtered read models. Dashboard read models see all exchanges. Participant-bound read models only see exchanges involving that participant.
+
 ## Supported Zone Effects In Prototype
 
 `POST /sessions/:code/zones/:zoneId/presence` moves a participant to a module zone and applies supported zone effects.
@@ -105,4 +124,4 @@ Supported zone effects:
 
 - `unlockPhase`: adds the phase id to session `unlockedPhases`;
 - `increaseRisk`: increments a session risk counter;
-- `periodicDamageCheck`: records a pending hazard result for audit/read-model visibility.
+- `periodicDamageCheck`: records a pending resolution for audit/read-model visibility.

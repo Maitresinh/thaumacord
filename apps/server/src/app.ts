@@ -111,12 +111,22 @@ type AuditEntry = {
   payload: unknown;
 };
 
-type PendingHazard = {
+type PendingResolution = {
   id: string;
+  type: string;
   participantId: string;
   zoneId: string;
   resourceId: string;
   status: "pending";
+  createdAt: string;
+};
+
+type Exchange = {
+  id: string;
+  fromParticipantId: string;
+  toParticipantId: string;
+  resources: Record<string, number>;
+  status: "completed";
   createdAt: string;
 };
 
@@ -132,7 +142,8 @@ type Session = {
   participants: Participant[];
   unlockedPhases: string[];
   risks: Record<string, number>;
-  pendingHazards: PendingHazard[];
+  pendingResolutions: PendingResolution[];
+  exchanges: Exchange[];
   nextAuditSequence: number;
   audit: AuditEntry[];
 };
@@ -195,6 +206,13 @@ const auditQuerySchema = z.object({
 const zonePresenceSchema = z.object({
   participantId: z.string().min(1).optional(),
   sourceDeviceId: z.string().min(1).optional()
+});
+
+const exchangeSchema = z.object({
+  fromParticipantId: z.string().min(1).optional(),
+  sourceDeviceId: z.string().min(1).optional(),
+  toParticipantId: z.string().min(1),
+  resources: z.record(z.number().int().positive())
 });
 
 const eventSchema = z.object({
@@ -392,6 +410,52 @@ function adjustResource(module: GameModule, participant: Participant, resourceId
   return { resourceId, before, after };
 }
 
+function createExchange(session: Session, fromParticipantId: string, toParticipantId: string, resources: Record<string, number>): Record<string, unknown> {
+  if (fromParticipantId === toParticipantId) {
+    throw new Error("Exchange requires two different participants");
+  }
+
+  const module = getModuleOrThrow(session.moduleId);
+  const fromParticipant = session.participants.find((participant) => participant.id === fromParticipantId);
+  const toParticipant = session.participants.find((participant) => participant.id === toParticipantId);
+  if (!fromParticipant) {
+    throw new Error("Unknown source participant");
+  }
+  if (!toParticipant) {
+    throw new Error("Unknown target participant");
+  }
+
+  for (const [resourceId, amount] of Object.entries(resources)) {
+    if (!resourceBounds(module, resourceId)) {
+      throw new Error(`Unknown resource: ${resourceId}`);
+    }
+    assertResourceChange(module, fromParticipant, resourceId, -amount);
+    assertResourceChange(module, toParticipant, resourceId, amount);
+  }
+
+  const transfers = Object.entries(resources).map(([resourceId, amount]) => ({
+    resourceId,
+    amount,
+    from: adjustResource(module, fromParticipant, resourceId, -amount),
+    to: adjustResource(module, toParticipant, resourceId, amount)
+  }));
+
+  const exchange: Exchange = {
+    id: crypto.randomUUID(),
+    fromParticipantId,
+    toParticipantId,
+    resources,
+    status: "completed",
+    createdAt: new Date().toISOString()
+  };
+  session.exchanges.push(exchange);
+
+  return {
+    exchange,
+    transfers
+  };
+}
+
 function applyEffect(module: GameModule, participant: Participant, effect: KnownEffect, event: EventInput): Record<string, unknown> {
   if (effect.type === "adjustResource") {
     return {
@@ -437,16 +501,17 @@ function applyZoneEffect(session: Session, participant: Participant, zoneId: str
     return { type: effect.type, risk: effect.risk, before, after };
   }
 
-  const pendingHazard: PendingHazard = {
+  const pendingResolution: PendingResolution = {
     id: crypto.randomUUID(),
+    type: effect.type,
     participantId: participant.id,
     zoneId,
     resourceId: effect.resource,
     status: "pending",
     createdAt: new Date().toISOString()
   };
-  session.pendingHazards.push(pendingHazard);
-  return { type: effect.type, resource: effect.resource, pending: true, hazardId: pendingHazard.id };
+  session.pendingResolutions.push(pendingResolution);
+  return { type: effect.type, resource: effect.resource, pending: true, resolutionId: pendingResolution.id };
 }
 
 function enterZone(session: Session, participantId: string, zoneId: string): Record<string, unknown> {
@@ -710,7 +775,8 @@ function participantReadModel(session: Session, participantId: string): Record<s
     phase: currentPhase(session),
     participant,
     availableActions: actionAvailability(session, participant),
-    pendingHazards: session.pendingHazards.filter((hazard) => hazard.participantId === participant.id),
+    pendingResolutions: session.pendingResolutions.filter((resolution) => resolution.participantId === participant.id),
+    exchanges: session.exchanges.filter((exchange) => exchange.fromParticipantId === participant.id || exchange.toParticipantId === participant.id),
     visibleParticipants: session.participants.map((candidate) => ({
       id: candidate.id,
       kind: candidate.kind,
@@ -936,7 +1002,8 @@ app.post("/sessions", async (request, reply) => {
     participants: [],
     unlockedPhases: [module.phases[0].id],
     risks: {},
-    pendingHazards: [],
+    pendingResolutions: [],
+    exchanges: [],
     nextAuditSequence: 1,
     audit: []
   };
@@ -1145,6 +1212,39 @@ app.get("/sessions/:code/devices/:deviceId/sync", async (request, reply) => {
     readModel: readModelForAudience(session, { kind: "device", deviceId }),
     audit: auditCatchUp(session, query.after, query.limit)
   };
+});
+
+app.post("/sessions/:code/exchanges", async (request, reply) => {
+  const { code } = request.params as { code: string };
+  const session = getSession(code);
+  if (!session) {
+    return reply.code(404).send({ error: "Session not found" });
+  }
+
+  const input = exchangeSchema.parse(request.body);
+  if (input.sourceDeviceId && !getDevice(session, input.sourceDeviceId)) {
+    return reply.code(400).send({ error: "Unknown source device" });
+  }
+
+  const fromParticipantId = inferParticipantId(session, input.fromParticipantId, input.sourceDeviceId);
+  if (!fromParticipantId) {
+    return reply.code(400).send({ error: "Source participant required" });
+  }
+
+  let exchangeResult: Record<string, unknown>;
+  try {
+    exchangeResult = createExchange(session, fromParticipantId, input.toParticipantId, input.resources);
+  } catch (error) {
+    return reply.code(400).send({ error: error instanceof Error ? error.message : "Exchange rejected" });
+  }
+
+  audit(session, "exchange.completed", { sourceDeviceId: input.sourceDeviceId, ...exchangeResult });
+  broadcast(session, "exchange.completed", session.audit.at(-1));
+  return reply.code(202).send({
+    accepted: true,
+    exchangeResult,
+    dashboard: dashboardReadModel(session)
+  });
 });
 
 app.post("/sessions/:code/zones/:zoneId/presence", async (request, reply) => {

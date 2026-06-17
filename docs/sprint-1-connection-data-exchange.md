@@ -155,6 +155,25 @@ Acceptance criteria:
 - Bound device receives its participant-specific read model.
 - Dashboard-only data is not exposed to device read models.
 
+### Exchange Resources Between Participants
+
+As a connected surface, I can transfer declared resources between two participants without hard-coding a player/GM model.
+
+Acceptance criteria:
+
+- Source can be supplied as `fromParticipantId`.
+- Source can be inferred from a bound `sourceDeviceId`.
+- Target participant is required.
+- Resources are supplied as positive integer amounts.
+- Unknown source device is rejected.
+- Unknown participants are rejected.
+- Unknown resources are rejected.
+- Transfers cannot cross module resource bounds.
+- Invalid exchanges do not partially apply resource changes.
+- Accepted exchange is added to audit and broadcast.
+- Dashboard sees all exchanges.
+- Participant-bound read models only see exchanges involving that participant.
+
 ### Enter Imaginary Zone
 
 As a mapped real-world interaction, a participant can enter an imaginary module zone.

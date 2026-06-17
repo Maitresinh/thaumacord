@@ -148,6 +148,7 @@ test("lets a participant join with a chosen role and receive a filtered read mod
   assert.equal(joined.readModel.participant.id, joined.participant.id);
   assert.equal(joined.readModel.visibleParticipants.length, 1);
   assert.equal(joined.readModel.module.resources.find((resource: JsonObject) => resource.id === "money").name, "Argent");
+  assert.equal(joined.readModel.module.roles.find((role: JsonObject) => role.id === "general").name, "General");
 });
 
 test("lets the facilitator assign a role after participant join", async () => {

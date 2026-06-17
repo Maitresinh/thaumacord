@@ -2,12 +2,22 @@
   "id": "putsch-lite",
   "name": "Putsch Lite",
   "version": "0.1.0",
+  "timeline": {
+    "regularCouncilEveryTurns": 3,
+    "councilAfterCoup": true,
+    "councilPhaseId": "first-council"
+  },
+  "state": {
+    "copperPrice": 10,
+    "firstCouncilDue": false
+  },
   "players": {
     "min": 4,
     "max": 12
   },
   "resources": [
-    { "id": "money", "name": "Argent", "visibility": "private", "min": 0 },
+    { "id": "money", "name": "Pesos", "visibility": "private", "min": 0 },
+    { "id": "copperShares", "name": "Actions des mines de cuivre", "visibility": "private", "min": 0 },
     { "id": "weapons", "name": "Armes", "visibility": "private", "min": 0 },
     { "id": "ammo", "name": "Munitions", "visibility": "private", "min": 0 },
     { "id": "influence", "name": "Influence", "visibility": "private", "min": 0 }
@@ -16,7 +26,8 @@
     { "id": "market", "name": "Marche", "durationSeconds": 600 },
     { "id": "intrigue", "name": "Intrigue", "durationSeconds": 900 },
     { "id": "coup", "name": "Coup d'Etat", "durationSeconds": 300 },
-    { "id": "resolution", "name": "Resolution", "durationSeconds": 180 }
+    { "id": "resolution", "name": "Resolution", "durationSeconds": 180 },
+    { "id": "first-council", "name": "Premier conseil", "durationSeconds": 420 }
   ],
   "roles": [
     {
@@ -30,6 +41,13 @@
       "name": "Marchand",
       "startingResources": { "money": 12, "weapons": 1, "ammo": 3, "influence": 1 },
       "victoryCondition": { "type": "text", "text": "Gagne par accumulation de richesse et ventes strategiques." }
+    },
+    {
+      "id": "facilitator-capitalist",
+      "name": "MJ capitaliste",
+      "startingResources": { "money": 20, "copperShares": 6, "weapons": 0, "ammo": 0, "influence": 3 },
+      "responsibilities": ["Arbitrer la table", "Gerer les actions des mines de cuivre", "Sieger au premier conseil"],
+      "victoryCondition": { "type": "text", "text": "Gagne en terminant avec le plus de pesos." }
     }
   ],
   "mechanics": [
@@ -74,19 +92,30 @@
             "id": "attacker-wins",
             "label": "Attaquant gagne",
             "description": "La tentative de coup reussit.",
-            "effects": [{ "type": "setState", "state": "coupOutcome", "value": "attacker-wins" }]
+            "effects": [
+              { "type": "setState", "state": "coupOutcome", "value": "attacker-wins" },
+              { "type": "adjustSessionCounter", "state": "copperPrice", "delta": -1, "min": 1 },
+              { "type": "setSessionState", "state": "firstCouncilDue", "value": true }
+            ]
           },
           {
             "id": "defender-wins",
             "label": "Defense gagne",
             "description": "La tentative de coup echoue.",
-            "effects": [{ "type": "setState", "state": "coupOutcome", "value": "defender-wins" }]
+            "effects": [
+              { "type": "setState", "state": "coupOutcome", "value": "defender-wins" },
+              { "type": "adjustSessionCounter", "state": "copperPrice", "delta": 1, "min": 1 },
+              { "type": "setSessionState", "state": "firstCouncilDue", "value": true }
+            ]
           },
           {
             "id": "tie-facilitator",
             "label": "Egalite MJ",
             "description": "Le MJ tranche une egalite ou une situation ambigue.",
-            "effects": [{ "type": "setState", "state": "coupOutcome", "value": "tie-facilitator" }]
+            "effects": [
+              { "type": "setState", "state": "coupOutcome", "value": "tie-facilitator" },
+              { "type": "setSessionState", "state": "firstCouncilDue", "value": true }
+            ]
           }
         ]
       },
@@ -119,6 +148,15 @@
       "mechanicId": "contested-coup",
       "gesture": "strike-phone",
       "fallback": "manual-confirmation"
+    },
+    {
+      "id": "embezzle-council-funds",
+      "name": "Detourner des fonds du conseil",
+      "phase": "first-council",
+      "actor": "facilitator-capitalist",
+      "target": "self",
+      "effect": { "type": "adjustResource", "resource": "money", "delta": 3 },
+      "fallback": "facilitator-confirmation"
     }
   ],
   "zones": [

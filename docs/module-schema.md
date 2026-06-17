@@ -126,6 +126,8 @@ This is the first conceptual schema for importable Thaumacord modules.
 
 `timeline` is loose timing metadata for table-time games. It can describe the round label, total turn count, facilitator timing policy, convergence phase, and decision phase.
 
+`state` can declare initial table-wide state such as market prices, council flags, panic levels, economic indicators, or other shared tracks. The session exposes this state to dashboard and participant read models.
+
 The server keeps an active `phaseClock` on each session:
 
 - `turn`;
@@ -203,7 +205,7 @@ If an action is bound to a workflow mechanism such as `petition`, `vote`, or `co
 
 When the facilitator resolves a pending resolution, the server records the selected outcome and creates a `resolution` channel message. Participant-bound resolutions notify only the concerned participant; table-level resolutions notify all participants.
 
-Resolution payloads can include `effects` to apply generic consequences while resolving. Supported effects are `adjustResource` with optional `participantId`, `resource`, and `delta`, and `setState` with optional `participantId`, `state`, and `value`. When `participantId` is omitted, the effect targets the participant attached to the pending resolution.
+Resolution payloads can include `effects` to apply generic consequences while resolving. Supported effects are `adjustResource` with optional `participantId`, `resource`, and `delta`; `setState` with optional `participantId`, `state`, and `value`; `setSessionState` with `state` and optional `value`; and `adjustSessionCounter` with `state`, `delta`, and optional `min`/`max`. When a participant effect omits `participantId`, it targets the participant attached to the pending resolution.
 
 Mechanic resolution declarations can also include `outcomes`, an array of `{ id, label, description, effects }`. Declared outcomes replace the generic facilitator suggestions for that mechanic, and their effects are applied automatically when the facilitator chooses the matching outcome. Manual `payload.effects` supplied by the dashboard are applied after the declared outcome effects.
 

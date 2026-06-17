@@ -170,8 +170,9 @@ test("lets a participant join with a chosen role and receive a filtered read mod
   assert.equal(joined.readModel.readModel, "device.participant");
   assert.equal(joined.readModel.participant.id, joined.participant.id);
   assert.equal(joined.readModel.visibleParticipants.length, 1);
-  assert.equal(joined.readModel.module.resources.find((resource: JsonObject) => resource.id === "money").name, "Argent");
+  assert.equal(joined.readModel.module.resources.find((resource: JsonObject) => resource.id === "money").name, "Pesos");
   assert.equal(joined.readModel.module.roles.find((role: JsonObject) => role.id === "general").name, "General");
+  assert.equal(joined.readModel.tableStatuses.copperPrice, 10);
 });
 
 test("lets the facilitator assign a role after participant join", async () => {
@@ -222,6 +223,9 @@ test("loads module mechanics and links actions to them", async () => {
   const sellWeapons = putsch.actions.find((action: JsonObject) => action.id === "sell-weapons");
   assert.equal(directBarter.family, "exchange");
   assert.equal(sellWeapons.mechanicId, "direct-barter");
+  assert.equal(putsch.state.copperPrice, 10);
+  assert.equal(putsch.roles.find((role: JsonObject) => role.id === "facilitator-capitalist").name, "MJ capitaliste");
+  assert.equal(putsch.actions.find((action: JsonObject) => action.id === "embezzle-council-funds").phase, "first-council");
 });
 
 test("registers devices, creates participants, and binds one device to one participant", async () => {
@@ -891,6 +895,8 @@ test("opens pending contest resolutions from module mechanics", async () => {
     state: "coupOutcome",
     value: "attacker-wins"
   });
+  assert.equal(body.dashboard.pendingResolutions[0].recommendedOutcomes[0].effects[1].type, "adjustSessionCounter");
+  assert.equal(body.dashboard.pendingResolutions[0].recommendedOutcomes[0].effects[1].state, "copperPrice");
 });
 
 test("lets the facilitator resolve a pending resolution", async () => {
@@ -929,7 +935,7 @@ test("lets the facilitator resolve a pending resolution", async () => {
   assert.equal(resolved.resolveResult.outcome, "attacker-wins");
   assert.deepEqual(
     resolved.resolveResult.effects.map((effect: JsonObject) => effect.type),
-    ["setState", "adjustResource"]
+    ["setState", "adjustSessionCounter", "setSessionState", "adjustResource"]
   );
   assert.equal(resolved.resolveResult.message.channel, "resolution");
   assert.equal(resolved.resolveResult.message.target, "participant");
@@ -938,6 +944,8 @@ test("lets the facilitator resolve a pending resolution", async () => {
   const resolvedParticipant = resolved.dashboard.participants.find((candidate: JsonObject) => candidate.id === participant.participant.id);
   assert.equal(resolvedParticipant.resources.influence, 3);
   assert.equal(resolvedParticipant.statuses.coupOutcome, "attacker-wins");
+  assert.equal(resolved.dashboard.statuses.copperPrice, 9);
+  assert.equal(resolved.dashboard.statuses.firstCouncilDue, true);
   assert.equal(resolved.dashboard.pendingResolutions.length, 0);
   assert.equal(resolved.dashboard.messages.at(-1).channel, "resolution");
   assert.equal(resolved.dashboard.audit.at(-1).type, "resolution.resolved");
@@ -947,6 +955,8 @@ test("lets the facilitator resolve a pending resolution", async () => {
   assert.deepEqual(deviceModel.pendingResolutions, []);
   assert.equal(deviceModel.participant.resources.influence, 3);
   assert.equal(deviceModel.participant.statuses.coupOutcome, "attacker-wins");
+  assert.equal(deviceModel.tableStatuses.copperPrice, 9);
+  assert.equal(deviceModel.tableStatuses.firstCouncilDue, true);
   assert.equal(deviceModel.messages.at(-1).channel, "resolution");
   assert.equal(otherModel.messages.some((message: JsonObject) => message.channel === "resolution"), false);
 });

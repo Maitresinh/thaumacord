@@ -110,6 +110,7 @@ const moduleSchema = z.object({
   pitch: z.string().optional(),
   inspirationNotes: z.string().optional(),
   timeline: z.unknown().optional(),
+  state: z.record(z.unknown()).default({}),
   players: z.object({
     min: z.number().int().positive(),
     max: z.number().int().positive()
@@ -225,6 +226,7 @@ type Session = {
   participants: Participant[];
   unlockedPhases: string[];
   risks: Record<string, number>;
+  statuses: Record<string, unknown>;
   componentPools: Record<string, ComponentPool>;
   pendingResolutions: PendingResolution[];
   exchanges: Exchange[];
@@ -346,7 +348,26 @@ const resolutionSetStateEffectSchema = z.object({
   value: z.unknown().optional()
 });
 
-const resolutionEffectSchema = z.discriminatedUnion("type", [resolutionResourceDeltaEffectSchema, resolutionSetStateEffectSchema]);
+const resolutionSetSessionStateEffectSchema = z.object({
+  type: z.literal("setSessionState"),
+  state: z.string().min(1),
+  value: z.unknown().optional()
+});
+
+const resolutionAdjustSessionCounterEffectSchema = z.object({
+  type: z.literal("adjustSessionCounter"),
+  state: z.string().min(1),
+  delta: z.number().int(),
+  min: z.number().optional(),
+  max: z.number().optional()
+});
+
+const resolutionEffectSchema = z.discriminatedUnion("type", [
+  resolutionResourceDeltaEffectSchema,
+  resolutionSetStateEffectSchema,
+  resolutionSetSessionStateEffectSchema,
+  resolutionAdjustSessionCounterEffectSchema
+]);
 const resolutionOutcomeSchema = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
@@ -696,7 +717,7 @@ function resolutionResolvedText(session: Session, resolution: PendingResolution,
 }
 
 function resolutionEffectTarget(session: Session, resolution: PendingResolution, effect: ResolutionEffect): Participant {
-  const participantId = effect.participantId ?? resolution.participantId;
+  const participantId = ("participantId" in effect ? effect.participantId : undefined) ?? resolution.participantId;
   const participant = session.participants.find((candidate) => candidate.id === participantId);
   if (!participant) {
     throw new Error("Resolution effect requires a known participant");
@@ -726,21 +747,46 @@ function applyResolutionEffects(session: Session, resolution: PendingResolution,
     if (effect.type === "adjustResource") {
       const participant = resolutionEffectTarget(session, resolution, effect);
       assertResourceChange(module, participant, effect.resource, effect.delta);
-    } else {
+    } else if (effect.type === "setState") {
       resolutionEffectTarget(session, resolution, effect);
+    } else if (effect.type === "adjustSessionCounter") {
+      const before = Number(session.statuses[effect.state] ?? 0);
+      if (!Number.isFinite(before)) {
+        throw new Error(`Session state ${effect.state} is not numeric`);
+      }
+      const after = before + effect.delta;
+      if (effect.min !== undefined && after < effect.min) {
+        throw new Error(`Session state ${effect.state} would be below minimum`);
+      }
+      if (effect.max !== undefined && after > effect.max) {
+        throw new Error(`Session state ${effect.state} would be above maximum`);
+      }
     }
   }
 
   return effects.map((effect) => {
-    const participant = resolutionEffectTarget(session, resolution, effect);
     if (effect.type === "adjustResource") {
+      const participant = resolutionEffectTarget(session, resolution, effect);
       return {
         type: effect.type,
         participantId: participant.id,
         ...adjustResource(module, participant, effect.resource, effect.delta)
       };
     }
+    if (effect.type === "setSessionState") {
+      const before = session.statuses[effect.state];
+      const after = effect.value ?? true;
+      session.statuses[effect.state] = after;
+      return { type: effect.type, state: effect.state, before, after };
+    }
+    if (effect.type === "adjustSessionCounter") {
+      const before = Number(session.statuses[effect.state] ?? 0);
+      const after = before + effect.delta;
+      session.statuses[effect.state] = after;
+      return { type: effect.type, state: effect.state, before, after };
+    }
 
+    const participant = resolutionEffectTarget(session, resolution, effect);
     const before = participant.statuses[effect.state];
     const after = effect.value ?? true;
     participant.statuses[effect.state] = after;
@@ -1460,6 +1506,7 @@ function participantReadModel(session: Session, participantId: string): Record<s
     },
     phase: currentPhase(session),
     phaseClock: session.phaseClock,
+    tableStatuses: session.statuses,
     participant,
     availableActions: actionAvailability(session, participant),
     pendingResolutions: session.pendingResolutions.filter((resolution) => resolution.participantId === participant.id),
@@ -1721,6 +1768,8 @@ function renderIndex(): string {
       const target = effect.participantId ? (session.participants.find((participant) => participant.id === effect.participantId)?.name || effect.participantId) + " - " : "";
       if (effect.type === "adjustResource") return target + dashboardResourceLabel(session, effect.resource) + " " + (effect.delta > 0 ? "+" : "") + effect.delta;
       if (effect.type === "setState") return target + effect.state + " = " + (effect.value === undefined ? "true" : effect.value);
+      if (effect.type === "adjustSessionCounter") return effect.state + " " + (effect.delta > 0 ? "+" : "") + effect.delta;
+      if (effect.type === "setSessionState") return effect.state + " = " + (effect.value === undefined ? "true" : effect.value);
       return target + effect.type;
     }
     function dashboardOutcomeDetails(session, outcome) {
@@ -1791,7 +1840,8 @@ function renderIndex(): string {
         '<span class="pill">Phase ' + session.phase.name + '</span>',
         '<span class="pill">' + formatClock(session.phaseClock) + '</span>',
         '<span class="pill">' + session.devices.length + ' appareil(s)</span>',
-        '<span class="pill">' + session.participants.length + ' participant(s)</span>'
+        '<span class="pill">' + session.participants.length + ' participant(s)</span>',
+        Object.keys(session.statuses || {}).length ? renderStatusList(session.statuses) : ""
       ].join(" ");
       byId("participants").innerHTML = session.participants.map((participant) => {
         const resources = Object.entries(participant.resources).map(([key, value]) => dashboardResourceLabel(session, key) + ": " + value).join(" / ");
@@ -2091,6 +2141,9 @@ function renderParticipantApp(): string {
     function renderStatuses(statuses) {
       return Object.entries(statuses || {}).map(([key, value]) => '<div class="item"><strong>' + key + '</strong><div>' + formatStatusValue(value) + '</div></div>').join("") || '<div class="muted">Aucun statut</div>';
     }
+    function renderStatusPills(statuses) {
+      return Object.entries(statuses || {}).map(([key, value]) => '<span class="pill">' + key + ': ' + formatStatusValue(value) + '</span>').join("");
+    }
     function roleLabel(model, roleId) {
       return model.module.roles.find((role) => role.id === roleId)?.name || roleId || "role a attribuer";
     }
@@ -2172,7 +2225,8 @@ function renderParticipantApp(): string {
       byId("summary").innerHTML = [
         '<span class="pill">' + model.module.name + '</span>',
         '<span class="pill">Phase ' + model.phase.name + '</span>',
-        '<span class="pill">' + roleLabel(model, model.participant.roleId) + '</span>'
+        '<span class="pill">' + roleLabel(model, model.participant.roleId) + '</span>',
+        renderStatusPills(model.tableStatuses)
       ].join(" ");
       byId("phaseClock").textContent = formatClock(model.phaseClock);
       byId("resources").innerHTML = Object.entries(model.participant.resources || {}).map(([key, value]) => '<div class="item"><strong>' + resourceLabel(model, key) + '</strong><div>' + value + '</div></div>').join("") || '<div class="muted">Aucune ressource</div>';
@@ -2331,6 +2385,7 @@ app.post("/sessions", async (request, reply) => {
     participants: [],
     unlockedPhases: [module.phases[0].id],
     risks: {},
+    statuses: { ...module.state },
     componentPools: defaultComponentPools(module),
     pendingResolutions: [],
     exchanges: [],

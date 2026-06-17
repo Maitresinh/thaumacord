@@ -111,6 +111,7 @@ test("serves a one-page Putsch core demo dashboard", async () => {
 
   assert.equal(response.statusCode, 200);
   assert.match(response.body, /Putsch au Panador core/);
+  assert.match(response.body, /id="participantLink"/);
   assert.match(response.body, /Scenario 4 joueurs/);
   assert.match(response.body, /Transferer/);
   assert.match(response.body, /Echanges/);
@@ -127,6 +128,7 @@ test("serves a mobile participant app for session join", async () => {
   assert.equal(response.statusCode, 200);
   assert.match(response.body, /App participant/);
   assert.match(response.body, /Code MJ/);
+  assert.match(response.body, /URLSearchParams/);
   assert.match(response.body, /Le MJ attribuera/);
   assert.match(response.body, /Entrer dans la partie/);
   assert.match(response.body, /Transferer/);

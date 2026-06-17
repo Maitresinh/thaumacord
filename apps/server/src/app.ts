@@ -1277,7 +1277,7 @@ function renderIndex(): string {
         <div class="muted">Putsch au Panador core</div>
       </div>
       <div>
-        <a href="/play" class="pill">App participant</a>
+        <a href="/play" id="participantLink" class="pill">App participant</a>
         <span id="summary"></span>
       </div>
     </div>
@@ -1494,6 +1494,7 @@ function renderIndex(): string {
       currentSession = session;
       sessionCode = session.code;
       byId("code").value = session.code;
+      byId("participantLink").href = "/play?code=" + encodeURIComponent(session.code);
       byId("summary").innerHTML = [
         '<span class="pill">Code ' + session.code + '</span>',
         '<span class="pill">' + session.module.name + '</span>',
@@ -1702,7 +1703,8 @@ function renderParticipantApp(): string {
   <script>
     let liveSocket;
     let deviceId = localStorage.getItem("thaumacord.deviceId") || "";
-    let sessionCode = localStorage.getItem("thaumacord.sessionCode") || "";
+    const urlCode = new URLSearchParams(location.search).get("code") || "";
+    let sessionCode = (urlCode || localStorage.getItem("thaumacord.sessionCode") || "").toUpperCase();
     function byId(id) { return document.querySelector("#" + id); }
     function option(value, label) { return '<option value="' + value + '">' + label + '</option>'; }
     function setError(message) { byId("error").textContent = message || ""; }
@@ -1820,6 +1822,9 @@ function renderParticipantApp(): string {
       location.reload();
     });
     if (sessionCode) byId("code").value = sessionCode;
+    if (urlCode && !deviceId) {
+      loadSession().catch((error) => setError(error.message));
+    }
     if (sessionCode && deviceId) {
       connectLive(sessionCode, deviceId);
       api("/sessions/" + sessionCode + "/devices/" + deviceId + "/sync").then((result) => render(result.readModel)).catch(() => {});

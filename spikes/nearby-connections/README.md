@@ -17,6 +17,8 @@ The current spike adds a pure Kotlin contract in the Android app:
 - `NearbyGestureTransport`
 - `NearbyGestureNormalizer`
 
+Gesture names are tracked in `docs/gesture-catalog.md` so Android, modules, and server validation use the same vocabulary.
+
 No Google Play Services dependency is added yet. That comes after Android Studio/Gradle are available locally, because the next step needs a real device pair.
 
 Current validation:

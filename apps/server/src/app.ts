@@ -493,6 +493,10 @@ function resolveActionId(session: Session, event: EventInput): string | undefine
   return availableAction.id;
 }
 
+function actorMatches(actionActor: string, participant: Participant): boolean {
+  return actionActor === "*" || actionActor === "any" || participant.roleId === actionActor;
+}
+
 function applyActionEvent(session: Session, event: EventInput): Record<string, unknown> | undefined {
   const actionId = resolveActionId(session, event);
   if (!actionId) {
@@ -512,7 +516,7 @@ function applyActionEvent(session: Session, event: EventInput): Record<string, u
   if (!participant) {
     throw new Error("Unknown participant");
   }
-  if (action.actor !== "*" && participant.roleId !== action.actor) {
+  if (!actorMatches(action.actor, participant)) {
     throw new Error(`Action ${actionId} is not allowed for participant role`);
   }
   if (action.phase !== "*" && action.phase !== currentPhase(session).id) {
@@ -540,7 +544,7 @@ function actionBlockedBy(session: Session, participant: Participant, action: Gam
   const module = getModuleOrThrow(session.moduleId);
   const blockedBy: string[] = [];
 
-  if (action.actor !== "*" && participant.roleId !== action.actor) {
+  if (!actorMatches(action.actor, participant)) {
     blockedBy.push("role");
   }
   if (action.phase !== "*" && action.phase !== currentPhase(session).id) {

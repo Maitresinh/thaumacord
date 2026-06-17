@@ -528,6 +528,29 @@ test("resolves available gestures to module actions", async () => {
   assert.equal(updatedParticipant.resources.noise, 2);
 });
 
+test("resolves module gestures declared for any actor", async () => {
+  const session = await createSession("putsch-lite");
+  const code = session.code;
+  const device = await createDevice(code, "Telephone marchand");
+  const participant = await createParticipant(code, "Marchand", "dealer");
+  await bindDevice(code, device.device.id, participant.participant.id);
+
+  const actionResponse = await app.inject({
+    method: "POST",
+    url: `/sessions/${code}/events`,
+    payload: {
+      type: "gesture.detected",
+      gesture: "touch-phones",
+      sourceDeviceId: device.device.id
+    }
+  });
+
+  assert.equal(actionResponse.statusCode, 202);
+  const body = actionResponse.json<JsonObject>();
+  assert.equal(body.actionResult.actionId, "sell-weapons");
+  assert.equal(body.actionResult.effect.type, "unsupported");
+});
+
 test("infers participant from a bound device for gesture events", async () => {
   const session = await createSession();
   const code = session.code;

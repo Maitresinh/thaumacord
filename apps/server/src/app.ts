@@ -1702,6 +1702,14 @@ function renderIndex(): string {
     function dashboardResourceLabel(session, resourceId) {
       return session.module.resources.find((resource) => resource.id === resourceId)?.name || resourceId;
     }
+    function formatStatusValue(value) {
+      if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return String(value);
+      return JSON.stringify(value);
+    }
+    function renderStatusList(statuses) {
+      const entries = Object.entries(statuses || {});
+      return entries.map(([key, value]) => '<span class="pill">' + key + ': ' + formatStatusValue(value) + '</span>').join("") || '<span class="muted">Aucun statut</span>';
+    }
     function dashboardParticipantOptions(session) {
       return option("", "Cible liee") + session.participants.map((participant) => option(participant.id, participant.name)).join("");
     }
@@ -1787,7 +1795,7 @@ function renderIndex(): string {
       ].join(" ");
       byId("participants").innerHTML = session.participants.map((participant) => {
         const resources = Object.entries(participant.resources).map(([key, value]) => dashboardResourceLabel(session, key) + ": " + value).join(" / ");
-        return '<div class="item"><strong>' + participant.name + '</strong><div>' + dashboardRoleLabel(session, participant.roleId) + '</div><div class="muted">' + resources + '</div></div>';
+        return '<div class="item"><strong>' + participant.name + '</strong><div>' + dashboardRoleLabel(session, participant.roleId) + '</div><div class="muted">' + resources + '</div><div>' + renderStatusList(participant.statuses) + '</div></div>';
       }).join("") || '<div class="muted">Aucun participant</div>';
       byId("devices").innerHTML = session.devices.map((device) => {
         const participant = session.participants.find((candidate) => candidate.id === device.participantId);
@@ -1997,6 +2005,8 @@ function renderParticipantApp(): string {
       <div id="phaseClock" class="muted"></div>
       <h3>Ressources</h3>
       <div id="resources" class="stack"></div>
+      <h3>Statuts</h3>
+      <div id="statuses" class="stack"></div>
       <h3>Echange</h3>
       <label for="exchangeTo">Vers</label>
       <select id="exchangeTo"></select>
@@ -2073,6 +2083,13 @@ function renderParticipantApp(): string {
     }
     function resourceLabel(model, resourceId) {
       return model.module.resources.find((resource) => resource.id === resourceId)?.name || resourceId;
+    }
+    function formatStatusValue(value) {
+      if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return String(value);
+      return JSON.stringify(value);
+    }
+    function renderStatuses(statuses) {
+      return Object.entries(statuses || {}).map(([key, value]) => '<div class="item"><strong>' + key + '</strong><div>' + formatStatusValue(value) + '</div></div>').join("") || '<div class="muted">Aucun statut</div>';
     }
     function roleLabel(model, roleId) {
       return model.module.roles.find((role) => role.id === roleId)?.name || roleId || "role a attribuer";
@@ -2159,6 +2176,7 @@ function renderParticipantApp(): string {
       ].join(" ");
       byId("phaseClock").textContent = formatClock(model.phaseClock);
       byId("resources").innerHTML = Object.entries(model.participant.resources || {}).map(([key, value]) => '<div class="item"><strong>' + resourceLabel(model, key) + '</strong><div>' + value + '</div></div>').join("") || '<div class="muted">Aucune ressource</div>';
+      byId("statuses").innerHTML = renderStatuses(model.participant.statuses);
       const otherParticipants = (model.visibleParticipants || []).filter((participant) => participant.id !== model.participant.id);
       byId("exchangeTo").innerHTML = otherParticipants.map((participant) => option(participant.id, participant.name + (participant.roleId ? " (" + roleLabel(model, participant.roleId) + ")" : ""))).join("");
       byId("exchangeResource").innerHTML = Object.keys(model.participant.resources || {}).map((resourceId) => option(resourceId, resourceLabel(model, resourceId))).join("");

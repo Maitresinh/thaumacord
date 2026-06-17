@@ -122,6 +122,7 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /Resolutions/);
   assert.match(response.body, /recommendedOutcomes/);
   assert.match(response.body, /data-outcome/);
+  assert.match(response.body, /renderStatusList/);
   assert.match(response.body, /collectResolutionPayload/);
   assert.match(response.body, /dashboardOutcomeDetails/);
   assert.match(response.body, /data-resolution-outcome-detail/);
@@ -144,6 +145,8 @@ test("serves a mobile participant app for session join", async () => {
   assert.match(response.body, /Entrer dans la partie/);
   assert.match(response.body, /Transferer/);
   assert.match(response.body, /Declencher/);
+  assert.match(response.body, /id="statuses"/);
+  assert.match(response.body, /renderStatuses/);
   assert.match(response.body, /actionInputControl/);
   assert.match(response.body, /collectActionPayload/);
   assert.match(response.body, /data-action-input/);

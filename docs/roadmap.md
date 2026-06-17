@@ -37,6 +37,10 @@ First test target:
 - Bind player-facing actions to reusable mechanisms with `mechanicId`.
 - Define the AI import kit format for converting source rules into module drafts.
 
+Operational target:
+
+- Prepare `Putsch Au Panador Core Demo`: players connect, exchange, and facilitator follows/manages state.
+
 ## Sprint 3: Read Models and Dashboard
 
 - Device-specific filtered state.
@@ -44,6 +48,7 @@ First test target:
 - Phase progression.
 - Resource updates.
 - Status updates.
+- Button-level dashboard flows for the first Putsch operational slice.
 
 ## Sprint 4: Actions, Votes, Petitions
 
@@ -52,6 +57,10 @@ First test target:
 - Resolve simple votes.
 - Resolve simple petitions and contests.
 - Add rule tests.
+
+Operational target:
+
+- Run a dry Putsch session with device binding, participant resources, exchanges, facilitator messages, manual corrections, and audit.
 
 ## Sprint 5+: Physical Gestures
 

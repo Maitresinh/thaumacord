@@ -47,6 +47,16 @@ The MVP focuses on the playable spine:
 
 Gestures, hybrid maps, and Mandragore are planned after the MVP, with extension points designed early.
 
+## Operational Deliverables
+
+Thaumacord will target runnable table slices, not only infrastructure.
+
+First operational target: `Putsch Au Panador Core Demo`.
+
+This first demo can use browser/dashboard buttons instead of gestures or polished Android UI. The goal is to prove the core: players are connected, exchange resources, and the facilitator can follow, message, correct, and audit the table state.
+
+See `docs/operational-deliverables.md`.
+
 ## Development
 
 The backend prototype is immediately runnable once dependencies are installed:
@@ -96,7 +106,7 @@ Gesture events can be sent as `type: "gesture.detected"` with `gesture` or `payl
 
 For mobile-first flows, events and zone presence updates can omit `participantId` when `sourceDeviceId` is bound to a participant. The server infers the participant from the device binding.
 
-Zone presence updates move a participant onto an imaginary module zone and apply supported zone effects: `unlockPhase`, `increaseRisk`, and `periodicDamageCheck` as an auditable pending hazard.
+Zone presence updates move a participant onto an imaginary module zone and apply supported zone effects: `unlockPhase`, `increaseRisk`, and `periodicDamageCheck` as an auditable pending resolution.
 
 Run the server tests with:
 

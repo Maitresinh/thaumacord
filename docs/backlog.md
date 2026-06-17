@@ -16,6 +16,13 @@
 - Audit log entries are created for important actions.
 - Documentation or module examples are updated.
 - Feature can be demonstrated in a sprint review.
+- Every few infrastructure stories should be tied back to an operational deliverable.
+
+## Operational Deliverables
+
+1. Putsch Au Panador Core Demo: players connect, exchange resources, and the facilitator follows/messages/corrects/audits the table.
+2. Long Live The King Council Slice: setup distribution, audience/diplomacy/council, petition resolution workflow.
+3. Economic Simulation Slice: resource exchanges plus dashboard aggregates for sheep/market or monetary confidence simulations.
 
 ## Epics
 

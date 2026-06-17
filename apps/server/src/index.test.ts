@@ -131,6 +131,8 @@ test("serves a mobile participant app for session join", async () => {
   assert.match(response.body, /App participant/);
   assert.match(response.body, /Code MJ/);
   assert.match(response.body, /URLSearchParams/);
+  assert.match(response.body, /switchingSession/);
+  assert.match(response.body, /forgetDevice/);
   assert.match(response.body, /Le MJ attribuera/);
   assert.match(response.body, /Entrer dans la partie/);
   assert.match(response.body, /Transferer/);

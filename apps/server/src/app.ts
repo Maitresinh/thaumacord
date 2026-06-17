@@ -1717,9 +1717,12 @@ function renderParticipantApp(): string {
   </main>
   <script>
     let liveSocket;
-    let deviceId = localStorage.getItem("thaumacord.deviceId") || "";
+    const storedSessionCode = (localStorage.getItem("thaumacord.sessionCode") || "").toUpperCase();
     const urlCode = new URLSearchParams(location.search).get("code") || "";
-    let sessionCode = (urlCode || localStorage.getItem("thaumacord.sessionCode") || "").toUpperCase();
+    const invitedSessionCode = urlCode.toUpperCase();
+    const switchingSession = Boolean(invitedSessionCode && storedSessionCode && invitedSessionCode !== storedSessionCode);
+    let deviceId = switchingSession ? "" : localStorage.getItem("thaumacord.deviceId") || "";
+    let sessionCode = invitedSessionCode || storedSessionCode;
     function byId(id) { return document.querySelector("#" + id); }
     function option(value, label) { return '<option value="' + value + '">' + label + '</option>'; }
     function setError(message) { byId("error").textContent = message || ""; }
@@ -1748,6 +1751,11 @@ function renderParticipantApp(): string {
       if (!sessionCode || !deviceId) return;
       const result = await api("/sessions/" + sessionCode + "/devices/" + deviceId + "/sync");
       render(result.readModel);
+    }
+    function forgetDevice() {
+      deviceId = "";
+      localStorage.removeItem("thaumacord.deviceId");
+      localStorage.removeItem("thaumacord.sessionCode");
     }
     function connectLive(code, id) {
       if (liveSocket) liveSocket.close();
@@ -1832,17 +1840,24 @@ function renderParticipantApp(): string {
       await refreshDevice();
     }));
     byId("leave").addEventListener("click", () => {
-      localStorage.removeItem("thaumacord.deviceId");
-      localStorage.removeItem("thaumacord.sessionCode");
+      forgetDevice();
       location.reload();
     });
+    if (switchingSession) {
+      forgetDevice();
+    }
     if (sessionCode) byId("code").value = sessionCode;
     if (urlCode && !deviceId) {
       loadSession().catch((error) => setError(error.message));
     }
     if (sessionCode && deviceId) {
       connectLive(sessionCode, deviceId);
-      api("/sessions/" + sessionCode + "/devices/" + deviceId + "/sync").then((result) => render(result.readModel)).catch(() => {});
+      api("/sessions/" + sessionCode + "/devices/" + deviceId + "/sync").then((result) => render(result.readModel)).catch((error) => {
+        forgetDevice();
+        byId("joinPanel").classList.remove("hidden");
+        byId("tablePanel").classList.add("hidden");
+        setError("Appareil a reconnecter: " + error.message);
+      });
     }
   </script>
 </body>

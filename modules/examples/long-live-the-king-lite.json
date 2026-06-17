@@ -6,6 +6,7 @@
     "roundLabel": "Tour",
     "turnCount": 7,
     "durationPolicy": "facilitator-controlled",
+    "setupPhaseId": "setup",
     "convergencePhaseId": "audience",
     "decisionPhaseId": "council",
     "notes": "La diplomatie, les cartes, les faveurs et les petitions convergent vers l'audience du roi et la sequence de conseil."
@@ -20,6 +21,7 @@
     { "id": "status", "name": "Statut", "visibility": "public", "min": 0 }
   ],
   "phases": [
+    { "id": "setup", "name": "Mise en place", "durationSeconds": 300 },
     { "id": "audience", "name": "Audience", "durationSeconds": 180 },
     { "id": "diplomacy", "name": "Diplomatie", "durationSeconds": 900 },
     { "id": "council", "name": "Conseil", "durationSeconds": 420 },
@@ -45,6 +47,28 @@
       "victoryCondition": { "type": "text", "text": "Gagne avec un heritier et plus de statut que tous les autres joueurs." }
     }
   ],
+  "components": [
+    { "id": "intrigue-card", "name": "Carte Intrigue", "kind": "card", "count": 80, "visibility": "private", "tags": ["deck", "hand"] },
+    { "id": "status-card", "name": "Carte Statut", "kind": "card", "count": 32, "visibility": "private", "tags": ["status", "character"] },
+    { "id": "decision-card", "name": "Carte Decision", "kind": "card", "count": 22, "visibility": "facilitator", "tags": ["deck", "petition"] },
+    { "id": "health-card", "name": "Carte Sante du roi", "kind": "card", "count": 7, "visibility": "facilitator", "tags": ["deck", "timeline"] },
+    { "id": "mobilization-card", "name": "Carte Mobilisation", "kind": "card", "count": 5, "visibility": "public", "tags": ["track"] },
+    { "id": "rebellion-card", "name": "Carte Rebellion", "kind": "card", "count": 5, "visibility": "public", "tags": ["track"] }
+  ],
+  "setup": {
+    "phaseId": "setup",
+    "instructions": [
+      "Assigner les roles et les personnages.",
+      "Distribuer les cartes initiales.",
+      "Preparer les paquets Decision et Sante du roi.",
+      "Verifier les ressources de depart avant la premiere audience."
+    ],
+    "distributions": [
+      { "id": "initial-intrigue", "componentId": "intrigue-card", "target": "allParticipants", "count": 1, "visibility": "private" },
+      { "id": "initial-status", "componentId": "status-card", "target": "allParticipants", "count": 1, "visibility": "private" },
+      { "id": "queen-status-bonus", "componentId": "status-card", "target": "role", "roleId": "queen", "count": 1, "visibility": "private" }
+    ]
+  },
   "mechanics": [
     {
       "id": "petition-vote",

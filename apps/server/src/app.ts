@@ -70,6 +70,31 @@ const mechanicSchema = z.object({
   variants: z.array(z.unknown()).default([])
 });
 
+const componentSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  kind: z.string().min(1),
+  count: z.number().int().nonnegative().optional(),
+  visibility: z.string().default("private"),
+  tags: z.array(z.string()).default([]),
+  fields: z.record(z.unknown()).optional()
+});
+
+const setupDistributionSchema = z.object({
+  id: z.string().min(1),
+  componentId: z.string().min(1),
+  target: z.enum(["allParticipants", "role"]),
+  roleId: z.string().min(1).optional(),
+  count: z.number().int().positive(),
+  visibility: z.string().default("private")
+});
+
+const setupSchema = z.object({
+  phaseId: z.string().min(1).optional(),
+  instructions: z.array(z.string()).default([]),
+  distributions: z.array(setupDistributionSchema).default([])
+});
+
 const zoneSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
@@ -93,6 +118,8 @@ const moduleSchema = z.object({
   resources: z.array(resourceSchema).default([]),
   phases: z.array(phaseSchema).min(1),
   roles: z.array(roleSchema).default([]),
+  components: z.array(componentSchema).default([]),
+  setup: setupSchema.optional(),
   mechanics: z.array(mechanicSchema).default([]),
   actions: z.array(actionSchema).default([]),
   zones: z.array(zoneSchema).default([]),
@@ -114,6 +141,7 @@ type Participant = {
   name: string;
   roleId?: string;
   resources: Record<string, number>;
+  inventory: Record<string, number>;
   statuses: Record<string, unknown>;
   locationId?: string;
 };
@@ -324,11 +352,24 @@ function modulesDir(): string {
   return path.resolve(process.cwd(), "../../modules/examples");
 }
 
+function validateModuleReferences(module: GameModule): void {
+  const componentIds = new Set(module.components.map((component) => component.id));
+  for (const distribution of module.setup?.distributions ?? []) {
+    if (!componentIds.has(distribution.componentId)) {
+      throw new Error(`Module ${module.id} setup distribution references unknown component: ${distribution.componentId}`);
+    }
+    if (distribution.target === "role" && !module.roles.some((role) => role.id === distribution.roleId)) {
+      throw new Error(`Module ${module.id} setup distribution references unknown role: ${distribution.roleId}`);
+    }
+  }
+}
+
 async function loadModules(): Promise<void> {
   const moduleFiles = ["putsch-lite.json", "long-live-the-king-lite.json", "wolfpack-lite.json"];
   for (const file of moduleFiles) {
     const raw = await readFile(path.join(modulesDir(), file), "utf8");
     const parsed = moduleSchema.parse(JSON.parse(raw));
+    validateModuleReferences(parsed);
     modules.set(parsed.id, parsed);
   }
 }
@@ -524,6 +565,48 @@ function createExchange(session: Session, fromParticipantId: string, toParticipa
   return {
     exchange,
     transfers
+  };
+}
+
+function runSetupDistribution(session: Session): Record<string, unknown> {
+  const module = getModuleOrThrow(session.moduleId);
+  const setup = module.setup;
+  if (!setup) {
+    return { applied: false, reason: "No setup declared", distributions: [] };
+  }
+
+  const appliedDistributions = setup.distributions.map((distribution) => {
+    const component = module.components.find((candidate) => candidate.id === distribution.componentId);
+    if (!component) {
+      throw new Error(`Unknown component: ${distribution.componentId}`);
+    }
+
+    const targets = session.participants.filter((participant) => {
+      if (distribution.target === "allParticipants") {
+        return true;
+      }
+      return participant.roleId === distribution.roleId;
+    });
+
+    for (const participant of targets) {
+      participant.inventory[component.id] = (participant.inventory[component.id] ?? 0) + distribution.count;
+    }
+
+    return {
+      id: distribution.id,
+      componentId: component.id,
+      count: distribution.count,
+      target: distribution.target,
+      roleId: distribution.roleId,
+      participantIds: targets.map((participant) => participant.id),
+      visibility: distribution.visibility
+    };
+  });
+
+  return {
+    applied: true,
+    phaseId: setup.phaseId,
+    distributions: appliedDistributions
   };
 }
 
@@ -917,6 +1000,7 @@ function createParticipant(module: GameModule, input: z.infer<typeof createParti
     name: input.name,
     roleId: input.roleId,
     resources: defaultResources(module, input.roleId),
+    inventory: {},
     statuses: {}
   };
 }
@@ -1095,6 +1179,8 @@ app.get("/modules", async () =>
     players: module.players,
     phases: module.phases.length,
     roles: module.roles.length,
+    components: module.components.length,
+    setup: Boolean(module.setup),
     mechanics: module.mechanics.length,
     actions: module.actions.length,
     zones: module.zones.length
@@ -1337,6 +1423,29 @@ app.get("/sessions/:code/devices/:deviceId/sync", async (request, reply) => {
     readModel: readModelForAudience(session, { kind: "device", deviceId }),
     audit: auditCatchUp(session, query.after, query.limit)
   };
+});
+
+app.post("/sessions/:code/setup/distribute", async (request, reply) => {
+  const { code } = request.params as { code: string };
+  const session = getSession(code);
+  if (!session) {
+    return reply.code(404).send({ error: "Session not found" });
+  }
+
+  let setupResult: Record<string, unknown>;
+  try {
+    setupResult = runSetupDistribution(session);
+  } catch (error) {
+    return reply.code(400).send({ error: error instanceof Error ? error.message : "Setup rejected" });
+  }
+
+  audit(session, "setup.distributed", setupResult);
+  broadcast(session, "setup.distributed", session.audit.at(-1));
+  return reply.code(202).send({
+    accepted: true,
+    setupResult,
+    dashboard: dashboardReadModel(session)
+  });
 });
 
 app.post("/sessions/:code/exchanges", async (request, reply) => {

@@ -39,6 +39,9 @@ As a creator, I can define roles, resources, phases, actions, cards, and visibil
 Acceptance criteria:
 
 - A sample module validates against the schema.
+- A module can declare components such as cards, decks, tokens, tracks, role cards, documents, and props.
+- A module can declare a setup phase and initial distributions.
+- An AI conversion kit can turn source rules into a reviewable module draft.
 - Invalid modules return readable errors.
 - The same engine can load at least two example modules.
 

@@ -49,6 +49,29 @@ This is the first conceptual schema for importable Thaumacord modules.
       }
     }
   ],
+  "components": [
+    {
+      "id": "intrigue-card",
+      "name": "Intrigue Card",
+      "kind": "card",
+      "count": 80,
+      "visibility": "private",
+      "tags": ["deck", "hand"]
+    }
+  ],
+  "setup": {
+    "phaseId": "setup",
+    "instructions": ["Assign roles", "Distribute starting cards"],
+    "distributions": [
+      {
+        "id": "initial-intrigue",
+        "componentId": "intrigue-card",
+        "target": "allParticipants",
+        "count": 1,
+        "visibility": "private"
+      }
+    ]
+  },
   "mechanics": [
     {
       "id": "direct-gift",
@@ -113,6 +136,18 @@ The server keeps an active `phaseClock` on each session:
 - `facilitatorControlled`.
 
 Default phase durations come from `phases[].durationSeconds`. A facilitator can override the current phase with `POST /sessions/:code/phases/timer`.
+
+## Components And Setup
+
+`components` describe importable game elements such as cards, decks, tokens, tracks, documents, role cards, clue cards, or physical props.
+
+`setup` declares the mise en place:
+
+- `phaseId`: setup phase;
+- `instructions`: facilitator-facing setup checklist;
+- `distributions`: initial component distribution rules.
+
+The prototype supports `POST /sessions/:code/setup/distribute`, which applies setup distributions to `participant.inventory` and audits `setup.distributed`.
 
 ## Mechanics
 

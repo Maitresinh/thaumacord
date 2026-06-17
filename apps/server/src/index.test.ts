@@ -102,9 +102,12 @@ test("loads module mechanics and links actions to them", async () => {
   const modules = await injectJson("GET", "/modules");
   const putschSummary = modules.find((module: JsonObject) => module.id === "putsch-lite");
   const wolfpackSummary = modules.find((module: JsonObject) => module.id === "wolfpack-lite");
+  const kingSummary = modules.find((module: JsonObject) => module.id === "long-live-the-king-lite");
 
   assert.equal(putschSummary.mechanics, 2);
   assert.equal(wolfpackSummary.mechanics, 3);
+  assert.equal(kingSummary.components, 6);
+  assert.equal(kingSummary.setup, true);
 
   const putsch = await injectJson("GET", "/modules/putsch-lite");
   const directBarter = putsch.mechanics.find((mechanic: JsonObject) => mechanic.id === "direct-barter");
@@ -345,17 +348,23 @@ test("tracks facilitator-controlled phase timing and turn cycles", async () => {
   const session = await createSession("long-live-the-king-lite");
   const code = session.code;
 
-  assert.equal(session.phase.id, "audience");
+  assert.equal(session.phase.id, "setup");
   assert.equal(session.phaseClock.turn, 1);
-  assert.equal(session.phaseClock.phaseId, "audience");
-  assert.equal(session.phaseClock.phaseDurationSeconds, 180);
+  assert.equal(session.phaseClock.phaseId, "setup");
+  assert.equal(session.phaseClock.phaseDurationSeconds, 300);
   assert.equal(typeof session.phaseClock.phaseEndsAt, "string");
+  assert.equal(session.module.timeline.setupPhaseId, "setup");
   assert.equal(session.module.timeline.convergencePhaseId, "audience");
 
   const customTimer = await setPhaseTimer(code, { durationSeconds: 600 });
-  assert.equal(customTimer.phaseClock.phaseId, "audience");
+  assert.equal(customTimer.phaseClock.phaseId, "setup");
   assert.equal(customTimer.phaseClock.phaseDurationSeconds, 600);
   assert.equal(customTimer.phaseClock.facilitatorControlled, true);
+
+  const audience = await advancePhase(code);
+  assert.equal(audience.phase.id, "audience");
+  assert.equal(audience.phaseClock.turn, 1);
+  assert.equal(audience.phaseClock.phaseDurationSeconds, 180);
 
   const diplomacy = await advancePhase(code);
   assert.equal(diplomacy.phase.id, "diplomacy");
@@ -364,9 +373,40 @@ test("tracks facilitator-controlled phase timing and turn cycles", async () => {
 
   await advancePhase(code);
   await advancePhase(code);
-  const nextAudience = await advancePhase(code);
-  assert.equal(nextAudience.phase.id, "audience");
-  assert.equal(nextAudience.phaseClock.turn, 2);
+  const nextSetup = await advancePhase(code);
+  assert.equal(nextSetup.phase.id, "setup");
+  assert.equal(nextSetup.phaseClock.turn, 2);
+});
+
+test("runs module setup distributions into participant inventories", async () => {
+  const session = await createSession("long-live-the-king-lite");
+  const code = session.code;
+  const queenDevice = await createDevice(code, "Telephone reine");
+  const baronDevice = await createDevice(code, "Telephone baron");
+  const queen = await createParticipant(code, "Reine", "queen");
+  const baron = await createParticipant(code, "Baron", "baron");
+  await bindDevice(code, queenDevice.device.id, queen.participant.id);
+  await bindDevice(code, baronDevice.device.id, baron.participant.id);
+
+  const setup = await app.inject({
+    method: "POST",
+    url: `/sessions/${code}/setup/distribute`,
+    payload: {}
+  });
+
+  assert.equal(setup.statusCode, 202);
+  const body = setup.json<JsonObject>();
+  assert.equal(body.accepted, true);
+  assert.equal(body.setupResult.applied, true);
+  assert.equal(body.setupResult.phaseId, "setup");
+  assert.equal(body.setupResult.distributions.length, 3);
+
+  const queenModel = await injectJson("GET", `/sessions/${code}/read-models/device/${queenDevice.device.id}`);
+  const baronModel = await injectJson("GET", `/sessions/${code}/read-models/device/${baronDevice.device.id}`);
+  assert.equal(queenModel.participant.inventory["intrigue-card"], 1);
+  assert.equal(queenModel.participant.inventory["status-card"], 2);
+  assert.equal(baronModel.participant.inventory["intrigue-card"], 1);
+  assert.equal(baronModel.participant.inventory["status-card"], 1);
 });
 
 test("transfers resources between participants and filters exchange read models", async () => {
@@ -460,6 +500,7 @@ test("opens pending petition resolutions from module mechanics", async () => {
   const device = await createDevice(code, "Telephone reine");
   const participant = await createParticipant(code, "Reine", "queen");
   await bindDevice(code, device.device.id, participant.participant.id);
+  await advancePhase(code);
   await advancePhase(code);
   await advancePhase(code);
 

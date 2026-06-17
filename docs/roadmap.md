@@ -31,9 +31,11 @@ First test target:
 
 - Load example module.
 - Validate roles, resources, phases, mechanics, and actions.
+- Validate components, setup declarations, and setup distributions.
 - Start a session from a module.
 - Represent participants, devices, resources, statuses, zones, and permissions.
 - Bind player-facing actions to reusable mechanisms with `mechanicId`.
+- Define the AI import kit format for converting source rules into module drafts.
 
 ## Sprint 3: Read Models and Dashboard
 

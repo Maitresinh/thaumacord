@@ -1760,6 +1760,14 @@ function renderIndex(): string {
           <select id="assignRoleId"></select>
           <button id="assignRole" class="secondary">Attribuer role</button>
 
+          <h3>Casquette de session</h3>
+          <label for="sessionRoleId">Casquette</label>
+          <select id="sessionRoleId"></select>
+          <label for="sessionRoleParticipant">Participant porteur</label>
+          <select id="sessionRoleParticipant"></select>
+          <button id="assignSessionRole" class="secondary">Attribuer casquette</button>
+          <div id="sessionRoles" class="list"></div>
+
           <h3>Correction</h3>
           <label for="resourceParticipant">Participant</label>
           <select id="resourceParticipant"></select>
@@ -1865,6 +1873,19 @@ function renderIndex(): string {
     function dashboardResourceOptions(session) {
       return session.module.resources.map((resource) => option(resource.id, resource.name)).join("");
     }
+    function dashboardParticipantName(session, participantId) {
+      return session.participants.find((participant) => participant.id === participantId)?.name || "non assigne";
+    }
+    function renderSessionRoles(session) {
+      const assignments = session.sessionRoleAssignments || {};
+      return (session.module.sessionRoles || []).map((sessionRole) => {
+        const assignment = assignments[sessionRole.id] || {};
+        const holder = assignment.participantId ? dashboardParticipantName(session, assignment.participantId) : "non assigne";
+        const inject = sessionRole.canInjectGameElements ? "injection autorisee" : "pas d'injection";
+        const state = assignment.enabled === false ? "desactivee" : "active";
+        return '<div class="item"><strong>' + sessionRole.name + '</strong><div>' + holder + '</div><div class="muted">' + state + ' - ' + inject + '</div></div>';
+      }).join("") || '<div class="muted">Aucune casquette declaree</div>';
+    }
     function dashboardResolutionEffectLabel(session, effect) {
       if (!effect) return "";
       const target = effect.participantId ? (session.participants.find((participant) => participant.id === effect.participantId)?.name || effect.participantId) + " - " : "";
@@ -1962,6 +1983,7 @@ function renderIndex(): string {
         const resources = Object.entries(exchange.resources).map(([key, value]) => dashboardResourceLabel(session, key) + ": " + value).join(" / ");
         return '<div class="item"><strong>' + (from ? from.name : "source inconnue") + ' -> ' + (to ? to.name : "cible inconnue") + '</strong><div>' + resources + '</div><div class="muted">' + exchange.status + '</div></div>';
       }).join("") || '<div class="muted">Aucun echange</div>';
+      byId("sessionRoles").innerHTML = renderSessionRoles(session);
       byId("pendingResolutions").innerHTML = (session.pendingResolutions || []).map((resolution) => {
         const participant = session.participants.find((candidate) => candidate.id === resolution.participantId);
         const payload = resolution.payload ? JSON.stringify(resolution.payload) : "";
@@ -1982,6 +2004,8 @@ function renderIndex(): string {
       byId("exchangeTo").innerHTML = participantOptions;
       byId("resourceParticipant").innerHTML = participantOptions;
       byId("roleParticipant").innerHTML = participantOptions;
+      byId("sessionRoleParticipant").innerHTML = option("", "Non assigne") + participantOptions;
+      byId("sessionRoleId").innerHTML = (session.module.sessionRoles || []).map((sessionRole) => option(sessionRole.id, sessionRole.name)).join("");
       byId("messageTarget").innerHTML = messageOptions;
       byId("bindDeviceId").innerHTML = session.devices.map((device) => option(device.id, device.name + (device.participantId ? " (lie)" : ""))).join("");
     }
@@ -2061,6 +2085,12 @@ function renderIndex(): string {
     }));
     byId("assignRole").addEventListener("click", () => run(async () => {
       await api("/sessions/" + sessionCode + "/players/" + byId("roleParticipant").value + "/role", { method: "POST", body: JSON.stringify({ roleId: byId("assignRoleId").value }) });
+      await refresh();
+    }));
+    byId("assignSessionRole").addEventListener("click", () => run(async () => {
+      const payload = { enabled: true };
+      if (byId("sessionRoleParticipant").value) payload.participantId = byId("sessionRoleParticipant").value;
+      await api("/sessions/" + sessionCode + "/session-roles/" + byId("sessionRoleId").value, { method: "POST", body: JSON.stringify(payload) });
       await refresh();
     }));
     byId("pendingResolutions").addEventListener("click", (event) => run(async () => {

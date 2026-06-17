@@ -68,7 +68,27 @@
         "rounds": 1,
         "compare": "highestTotal",
         "onTie": "facilitatorDecision",
-        "consumeCommitments": "always"
+        "consumeCommitments": "always",
+        "outcomes": [
+          {
+            "id": "attacker-wins",
+            "label": "Attaquant gagne",
+            "description": "La tentative de coup reussit.",
+            "effects": [{ "type": "setState", "state": "coupOutcome", "value": "attacker-wins" }]
+          },
+          {
+            "id": "defender-wins",
+            "label": "Defense gagne",
+            "description": "La tentative de coup echoue.",
+            "effects": [{ "type": "setState", "state": "coupOutcome", "value": "defender-wins" }]
+          },
+          {
+            "id": "tie-facilitator",
+            "label": "Egalite MJ",
+            "description": "Le MJ tranche une egalite ou une situation ambigue.",
+            "effects": [{ "type": "setState", "state": "coupOutcome", "value": "tie-facilitator" }]
+          }
+        ]
       },
       "visibility": { "commitments": "hidden-until-reveal", "result": "dashboard-and-involved" },
       "variants": [

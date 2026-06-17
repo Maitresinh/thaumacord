@@ -881,6 +881,11 @@ test("opens pending contest resolutions from module mechanics", async () => {
     body.dashboard.pendingResolutions[0].recommendedOutcomes.map((outcome: JsonObject) => outcome.id),
     ["attacker-wins", "defender-wins", "tie-facilitator"]
   );
+  assert.deepEqual(body.dashboard.pendingResolutions[0].recommendedOutcomes[0].effects[0], {
+    type: "setState",
+    state: "coupOutcome",
+    value: "attacker-wins"
+  });
 });
 
 test("lets the facilitator resolve a pending resolution", async () => {
@@ -909,8 +914,7 @@ test("lets the facilitator resolve a pending resolution", async () => {
     note: "MJ resolved at table",
     payload: {
       effects: [
-        { type: "adjustResource", resource: "influence", delta: 1 },
-        { type: "setState", state: "coupOutcome", value: "attacker-wins" }
+        { type: "adjustResource", resource: "influence", delta: 1 }
       ]
     }
   });
@@ -920,7 +924,7 @@ test("lets the facilitator resolve a pending resolution", async () => {
   assert.equal(resolved.resolveResult.outcome, "attacker-wins");
   assert.deepEqual(
     resolved.resolveResult.effects.map((effect: JsonObject) => effect.type),
-    ["adjustResource", "setState"]
+    ["setState", "adjustResource"]
   );
   assert.equal(resolved.resolveResult.message.channel, "resolution");
   assert.equal(resolved.resolveResult.message.target, "participant");

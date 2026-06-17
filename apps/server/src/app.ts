@@ -174,6 +174,7 @@ type ResolutionOutcome = {
   id: string;
   label: string;
   description: string;
+  effects?: ResolutionEffect[];
 };
 
 type PhaseClock = {
@@ -346,6 +347,12 @@ const resolutionSetStateEffectSchema = z.object({
 });
 
 const resolutionEffectSchema = z.discriminatedUnion("type", [resolutionResourceDeltaEffectSchema, resolutionSetStateEffectSchema]);
+const resolutionOutcomeSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  description: z.string().default(""),
+  effects: z.array(resolutionEffectSchema).optional()
+});
 
 const eventSchema = z.object({
   type: z.string().min(1),
@@ -697,16 +704,23 @@ function resolutionEffectTarget(session: Session, resolution: PendingResolution,
   return participant;
 }
 
-function resolutionEffects(input: z.infer<typeof resolveResolutionSchema>): ResolutionEffect[] {
+function declaredResolutionOutcomes(resolution: PendingResolution): ResolutionOutcome[] {
+  const declaration = objectRecord(resolution.resolution);
+  const parsed = z.array(resolutionOutcomeSchema).safeParse(declaration?.outcomes);
+  return parsed.success ? parsed.data : [];
+}
+
+function resolutionEffects(resolution: PendingResolution, input: z.infer<typeof resolveResolutionSchema>): ResolutionEffect[] {
+  const declaredEffects = declaredResolutionOutcomes(resolution).find((outcome) => outcome.id === input.outcome)?.effects ?? [];
   if (!("effects" in input.payload)) {
-    return [];
+    return declaredEffects;
   }
-  return z.array(resolutionEffectSchema).parse(input.payload.effects);
+  return [...declaredEffects, ...z.array(resolutionEffectSchema).parse(input.payload.effects)];
 }
 
 function applyResolutionEffects(session: Session, resolution: PendingResolution, input: z.infer<typeof resolveResolutionSchema>): Record<string, unknown>[] {
   const module = getModuleOrThrow(session.moduleId);
-  const effects = resolutionEffects(input);
+  const effects = resolutionEffects(resolution, input);
 
   for (const effect of effects) {
     if (effect.type === "adjustResource") {
@@ -1357,6 +1371,10 @@ function participantName(session: Session, participantId?: string): string | und
 }
 
 function resolutionOutcomes(resolution: PendingResolution): ResolutionOutcome[] {
+  const declared = declaredResolutionOutcomes(resolution);
+  if (declared.length > 0) {
+    return declared;
+  }
   if (resolution.mechanicFamily === "contest") {
     return [
       { id: "attacker-wins", label: "Attaquant gagne", description: "Valider la declaration de l'attaquant et appliquer les suites a la table." },

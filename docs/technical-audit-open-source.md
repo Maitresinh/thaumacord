@@ -184,6 +184,13 @@ Decision:
 
 High-priority spike for Android.
 
+Spike result on 2026-06-17:
+
+- Added an Android-side pure Kotlin contract for Nearby-derived gestures.
+- No Google Play Services dependency has been added yet, because the real API spike needs Android Studio/Gradle and two devices.
+- Nearby remains an input adapter. The server remains authoritative.
+- Normalized events use the existing server contract: `type: "gesture.detected"`, `gesture`, `sourceDeviceId`, and payload metadata.
+
 Architecture direction:
 
 ```text

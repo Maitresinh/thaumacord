@@ -120,6 +120,8 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /Corriger/);
   assert.match(response.body, /Attribuer role/);
   assert.match(response.body, /Resolutions/);
+  assert.match(response.body, /recommendedOutcomes/);
+  assert.match(response.body, /data-outcome/);
   assert.match(response.body, /Marquer resolue/);
   assert.match(response.body, /Regler minuteur/);
 });
@@ -833,6 +835,11 @@ test("opens pending petition resolutions from module mechanics", async () => {
   assert.equal(body.dashboard.pendingResolutions[0].id, body.actionResult.effect.resolutionId);
   assert.equal(body.dashboard.pendingResolutions[0].actionId, "submit-petition");
   assert.equal(body.dashboard.pendingResolutions[0].payload.petitionText, "Demander une levee exceptionnelle");
+  assert.equal(body.dashboard.pendingResolutions[0].summary, "Reine: Demander une levee exceptionnelle");
+  assert.deepEqual(
+    body.dashboard.pendingResolutions[0].recommendedOutcomes.map((outcome: JsonObject) => outcome.id),
+    ["accepted", "rejected", "deferred"]
+  );
 
   const deviceModel = await injectJson("GET", `/sessions/${code}/read-models/device/${device.device.id}`);
   assert.equal(deviceModel.pendingResolutions[0].mechanicId, "petition-vote");
@@ -867,6 +874,10 @@ test("opens pending contest resolutions from module mechanics", async () => {
   assert.equal(body.dashboard.pendingResolutions[0].resolution.type, "sealedCommitment");
   assert.equal(body.dashboard.pendingResolutions[0].participantId, participant.participant.id);
   assert.deepEqual(body.dashboard.pendingResolutions[0].payload.leaderIds, ["leader-a", "leader-b"]);
+  assert.deepEqual(
+    body.dashboard.pendingResolutions[0].recommendedOutcomes.map((outcome: JsonObject) => outcome.id),
+    ["attacker-wins", "defender-wins", "tie-facilitator"]
+  );
 });
 
 test("lets the facilitator resolve a pending resolution", async () => {
@@ -887,13 +898,13 @@ test("lets the facilitator resolve a pending resolution", async () => {
   const resolutionId = coup.dashboard.pendingResolutions[0].id;
 
   const resolved = await injectJson("POST", `/sessions/${code}/resolutions/${resolutionId}/resolve`, {
-    outcome: "manual-test",
+    outcome: "attacker-wins",
     note: "MJ resolved at table"
   });
 
   assert.equal(resolved.accepted, true);
   assert.equal(resolved.resolveResult.resolutionId, resolutionId);
-  assert.equal(resolved.resolveResult.outcome, "manual-test");
+  assert.equal(resolved.resolveResult.outcome, "attacker-wins");
   assert.equal(resolved.dashboard.pendingResolutions.length, 0);
   assert.equal(resolved.dashboard.audit.at(-1).type, "resolution.resolved");
 

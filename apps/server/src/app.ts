@@ -170,6 +170,12 @@ type PendingResolution = {
   createdAt: string;
 };
 
+type ResolutionOutcome = {
+  id: string;
+  label: string;
+  description: string;
+};
+
 type PhaseClock = {
   turn: number;
   phaseId: string;
@@ -1262,11 +1268,68 @@ function visibleSession(session: Session): Session & { module: GameModule; phase
   };
 }
 
+function participantName(session: Session, participantId?: string): string | undefined {
+  return participantId ? session.participants.find((participant) => participant.id === participantId)?.name : undefined;
+}
+
+function resolutionOutcomes(resolution: PendingResolution): ResolutionOutcome[] {
+  if (resolution.mechanicFamily === "contest") {
+    return [
+      { id: "attacker-wins", label: "Attaquant gagne", description: "Valider la declaration de l'attaquant et appliquer les suites a la table." },
+      { id: "defender-wins", label: "Defense gagne", description: "Rejeter la tentative et consigner la defense victorieuse." },
+      { id: "tie-facilitator", label: "Egalite MJ", description: "Trancher manuellement une egalite ou une situation ambigue." }
+    ];
+  }
+  if (resolution.mechanicFamily === "petition" || resolution.mechanicFamily === "vote") {
+    return [
+      { id: "accepted", label: "Acceptee", description: "La demande passe et ses effets peuvent etre appliques." },
+      { id: "rejected", label: "Rejetee", description: "La demande echoue sans effet direct." },
+      { id: "deferred", label: "Reportee", description: "La demande reste fictionnellement en suspens pour une phase ulterieure." }
+    ];
+  }
+  if (resolution.type === "periodicDamageCheck") {
+    return [
+      { id: "no-effect", label: "Sans effet", description: "Le risque ne produit aucun changement cette fois." },
+      { id: "damage-applied", label: "Degat applique", description: "Le MJ applique ou confirme le degat lie a la zone." }
+    ];
+  }
+  return [{ id: "facilitator-resolved", label: "Resolue", description: "Marquer comme traite par le MJ." }];
+}
+
+function resolutionSummary(session: Session, resolution: PendingResolution): string {
+  const actor = participantName(session, resolution.participantId) ?? "Table";
+  const payload = resolution.payload ?? {};
+  if (typeof payload.petitionText === "string") {
+    return `${actor}: ${payload.petitionText}`;
+  }
+  if (Array.isArray(payload.leaderIds)) {
+    return `${actor}: leaders ${payload.leaderIds.join(", ")}`;
+  }
+  if (resolution.zoneId) {
+    return `${actor}: zone ${resolution.zoneId}`;
+  }
+  return actor;
+}
+
+function enrichResolution(session: Session, resolution: PendingResolution): PendingResolution & {
+  participantName?: string;
+  summary: string;
+  recommendedOutcomes: ResolutionOutcome[];
+} {
+  return {
+    ...resolution,
+    participantName: participantName(session, resolution.participantId),
+    summary: resolutionSummary(session, resolution),
+    recommendedOutcomes: resolutionOutcomes(resolution)
+  };
+}
+
 function dashboardReadModel(session: Session): ReturnType<typeof visibleSession> & { readModel: "dashboard"; aggregates: Record<string, unknown> } {
   return {
     ...visibleSession(session),
     aggregates: aggregateSession(session),
     messages: session.messages,
+    pendingResolutions: session.pendingResolutions.map((resolution) => enrichResolution(session, resolution)),
     readModel: "dashboard"
   };
 }
@@ -1621,7 +1684,8 @@ function renderIndex(): string {
       byId("pendingResolutions").innerHTML = (session.pendingResolutions || []).map((resolution) => {
         const participant = session.participants.find((candidate) => candidate.id === resolution.participantId);
         const payload = resolution.payload ? JSON.stringify(resolution.payload) : "";
-        return '<div class="item"><strong>' + resolution.type + '</strong><div>' + (participant ? participant.name : "table") + '</div><div class="muted">' + (resolution.mechanicId || resolution.mechanicFamily || "sans mecanique") + '</div><div class="muted">' + payload + '</div><button class="secondary resolveResolution" data-resolution-id="' + resolution.id + '">Marquer resolue</button></div>';
+        const outcomes = (resolution.recommendedOutcomes || [{ id: "facilitator-resolved", label: "Marquer resolue" }]).map((outcome) => '<button class="secondary resolveResolution" data-resolution-id="' + resolution.id + '" data-outcome="' + outcome.id + '">' + outcome.label + '</button>').join("");
+        return '<div class="item"><strong>' + resolution.type + '</strong><div>' + (resolution.summary || (participant ? participant.name : "table")) + '</div><div class="muted">' + (resolution.mechanicId || resolution.mechanicFamily || "sans mecanique") + '</div><div class="muted">' + payload + '</div><div class="actions">' + outcomes + '</div></div>';
       }).join("") || '<div class="muted">Aucune resolution en attente</div>';
       byId("audit").textContent = JSON.stringify((session.audit || []).slice(-12), null, 2);
       byId("state").textContent = JSON.stringify(session, null, 2);
@@ -1699,7 +1763,7 @@ function renderIndex(): string {
     byId("pendingResolutions").addEventListener("click", (event) => run(async () => {
       const button = event.target.closest(".resolveResolution");
       if (!button) return;
-      await api("/sessions/" + sessionCode + "/resolutions/" + button.dataset.resolutionId + "/resolve", { method: "POST", body: JSON.stringify({ outcome: "facilitator-resolved" }) });
+      await api("/sessions/" + sessionCode + "/resolutions/" + button.dataset.resolutionId + "/resolve", { method: "POST", body: JSON.stringify({ outcome: button.dataset.outcome || "facilitator-resolved" }) });
       await refresh();
     }));
     byId("setResource").addEventListener("click", () => run(async () => {

@@ -1295,6 +1295,7 @@ function renderIndex(): string {
           </div>
         <label for="code">Code session</label>
         <input id="code" placeholder="ABC123" />
+          <button id="copyParticipantLink" class="neutral">Copier lien participant</button>
           <div class="error" id="error"></div>
         </section>
 
@@ -1446,6 +1447,10 @@ function renderIndex(): string {
       if (!clock) return "sans minuteur";
       const end = clock.phaseEndsAt ? new Date(clock.phaseEndsAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "fin libre";
       return "Tour " + clock.turn + " - " + (clock.phaseDurationSeconds || "sans duree") + "s - fin " + end;
+    }
+    function participantUrl() {
+      const code = byId("code").value || sessionCode;
+      return new URL("/play?code=" + encodeURIComponent(code), location.href).toString();
     }
     function connectLive(code) {
       if (liveSocket) liveSocket.close();
@@ -1618,6 +1623,16 @@ function renderIndex(): string {
       await refresh();
     }));
     byId("refresh").addEventListener("click", () => run(refresh));
+    byId("copyParticipantLink").addEventListener("click", () => run(async () => {
+      const link = participantUrl();
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(link);
+        setError("Lien participant copie.");
+        return;
+      }
+      byId("code").value = link;
+      setError("Lien place dans le champ code.");
+    }));
     loadModules();
   </script>
 </body>

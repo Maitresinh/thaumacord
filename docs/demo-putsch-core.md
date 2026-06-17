@@ -51,6 +51,5 @@ Out of scope:
   - exchange form;
   - action trigger buttons.
 - Missing from participant page:
-  - cleaner resource labels;
   - richer action payload forms when a rule needs a target or bid.
 - Seed scenario endpoint or fixture for 3-4 participants: browser dashboard can seed a 4-player `putsch-lite` table.

@@ -1710,10 +1710,11 @@ function renderParticipantApp(): string {
       <button id="leave" class="secondary">Oublier cet appareil</button>
     </section>
 
-    <section>
-      <h2>Etat appareil</h2>
+    <section id="debugPanel" class="hidden">
+      <h2>Debug</h2>
       <pre id="state">Non connecte.</pre>
     </section>
+    <button id="toggleDebug" class="secondary">Afficher debug</button>
   </main>
   <script>
     let liveSocket;
@@ -1842,6 +1843,11 @@ function renderParticipantApp(): string {
     byId("leave").addEventListener("click", () => {
       forgetDevice();
       location.reload();
+    });
+    byId("toggleDebug").addEventListener("click", () => {
+      const panel = byId("debugPanel");
+      panel.classList.toggle("hidden");
+      byId("toggleDebug").textContent = panel.classList.contains("hidden") ? "Afficher debug" : "Masquer debug";
     });
     if (switchingSession) {
       forgetDevice();

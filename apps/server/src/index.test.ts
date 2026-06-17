@@ -137,6 +137,8 @@ test("serves a mobile participant app for session join", async () => {
   assert.match(response.body, /Entrer dans la partie/);
   assert.match(response.body, /Transferer/);
   assert.match(response.body, /Declencher/);
+  assert.match(response.body, /Afficher debug/);
+  assert.match(response.body, /id="debugPanel" class="hidden"/);
 });
 
 test("lets a participant join with a chosen role and receive a filtered read model", async () => {

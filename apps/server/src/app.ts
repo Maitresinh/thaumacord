@@ -1573,6 +1573,16 @@ function renderParticipantApp(): string {
       <div id="summary"></div>
       <h3>Ressources</h3>
       <div id="resources" class="stack"></div>
+      <h3>Echange</h3>
+      <label for="exchangeTo">Vers</label>
+      <select id="exchangeTo"></select>
+      <label for="exchangeResource">Ressource</label>
+      <select id="exchangeResource"></select>
+      <label for="exchangeAmount">Quantite</label>
+      <input id="exchangeAmount" type="number" min="1" value="1" />
+      <button id="sendExchange" class="success">Transferer</button>
+      <h3>Historique des echanges</h3>
+      <div id="exchanges" class="stack"></div>
       <h3>Messages</h3>
       <div id="messages" class="stack"></div>
       <h3>Actions disponibles</h3>
@@ -1613,6 +1623,11 @@ function renderParticipantApp(): string {
       sessionCode = session.code;
       byId("code").value = session.code;
     }
+    async function refreshDevice() {
+      if (!sessionCode || !deviceId) return;
+      const result = await api("/sessions/" + sessionCode + "/devices/" + deviceId + "/sync");
+      render(result.readModel);
+    }
     function connectLive(code, id) {
       if (liveSocket) liveSocket.close();
       const protocol = location.protocol === "https:" ? "wss" : "ws";
@@ -1638,8 +1653,17 @@ function renderParticipantApp(): string {
         '<span class="pill">' + (model.participant.roleId || "role a attribuer") + '</span>'
       ].join(" ");
       byId("resources").innerHTML = Object.entries(model.participant.resources || {}).map(([key, value]) => '<div class="item"><strong>' + key + '</strong><div>' + value + '</div></div>').join("") || '<div class="muted">Aucune ressource</div>';
+      const otherParticipants = (model.visibleParticipants || []).filter((participant) => participant.id !== model.participant.id);
+      byId("exchangeTo").innerHTML = otherParticipants.map((participant) => option(participant.id, participant.name + (participant.roleId ? " (" + participant.roleId + ")" : ""))).join("");
+      byId("exchangeResource").innerHTML = Object.keys(model.participant.resources || {}).map((resourceId) => option(resourceId, resourceId)).join("");
+      byId("sendExchange").disabled = otherParticipants.length === 0;
+      byId("exchanges").innerHTML = (model.exchanges || []).slice(-5).map((exchange) => {
+        const direction = exchange.fromParticipantId === model.participant.id ? "envoye" : "recu";
+        const resources = Object.entries(exchange.resources).map(([key, value]) => key + ": " + value).join(" / ");
+        return '<div class="item"><strong>' + direction + '</strong><div>' + resources + '</div></div>';
+      }).join("") || '<div class="muted">Aucun echange</div>';
       byId("messages").innerHTML = (model.messages || []).slice(-5).map((message) => '<div class="item"><strong>' + message.channel + '</strong><div>' + message.text + '</div></div>').join("") || '<div class="muted">Aucun message</div>';
-      byId("actions").innerHTML = (model.availableActions || []).filter((action) => action.available).map((action) => '<div class="item"><strong>' + action.name + '</strong><div class="muted">' + (action.fallback || action.id) + '</div></div>').join("") || '<div class="muted">Aucune action disponible</div>';
+      byId("actions").innerHTML = (model.availableActions || []).filter((action) => action.available).map((action) => '<div class="item"><strong>' + action.name + '</strong><div class="muted">' + (action.fallback || action.id) + '</div><button class="secondary actionButton" data-action-id="' + action.id + '">Declencher</button></div>').join("") || '<div class="muted">Aucune action disponible</div>';
     }
     byId("loadSession").addEventListener("click", () => run(loadSession));
     byId("join").addEventListener("click", () => run(async () => {
@@ -1654,6 +1678,25 @@ function renderParticipantApp(): string {
       localStorage.setItem("thaumacord.sessionCode", sessionCode);
       connectLive(sessionCode, deviceId);
       render(result.readModel);
+    }));
+    byId("sendExchange").addEventListener("click", () => run(async () => {
+      await api("/sessions/" + sessionCode + "/exchanges", { method: "POST", body: JSON.stringify({
+        sourceDeviceId: deviceId,
+        toParticipantId: byId("exchangeTo").value,
+        resources: { [byId("exchangeResource").value]: Number(byId("exchangeAmount").value) }
+      }) });
+      await refreshDevice();
+    }));
+    byId("actions").addEventListener("click", (event) => run(async () => {
+      const button = event.target.closest(".actionButton");
+      if (!button) return;
+      await api("/sessions/" + sessionCode + "/events", { method: "POST", body: JSON.stringify({
+        type: "action.triggered",
+        sourceDeviceId: deviceId,
+        actionId: button.dataset.actionId,
+        payload: {}
+      }) });
+      await refreshDevice();
     }));
     byId("leave").addEventListener("click", () => {
       localStorage.removeItem("thaumacord.deviceId");

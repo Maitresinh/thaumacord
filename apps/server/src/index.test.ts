@@ -138,6 +138,8 @@ test("returns a dashboard read model with the complete live state", async () => 
   const session = await createSession("putsch-lite");
   const code = session.code;
   await createDevice(code, "Table principale");
+  await createParticipant(code, "General", "general");
+  await createParticipant(code, "Marchand", "dealer");
 
   const dashboard = await injectJson("GET", `/sessions/${code}/read-models/dashboard`);
 
@@ -145,6 +147,10 @@ test("returns a dashboard read model with the complete live state", async () => 
   assert.equal(dashboard.code, code);
   assert.equal(dashboard.devices.length, 1);
   assert.equal(Array.isArray(dashboard.audit), true);
+  assert.equal(dashboard.aggregates.participants.total, 2);
+  assert.equal(dashboard.aggregates.participants.byRole.general, 1);
+  assert.equal(dashboard.aggregates.resources.money.total, 20);
+  assert.equal(dashboard.aggregates.resources.weapons.max, 2);
 });
 
 test("assigns monotonic audit sequence numbers within a session", async () => {
@@ -406,11 +412,15 @@ test("runs module setup distributions into participant inventories", async () =>
   assert.equal(body.setupResult.distributions.length, 3);
   assert.equal(body.dashboard.componentPools["intrigue-card"].remaining, 78);
   assert.equal(body.dashboard.componentPools["status-card"].remaining, 29);
+  assert.equal(body.dashboard.aggregates.inventory["intrigue-card"], 2);
+  assert.equal(body.dashboard.aggregates.inventory["status-card"], 3);
+  assert.equal(body.dashboard.aggregates.componentPools["intrigue-card"].remaining, 78);
 
   const queenModel = await injectJson("GET", `/sessions/${code}/read-models/device/${queenDevice.device.id}`);
   const baronModel = await injectJson("GET", `/sessions/${code}/read-models/device/${baronDevice.device.id}`);
   assert.equal(queenModel.participant.inventory["intrigue-card"], 1);
   assert.equal(queenModel.participant.inventory["status-card"], 2);
+  assert.equal(queenModel.aggregates, undefined);
   assert.equal(baronModel.participant.inventory["intrigue-card"], 1);
   assert.equal(baronModel.participant.inventory["status-card"], 1);
 });
@@ -436,9 +446,11 @@ test("draws components from pools into participant inventories", async () => {
   assert.equal(draw.drawResult.inventory.before, 0);
   assert.equal(draw.drawResult.inventory.after, 2);
   assert.equal(draw.dashboard.componentPools["intrigue-card"].remaining, 78);
+  assert.equal(draw.dashboard.aggregates.inventory["intrigue-card"], 2);
 
   const model = await injectJson("GET", `/sessions/${code}/read-models/device/${device.device.id}`);
   assert.equal(model.participant.inventory["intrigue-card"], 2);
+  assert.equal(model.aggregates, undefined);
 });
 
 test("rejects component draws that exceed the pool", async () => {

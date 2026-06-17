@@ -21,7 +21,7 @@ This catalog extracts reusable mechanisms from the current Thaumacord examples a
 | `facilitator-action` | What can the authority receive, alter, reveal, validate, or override? | King, moderator, Storyteller, GM dashboard | Inbox, approvals, corrections, private/public sends |
 | `triggered-ability` | When does a passive or once-per-turn ability fire? | Status cards, immunities, counters, doctor/protection | Trigger registry, usage limits, target restrictions |
 | `timed-income` | What refreshes at a phase or timer boundary? | Putsch income, Long Live the King audience allowance | Scheduled grants, caps, phase hooks |
-| `market-simulation` | How do supply, demand, prices, liquidity, shocks, and queues evolve? | Sheep market, monetary creation, bank run, inflation/deflation simulations | Agents, orders, price rules, liquidity pools, confidence shocks |
+| `economic-simulation` | How do supply, demand, prices, liquidity, shocks, and queues evolve? | Sheep market, monetary creation, bank run, inflation/deflation simulations | Aggregates, agents, orders, price rules, liquidity pools, confidence shocks |
 | `zone-effect` | What changes when a real/fictional location is entered? | Court rooms, black market, sea zones | Zone presence, effects, pending resolutions |
 | `coordination` | How do specialized roles combine partial actions? | Submarine crew stations, team command | Team messages, prerequisites, shared statuses |
 | `information-action` | Who learns what, with what precision and audit trail? | Sonar hints, spies, informers, seers | Private reads, redacted audit, precision levels |
@@ -53,7 +53,7 @@ Actions bind to mechanisms with `mechanicId`. The action remains the player-faci
 4. `facilitator-action`: dashboard receives, approves, rejects, edits, reveals, and sends.
 5. `triggered-ability`: counters, immunities, once-per-turn abilities.
 6. `hidden-role` and `information-action`: Mafia/Werewolf/Blood-on-the-Clocktower-like support.
-7. `market-simulation`: sheep market, money creation, bank run, liquidity, confidence, supply/demand shocks.
+7. `economic-simulation`: sheep market, money creation, bank run, liquidity, confidence, supply/demand shocks.
 8. `card-or-object`: generalized cards, documents, status cards, physical/object tokens.
 
 ## Current Runner Behavior
@@ -77,3 +77,4 @@ This deliberately does not decide the outcome yet. Follow-up runners will collec
 - Visibility is part of the mechanism, not a UI afterthought.
 - Facilitator overrides are first-class. Many role/social games rely on a human authority to keep pace, correct mistakes, or preserve drama.
 - The app should not hard-code `GM` versus `player`; it should model audiences, permissions, and message routing.
+- Economic simulations should start from dashboard aggregates rather than a full economic engine: total resources, inventory totals, component pools, counts by role/location, and later event-series analytics.

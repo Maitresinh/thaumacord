@@ -1029,6 +1029,60 @@ function defaultComponentPools(module: GameModule): Record<string, ComponentPool
   );
 }
 
+function incrementCount(target: Record<string, number>, key: string | undefined): void {
+  if (!key) {
+    return;
+  }
+  target[key] = (target[key] ?? 0) + 1;
+}
+
+function aggregateSession(session: Session): Record<string, unknown> {
+  const module = getModuleOrThrow(session.moduleId);
+  const resourceTotals: Record<string, { total: number; min: number; max: number; average: number; participantCount: number }> = {};
+  const inventoryTotals: Record<string, number> = {};
+  const roleCounts: Record<string, number> = {};
+  const locationCounts: Record<string, number> = {};
+
+  for (const resource of module.resources) {
+    const values = session.participants.map((participant) => participant.resources[resource.id] ?? resource.min ?? 0);
+    const total = values.reduce((sum, value) => sum + value, 0);
+    resourceTotals[resource.id] = {
+      total,
+      min: values.length > 0 ? Math.min(...values) : 0,
+      max: values.length > 0 ? Math.max(...values) : 0,
+      average: values.length > 0 ? total / values.length : 0,
+      participantCount: values.length
+    };
+  }
+
+  for (const participant of session.participants) {
+    incrementCount(roleCounts, participant.roleId);
+    incrementCount(locationCounts, participant.locationId);
+    for (const [componentId, count] of Object.entries(participant.inventory)) {
+      inventoryTotals[componentId] = (inventoryTotals[componentId] ?? 0) + count;
+    }
+  }
+
+  return {
+    participants: {
+      total: session.participants.length,
+      byRole: roleCounts,
+      byLocation: locationCounts
+    },
+    resources: resourceTotals,
+    inventory: inventoryTotals,
+    componentPools: Object.fromEntries(
+      Object.entries(session.componentPools).map(([componentId, pool]) => [
+        componentId,
+        {
+          remaining: pool.remaining,
+          exhausted: pool.exhausted
+        }
+      ])
+    )
+  };
+}
+
 function visibleSession(session: Session): Session & { module: GameModule; phase: z.infer<typeof phaseSchema> } {
   return {
     ...session,
@@ -1037,9 +1091,10 @@ function visibleSession(session: Session): Session & { module: GameModule; phase
   };
 }
 
-function dashboardReadModel(session: Session): ReturnType<typeof visibleSession> & { readModel: "dashboard" } {
+function dashboardReadModel(session: Session): ReturnType<typeof visibleSession> & { readModel: "dashboard"; aggregates: Record<string, unknown> } {
   return {
     ...visibleSession(session),
+    aggregates: aggregateSession(session),
     readModel: "dashboard"
   };
 }

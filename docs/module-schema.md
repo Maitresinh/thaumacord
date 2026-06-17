@@ -226,6 +226,17 @@ The server validates:
 
 Accepted exchanges are recorded in `exchanges`, added to audit as `exchange.completed`, and broadcast with filtered read models. Dashboard read models see all exchanges. Participant-bound read models only see exchanges involving that participant.
 
+## Dashboard Aggregates
+
+Dashboard read models include `aggregates` for facilitator analysis and economic-simulation modules:
+
+- participant totals by role and location;
+- resource total, min, max, average, and participant count;
+- inventory totals by component;
+- component pool remaining counts.
+
+Participant-bound read models do not expose these global aggregates.
+
 ## Supported Zone Effects In Prototype
 
 `POST /sessions/:code/zones/:zoneId/presence` moves a participant to a module zone and applies supported zone effects.

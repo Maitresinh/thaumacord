@@ -8,7 +8,7 @@ It is not only a rules summary. It must contain the playable structure: phases, 
 
 1. Ingest source rules: PDF, DOCX, spreadsheet, markdown, pasted text, or designer notes.
 2. Extract entities: roles, resources, cards, decks, tokens, locations, tracks, statuses, phases, actions, victory conditions.
-3. Extract mechanisms: exchange, petition, vote, contest, hidden-role, facilitator-action, timed-income, market-simulation, card-or-object, triggered-ability, coordination.
+3. Extract mechanisms: exchange, petition, vote, contest, hidden-role, facilitator-action, timed-income, economic-simulation, card-or-object, triggered-ability, coordination.
 4. Extract setup: initial phase, required components, role assignment, player distribution, decks/tracks, starting resources.
 5. Generate a module JSON.
 6. Validate schema and references.

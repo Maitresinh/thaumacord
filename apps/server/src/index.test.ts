@@ -742,6 +742,67 @@ test("rejects invalid participant exchanges without partially applying resources
   assert.deepEqual(dashboard.exchanges, []);
 });
 
+test("applies immediate exchange actions from participant payloads", async () => {
+  const session = await createSession("putsch-lite");
+  const code = session.code;
+  const generalDevice = await createDevice(code, "Telephone general");
+  const general = await createParticipant(code, "General", "general");
+  const dealer = await createParticipant(code, "Marchand", "dealer");
+  await bindDevice(code, generalDevice.device.id, general.participant.id);
+
+  const transfer = await injectJson("POST", `/sessions/${code}/events`, {
+    type: "action.requested",
+    actionId: "sell-weapons",
+    sourceDeviceId: generalDevice.device.id,
+    payload: {
+      toParticipantId: dealer.participant.id,
+      resources: { weapons: 1 }
+    }
+  });
+
+  assert.equal(transfer.accepted, true);
+  assert.equal(transfer.actionResult.effect.type, "exchange");
+  assert.equal(transfer.actionResult.effect.mechanicId, "direct-barter");
+  assert.equal(transfer.actionResult.effect.exchangeResult.exchange.fromParticipantId, general.participant.id);
+  assert.equal(transfer.actionResult.effect.exchangeResult.exchange.toParticipantId, dealer.participant.id);
+  assert.deepEqual(transfer.actionResult.effect.exchangeResult.exchange.resources, { weapons: 1 });
+  assert.equal(transfer.dashboard.participants.find((candidate: JsonObject) => candidate.id === general.participant.id).resources.weapons, 1);
+  assert.equal(transfer.dashboard.participants.find((candidate: JsonObject) => candidate.id === dealer.participant.id).resources.weapons, 2);
+  assert.equal(transfer.dashboard.exchanges.length, 1);
+
+  const generalModel = await injectJson("GET", `/sessions/${code}/read-models/device/${generalDevice.device.id}`);
+  assert.equal(generalModel.exchanges.length, 1);
+});
+
+test("rejects immediate exchange actions with invalid payloads", async () => {
+  const session = await createSession("putsch-lite");
+  const code = session.code;
+  const generalDevice = await createDevice(code, "Telephone general");
+  const general = await createParticipant(code, "General", "general");
+  const dealer = await createParticipant(code, "Marchand", "dealer");
+  await bindDevice(code, generalDevice.device.id, general.participant.id);
+
+  const rejected = await app.inject({
+    method: "POST",
+    url: `/sessions/${code}/events`,
+    payload: {
+      type: "action.requested",
+      actionId: "sell-weapons",
+      sourceDeviceId: generalDevice.device.id,
+      payload: {
+        toParticipantId: dealer.participant.id,
+        resources: { influence: 1 }
+      }
+    }
+  });
+
+  assert.equal(rejected.statusCode, 400);
+  assert.match(rejected.json<JsonObject>().error, /not allowed/);
+  const dashboard = await injectJson("GET", `/sessions/${code}/read-models/dashboard`);
+  assert.equal(dashboard.participants.find((candidate: JsonObject) => candidate.id === general.participant.id).resources.influence, 2);
+  assert.deepEqual(dashboard.exchanges, []);
+});
+
 test("opens pending petition resolutions from module mechanics", async () => {
   const session = await createSession("long-live-the-king-lite");
   const code = session.code;

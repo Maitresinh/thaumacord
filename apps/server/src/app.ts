@@ -774,6 +774,90 @@ function applyEffect(module: GameModule, participant: Participant, effect: Known
   return { type: effect.type, precision: effect.precision };
 }
 
+function objectRecord(value: unknown): Record<string, unknown> | undefined {
+  return typeof value === "object" && value !== null && !Array.isArray(value) ? (value as Record<string, unknown>) : undefined;
+}
+
+function stringArray(value: unknown): string[] | undefined {
+  return Array.isArray(value) && value.every((item) => typeof item === "string") ? value : undefined;
+}
+
+function mechanicResourceInput(mechanic: GameModule["mechanics"][number] | undefined): Record<string, unknown> | undefined {
+  return mechanic?.inputs.map(objectRecord).find((input) => input?.type === "resource-bundle");
+}
+
+function actionExchangeResources(
+  module: GameModule,
+  action: GameModule["actions"][number],
+  mechanic: GameModule["mechanics"][number] | undefined,
+  payload: Record<string, unknown>
+): Record<string, number> {
+  const rawResources = objectRecord(payload.resources);
+  if (!rawResources) {
+    throw new Error("Action exchange requires resources");
+  }
+
+  const effect = objectRecord(action.effect);
+  const mechanicAllowed = stringArray(mechanicResourceInput(mechanic)?.allowed);
+  const effectResources = stringArray(effect?.resources);
+  const effectResource = typeof effect?.resource === "string" ? [effect.resource] : undefined;
+  const allowedResources = effectResources ?? effectResource ?? mechanicAllowed ?? module.resources.map((resource) => resource.id);
+  const allowed = new Set(allowedResources);
+  if (Object.keys(rawResources).length === 0) {
+    throw new Error("Action exchange requires at least one resource");
+  }
+
+  return Object.fromEntries(
+    Object.entries(rawResources).map(([resourceId, value]) => {
+      if (!allowed.has(resourceId)) {
+        throw new Error(`Resource ${resourceId} is not allowed for action ${action.id}`);
+      }
+      const amount = Number(value);
+      if (!Number.isInteger(amount) || amount <= 0) {
+        throw new Error(`Resource ${resourceId} amount must be a positive integer`);
+      }
+      return [resourceId, amount];
+    })
+  );
+}
+
+function applyExchangeAction(
+  session: Session,
+  module: GameModule,
+  participant: Participant,
+  action: GameModule["actions"][number],
+  mechanic: GameModule["mechanics"][number] | undefined,
+  event: EventInput
+): Record<string, unknown> | undefined {
+  const effect = objectRecord(action.effect);
+  const isExchange = mechanic?.family === "exchange" || effect?.type === "transferBundle" || effect?.type === "transferResource";
+  if (!isExchange) {
+    return undefined;
+  }
+
+  const hasTarget = typeof event.payload.toParticipantId === "string";
+  const hasResources = Boolean(objectRecord(event.payload.resources));
+  if (!hasTarget && !hasResources) {
+    return undefined;
+  }
+  if (!hasTarget) {
+    throw new Error("Action exchange requires toParticipantId");
+  }
+  if (!hasResources) {
+    throw new Error("Action exchange requires resources");
+  }
+
+  const toParticipantId = event.payload.toParticipantId as string;
+  const resources = actionExchangeResources(module, action, mechanic, event.payload);
+  const exchangeResult = createExchange(session, participant.id, toParticipantId, resources);
+  return {
+    type: "exchange",
+    mechanicId: mechanic?.id,
+    mechanicFamily: mechanic?.family,
+    exchangeResult
+  };
+}
+
 function effectType(effect: unknown, fallback: string): string {
   return typeof effect === "object" && effect !== null && "type" in effect && typeof effect.type === "string" ? effect.type : fallback;
 }
@@ -949,10 +1033,13 @@ function applyActionEvent(session: Session, event: EventInput): Record<string, u
   }
 
   const appliedCosts = Object.entries(action.cost ?? {}).map(([resourceId, cost]) => adjustResource(module, participant, resourceId, -cost));
+  const mechanic = action.mechanicId ? module.mechanics.find((candidate) => candidate.id === action.mechanicId) : undefined;
   const parsedEffect = knownEffectSchema.safeParse(action.effect);
   const appliedEffect = parsedEffect.success
     ? applyEffect(module, participant, parsedEffect.data, event)
-    : createPendingActionResolution(session, module, participant, action, event) ?? { type: "unsupported", effect: action.effect };
+    : applyExchangeAction(session, module, participant, action, mechanic, event) ??
+      createPendingActionResolution(session, module, participant, action, event) ??
+      { type: "unsupported", effect: action.effect };
 
   return {
     actionId,

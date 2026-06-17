@@ -115,6 +115,7 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /Transferer/);
   assert.match(response.body, /Corriger/);
   assert.match(response.body, /Attribuer role/);
+  assert.match(response.body, /Resolutions/);
 });
 
 test("serves a mobile participant app for session join", async () => {
@@ -749,6 +750,8 @@ test("opens pending contest resolutions from module mechanics", async () => {
   assert.equal(body.actionResult.effect.mechanicFamily, "contest");
   assert.equal(body.dashboard.pendingResolutions[0].type, "contestedBid");
   assert.equal(body.dashboard.pendingResolutions[0].resolution.type, "sealedCommitment");
+  assert.equal(body.dashboard.pendingResolutions[0].participantId, participant.participant.id);
+  assert.deepEqual(body.dashboard.pendingResolutions[0].payload.leaderIds, ["leader-a", "leader-b"]);
 });
 
 test("maps participant presence to imaginary zones and applies zone effects", async () => {

@@ -789,12 +789,35 @@ function declaredResolutionOutcomes(resolution: PendingResolution): ResolutionOu
   return parsed.success ? parsed.data : [];
 }
 
+function defaultResolutionEffects(resolution: PendingResolution): ResolutionEffect[] {
+  const declaration = objectRecord(resolution.resolution);
+  const parsed = z.array(resolutionEffectSchema).safeParse(declaration?.defaultEffects);
+  return parsed.success ? parsed.data : [];
+}
+
+function liveAdministrationPayloadEffects(resolution: PendingResolution): ResolutionEffect[] {
+  if (resolution.mechanicFamily !== "live-administration") {
+    return [];
+  }
+
+  const payload = objectRecord(resolution.payload);
+  const embezzlement = objectRecord(payload?.embezzlement);
+  const money = Number(embezzlement?.money ?? 0);
+  if (!Number.isFinite(money) || money <= 0) {
+    return [];
+  }
+
+  return [{ type: "adjustResource", resource: "money", delta: Math.floor(money) }];
+}
+
 function resolutionEffects(resolution: PendingResolution, input: z.infer<typeof resolveResolutionSchema>): ResolutionEffect[] {
   const declaredEffects = declaredResolutionOutcomes(resolution).find((outcome) => outcome.id === input.outcome)?.effects ?? [];
+  const defaultEffects = defaultResolutionEffects(resolution);
+  const payloadEffects = liveAdministrationPayloadEffects(resolution);
   if (!("effects" in input.payload)) {
-    return declaredEffects;
+    return [...declaredEffects, ...defaultEffects, ...payloadEffects];
   }
-  return [...declaredEffects, ...z.array(resolutionEffectSchema).parse(input.payload.effects)];
+  return [...declaredEffects, ...defaultEffects, ...payloadEffects, ...z.array(resolutionEffectSchema).parse(input.payload.effects)];
 }
 
 function roundedCounter(value: number, rounding: "floor" | "ceil" | "round"): number {
@@ -885,9 +908,10 @@ function resolvePendingResolution(session: Session, resolutionId: string, input:
   const resolution = session.pendingResolutions[index]!;
   const effects = applyResolutionEffects(session, resolution, input);
   session.pendingResolutions.splice(index, 1);
+  const publicSummary = objectRecord(resolution.visibility)?.participants === "public-summary";
   const message = createSessionMessage(session, {
-    target: resolution.participantId ? "participant" : "allParticipants",
-    participantId: resolution.participantId,
+    target: resolution.participantId && !publicSummary ? "participant" : "allParticipants",
+    participantId: publicSummary ? undefined : resolution.participantId,
     channel: "resolution",
     text: resolutionResolvedText(session, resolution, input)
   });
@@ -1611,6 +1635,12 @@ function participantName(session: Session, participantId?: string): string | und
   return participantId ? session.participants.find((participant) => participant.id === participantId)?.name : undefined;
 }
 
+function participantNames(session: Session, participantIds: unknown): string[] {
+  return Array.isArray(participantIds)
+    ? participantIds.map((participantId) => participantName(session, String(participantId)) ?? String(participantId))
+    : [];
+}
+
 function resolutionOutcomes(resolution: PendingResolution): ResolutionOutcome[] {
   const declared = declaredResolutionOutcomes(resolution);
   if (declared.length > 0) {
@@ -1642,6 +1672,19 @@ function resolutionOutcomes(resolution: PendingResolution): ResolutionOutcome[] 
 function resolutionSummary(session: Session, resolution: PendingResolution): string {
   const actor = participantName(session, resolution.participantId) ?? "Table";
   const payload = resolution.payload ?? {};
+  if (resolution.mechanicId === "minister-council-record") {
+    const attendees = participantNames(session, objectRecord(payload)?.attendeeIds);
+    const decisions = objectRecord(payload)?.decisions;
+    return attendees.length > 0
+      ? `${actor}: conseil avec ${attendees.join(", ")}`
+      : `${actor}: conseil des ministres${typeof decisions === "string" ? ` - ${decisions}` : ""}`;
+  }
+  if (resolution.mechanicId === "contested-coup") {
+    const defenderId = objectRecord(payload)?.defenderId;
+    const defender = defenderId ? participantName(session, String(defenderId)) ?? String(defenderId) : "defenseur a preciser";
+    const leaders = participantNames(session, objectRecord(payload)?.leaderIds);
+    return `${actor}: coup contre ${defender}${leaders.length ? `, leaders ${leaders.join(", ")}` : ""}`;
+  }
   if (typeof payload.petitionText === "string") {
     return `${actor}: ${payload.petitionText}`;
   }
@@ -1658,12 +1701,14 @@ function enrichResolution(session: Session, resolution: PendingResolution): Pend
   participantName?: string;
   summary: string;
   recommendedOutcomes: ResolutionOutcome[];
+  automaticEffects: ResolutionEffect[];
 } {
   return {
     ...resolution,
     participantName: participantName(session, resolution.participantId),
     summary: resolutionSummary(session, resolution),
-    recommendedOutcomes: resolutionOutcomes(resolution)
+    recommendedOutcomes: resolutionOutcomes(resolution),
+    automaticEffects: [...defaultResolutionEffects(resolution), ...liveAdministrationPayloadEffects(resolution)]
   };
 }
 
@@ -2029,6 +2074,40 @@ function renderIndex(): string {
       if (!outcome.description && effects.length === 0) return "";
       return '<div class="muted" data-resolution-outcome-detail="' + outcome.id + '">' + [outcome.description, effects.length ? "Effets: " + effects.join(" / ") : ""].filter(Boolean).join(" - ") + '</div>';
     }
+    function dashboardResourceBundleLabel(session, resources) {
+      const entries = Object.entries(resources || {}).filter(([, value]) => Number(value) > 0);
+      return entries.map(([key, value]) => dashboardResourceLabel(session, key) + ": " + value).join(" / ");
+    }
+    function dashboardParticipantNames(session, participantIds) {
+      return Array.isArray(participantIds) ? participantIds.map((participantId) => dashboardParticipantName(session, participantId)).join(", ") : "";
+    }
+    function dashboardResolutionPayloadDetails(session, resolution) {
+      const payload = resolution.payload || {};
+      if (resolution.mechanicId === "contested-coup") {
+        return [
+          "Defenseur: " + (payload.defenderId ? dashboardParticipantName(session, payload.defenderId) : "a preciser"),
+          payload.leaderIds ? "Leaders: " + dashboardParticipantNames(session, payload.leaderIds) : "",
+          payload.resources ? "Engagement: " + dashboardResourceBundleLabel(session, payload.resources) : ""
+        ].filter(Boolean).map((line) => '<div class="muted">' + line + '</div>').join("");
+      }
+      if (resolution.mechanicId === "minister-council-record") {
+        return [
+          payload.attendeeIds ? "Presents: " + dashboardParticipantNames(session, payload.attendeeIds) : "",
+          payload.embezzlement ? "Detournement: " + dashboardResourceBundleLabel(session, payload.embezzlement) : "",
+          payload.decisions ? "Decision: " + payload.decisions : ""
+        ].filter(Boolean).map((line) => '<div class="muted">' + line + '</div>').join("");
+      }
+      return resolution.payload ? '<div class="muted">' + JSON.stringify(resolution.payload) + '</div>' : "";
+    }
+    function dashboardAutomaticEffectDetails(session, resolution) {
+      const effects = (resolution.automaticEffects || []).map((effect) => dashboardResolutionEffectLabel(session, effect)).filter(Boolean);
+      return effects.length ? '<div class="muted">Effets auto: ' + effects.join(" / ") + '</div>' : "";
+    }
+    function dashboardResolutionClass(resolution) {
+      if (resolution.mechanicId === "contested-coup") return " coupResolution";
+      if (resolution.mechanicId === "minister-council-record") return " councilResolution";
+      return "";
+    }
     function dashboardActionInputLabel(input) {
       return input.label || input.name || input.id;
     }
@@ -2165,11 +2244,11 @@ function renderIndex(): string {
       byId("liveScenes").innerHTML = renderLiveSceneActions(session);
       byId("pendingResolutions").innerHTML = (session.pendingResolutions || []).map((resolution) => {
         const participant = session.participants.find((candidate) => candidate.id === resolution.participantId);
-        const payload = resolution.payload ? JSON.stringify(resolution.payload) : "";
+        const payload = dashboardResolutionPayloadDetails(session, resolution);
         const outcomeList = resolution.recommendedOutcomes || [{ id: "facilitator-resolved", label: "Marquer resolue" }];
         const outcomes = outcomeList.map((outcome) => '<button class="secondary resolveResolution" data-resolution-id="' + resolution.id + '" data-outcome="' + outcome.id + '">' + outcome.label + '</button>').join("");
         const outcomeDetails = outcomeList.map((outcome) => dashboardOutcomeDetails(session, outcome)).join("");
-        return '<div class="item"><strong>' + resolution.type + '</strong><div>' + (resolution.summary || (participant ? participant.name : "table")) + '</div><div class="muted">' + (resolution.mechanicId || resolution.mechanicFamily || "sans mecanique") + '</div><div class="muted">' + payload + '</div>' + outcomeDetails + '<label>Note MJ</label><input data-resolution-note placeholder="Note optionnelle" /><div class="row"><div><label>Cible effet</label><select data-resolution-effect-participant>' + dashboardParticipantOptions(session) + '</select></div><div><label>Ressource</label><select data-resolution-resource>' + dashboardResourceOptions(session) + '</select></div></div><label>Delta ressource</label><input type="number" value="0" data-resolution-resource-delta /><div class="row"><div><label>Statut</label><input data-resolution-state placeholder="ex: coupOutcome" /></div><div><label>Valeur</label><input data-resolution-state-value placeholder="ex: attacker-wins" /></div></div><div class="actions">' + outcomes + '</div></div>';
+        return '<div class="item' + dashboardResolutionClass(resolution) + '"><strong>' + resolution.type + '</strong><div>' + (resolution.summary || (participant ? participant.name : "table")) + '</div><div class="muted">' + (resolution.mechanicId || resolution.mechanicFamily || "sans mecanique") + '</div>' + payload + dashboardAutomaticEffectDetails(session, resolution) + outcomeDetails + '<label>Note MJ</label><input data-resolution-note placeholder="Note optionnelle" /><div class="row"><div><label>Cible effet</label><select data-resolution-effect-participant>' + dashboardParticipantOptions(session) + '</select></div><div><label>Ressource</label><select data-resolution-resource>' + dashboardResourceOptions(session) + '</select></div></div><label>Delta ressource</label><input type="number" value="0" data-resolution-resource-delta /><div class="row"><div><label>Statut</label><input data-resolution-state placeholder="ex: coupOutcome" /></div><div><label>Valeur</label><input data-resolution-state-value placeholder="ex: attacker-wins" /></div></div><div class="actions">' + outcomes + '</div></div>';
       }).join("") || '<div class="muted">Aucune resolution en attente</div>';
       byId("audit").textContent = JSON.stringify((session.audit || []).slice(-12), null, 2);
       byId("state").textContent = JSON.stringify(session, null, 2);

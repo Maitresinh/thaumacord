@@ -159,6 +159,10 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /Valider la scene/);
   assert.match(response.body, /Resolutions/);
   assert.match(response.body, /recommendedOutcomes/);
+  assert.match(response.body, /dashboardResolutionPayloadDetails/);
+  assert.match(response.body, /dashboardAutomaticEffectDetails/);
+  assert.match(response.body, /councilResolution/);
+  assert.match(response.body, /coupResolution/);
   assert.match(response.body, /data-outcome/);
   assert.match(response.body, /renderStatusList/);
   assert.match(response.body, /collectResolutionPayload/);
@@ -1082,6 +1086,9 @@ test("opens pending live administration records for Putsch council results", asy
   const code = session.code;
   const director = await createParticipant(code, "Paquito", "facilitator-capitalist");
   const minister = await createParticipant(code, "General", "general");
+  await injectJson("POST", `/sessions/${code}/session-roles/game-authority`, {
+    participantId: director.participant.id
+  });
   await advancePhase(code);
   await advancePhase(code);
   await advancePhase(code);
@@ -1102,8 +1109,83 @@ test("opens pending live administration records for Putsch council results", asy
   assert.equal(council.actionResult.effect.type, "pendingResolution");
   assert.equal(council.actionResult.effect.mechanicId, "minister-council-record");
   assert.equal(council.actionResult.effect.mechanicFamily, "live-administration");
+  assert.equal(council.dashboard.pendingResolutions[0].summary, "Paquito: conseil avec Paquito, General");
   assert.equal(council.dashboard.pendingResolutions[0].payload.decisions, "Le conseil valide un detournement et ajourne le prochain tour.");
   assert.deepEqual(council.dashboard.pendingResolutions[0].payload.embezzlement, { money: 5000 });
+  assert.deepEqual(
+    council.dashboard.pendingResolutions[0].automaticEffects.map((effect: JsonObject) => effect.type),
+    ["setSessionState", "adjustResource"]
+  );
+
+  const resolved = await injectJson("POST", `/sessions/${code}/resolutions/${council.dashboard.pendingResolutions[0].id}/resolve`, {
+    outcome: "facilitator-resolved",
+    note: "Compte rendu valide."
+  });
+
+  assert.equal(resolved.resolveResult.effects.find((effect: JsonObject) => effect.type === "adjustResource").after, 5000);
+  assert.equal(resolved.dashboard.statuses.firstCouncilDue, false);
+  assert.equal(resolved.dashboard.participants.find((candidate: JsonObject) => candidate.id === director.participant.id).resources.money, 5000);
+  assert.equal(resolved.dashboard.messages.at(-1).target, "allParticipants");
+});
+
+test("runs the stripped Putsch operational demo path", async () => {
+  const session = await createSession("putsch-lite");
+  const code = session.code;
+  const director = await createParticipant(code, "Paquito", "facilitator-capitalist");
+  const general = await createParticipant(code, "General", "general");
+  const dealer = await createParticipant(code, "Marchand", "dealer");
+  const fun = await createParticipant(code, "Raul", "fun-agent");
+  await injectJson("POST", `/sessions/${code}/session-roles/game-authority`, {
+    participantId: director.participant.id
+  });
+
+  const marketTrade = await createExchange(code, {
+    fromParticipantId: general.participant.id,
+    toParticipantId: dealer.participant.id,
+    resources: { weapons: 1 }
+  });
+  assert.equal(marketTrade.exchangeResult.transfers[0].from.after, 1);
+
+  await advancePhase(code);
+  await advancePhase(code);
+  const coup = await injectJson("POST", `/sessions/${code}/events`, {
+    type: "action.requested",
+    actionId: "attempt-coup",
+    participantId: general.participant.id,
+    payload: {
+      defenderId: fun.participant.id,
+      leaderIds: [general.participant.id, dealer.participant.id],
+      resources: { weapons: 1, ammo: 1 }
+    }
+  });
+  const coupResolutionId = coup.dashboard.pendingResolutions[0].id;
+  const resolvedCoup = await injectJson("POST", `/sessions/${code}/resolutions/${coupResolutionId}/resolve`, {
+    outcome: "attacker-wins"
+  });
+  assert.equal(resolvedCoup.dashboard.statuses.copperPrice, 500);
+  assert.equal(resolvedCoup.dashboard.statuses.firstCouncilDue, true);
+
+  await advancePhase(code);
+  await advancePhase(code);
+  const council = await injectJson("POST", `/sessions/${code}/events`, {
+    type: "action.requested",
+    actionId: "record-minister-council",
+    participantId: director.participant.id,
+    payload: {
+      attendeeIds: [director.participant.id, general.participant.id],
+      embezzlement: { money: 5000 },
+      decisions: "Le conseil clot la crise apres le coup."
+    }
+  });
+  const councilResolutionId = council.dashboard.pendingResolutions[0].id;
+  const resolvedCouncil = await injectJson("POST", `/sessions/${code}/resolutions/${councilResolutionId}/resolve`, {
+    outcome: "facilitator-resolved"
+  });
+
+  assert.equal(resolvedCouncil.dashboard.statuses.firstCouncilDue, false);
+  assert.equal(resolvedCouncil.dashboard.participants.find((candidate: JsonObject) => candidate.id === director.participant.id).resources.money, 5000);
+  assert.equal(resolvedCouncil.dashboard.messages.at(-1).target, "allParticipants");
+  assert.equal(resolvedCouncil.dashboard.pendingResolutions.length, 0);
 });
 
 test("lets the facilitator resolve a pending resolution", async () => {

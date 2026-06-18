@@ -13,6 +13,8 @@ Core verbs:
 - connect players to a session;
 - bind players/devices to game participants;
 - exchange resources between participants;
+- declare and resolve a coup attempt;
+- record and resolve a minister council scene;
 - help the facilitator follow, message, correct, and audit the table.
 
 Non-goals:
@@ -23,7 +25,7 @@ Non-goals:
 - no zones;
 - no hybrid mapping;
 - no card/deck operations unless strictly needed;
-- no complete automatic coup resolution;
+- no complete automatic coup resolution beyond facilitator outcome buttons;
 - no full vote engine;
 - no economic simulation;
 - no Mandragore.
@@ -38,7 +40,10 @@ Non-goals:
 6. Facilitator can send private or public messages.
 7. Facilitator can manually adjust resources or roles.
 8. Dashboard shows participants, device bindings, resources, exchanges, messages, and audit.
-9. Optional: coup phase lets a participant open a pending coup resolution, but only if the core loop is already stable.
+9. Coup phase lets a participant open a pending coup resolution.
+10. Facilitator resolves the coup with outcome buttons; copper price and council flags update.
+11. First council phase lets Paquito record attendees, embezzlement, and decisions.
+12. Facilitator resolves the council; money and `firstCouncilDue` update, and a public summary message is sent.
 
 ### Acceptance Criteria
 
@@ -49,6 +54,7 @@ Non-goals:
 - Dashboard messages can be sent to one participant and all participants.
 - Audit log shows session creation, device/participant binding, exchange, message, and correction.
 - Facilitator can answer "who has what?" from the dashboard without asking the table.
+- Facilitator can run the stripped Putsch path: market exchange, coup, outcome, council record, council resolution.
 - Any missing manual step is explicitly listed.
 
 ### Required Technical Gaps
@@ -62,6 +68,18 @@ Non-goals:
   - send message;
   - advance phase only if useful for the demo.
 - Optional seeded scenario for faster setup.
+
+### Demo Script
+
+1. Click `Scenario Putsch test`.
+2. During `Marche`, make at least one exchange, for example General -> Marchand.
+3. Use `Phase suivante` until `Coup d'Etat`.
+4. From a participant phone or API action, trigger `attempt-coup`.
+5. In dashboard `Resolutions`, choose `Attaquant gagne` or `Defense gagne`.
+6. Use `Phase suivante` until `Premier conseil`.
+7. In `Scenes guidees`, use `Enregistrer le conseil`: select attendees, enter the embezzlement amount and decision text.
+8. In `Resolutions`, mark the council resolved.
+9. Confirm dashboard resources, `firstCouncilDue`, messages, and audit changed.
 
 ## Deliverable 2: Long Live The King Council Slice
 

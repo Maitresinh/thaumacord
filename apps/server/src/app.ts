@@ -1698,7 +1698,7 @@ function renderIndex(): string {
         <select id="module"></select>
           <div class="actions">
             <button id="create">Creer</button>
-            <button id="seed" class="success">Scenario 4 joueurs</button>
+            <button id="seed" class="success">Scenario Putsch test</button>
             <button id="refresh" class="secondary">Rafraichir</button>
           </div>
         <label for="code">Code session</label>
@@ -1845,10 +1845,11 @@ function renderIndex(): string {
     let currentSession;
     let liveSocket;
     const demoPlayers = [
-      { name: "Ana", roleId: "general" },
-      { name: "Basile", roleId: "dealer" },
-      { name: "Carmen", roleId: "general" },
-      { name: "Diego", roleId: "dealer" }
+      { name: "Paquito", roleId: "facilitator-capitalist", sessionRoleId: "game-authority" },
+      { name: "James", roleId: "kgb-agent" },
+      { name: "Giani", roleId: "cia-agent" },
+      { name: "Raul", roleId: "fun-agent" },
+      { name: "Miltos", roleId: "gag-agent" }
     ];
     function byId(id) { return document.querySelector("#" + id); }
     function setError(message) { byId("error").textContent = message || ""; }
@@ -2049,6 +2050,9 @@ function renderIndex(): string {
         const participant = await api("/sessions/" + session.code + "/participants", { method: "POST", body: JSON.stringify({ name: player.name, roleId: player.roleId }) });
         const device = await api("/sessions/" + session.code + "/devices", { method: "POST", body: JSON.stringify({ name: "Telephone " + player.name }) });
         await api("/sessions/" + session.code + "/devices/" + device.device.id + "/bind", { method: "POST", body: JSON.stringify({ participantId: participant.participant.id }) });
+        if (player.sessionRoleId) {
+          await api("/sessions/" + session.code + "/session-roles/" + player.sessionRoleId, { method: "POST", body: JSON.stringify({ participantId: participant.participant.id }) });
+        }
       }
       await api("/sessions/" + session.code + "/messages", { method: "POST", body: JSON.stringify({ target: "allParticipants", channel: "demo", text: "Le marche ouvre." }) });
       await refresh();

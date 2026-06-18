@@ -114,7 +114,10 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /id="participantLink"/);
   assert.match(response.body, /Copier lien participant/);
   assert.match(response.body, /navigator.clipboard/);
-  assert.match(response.body, /Scenario 4 joueurs/);
+  assert.match(response.body, /Scenario Putsch test/);
+  assert.match(response.body, /Paquito/);
+  assert.match(response.body, /facilitator-capitalist/);
+  assert.match(response.body, /player.sessionRoleId/);
   assert.match(response.body, /Transferer/);
   assert.match(response.body, /Echanges/);
   assert.match(response.body, /Corriger/);

@@ -127,8 +127,7 @@
     ],
     "distributions": [
       { "id": "initial-intrigue", "componentId": "intrigue-card", "target": "allParticipants", "count": 2, "visibility": "private" },
-      { "id": "initial-status", "componentId": "status-card", "target": "allParticipants", "count": 1, "visibility": "private" },
-      { "id": "queen-status-bonus", "componentId": "status-card", "target": "role", "roleId": "queen", "count": 1, "visibility": "private" }
+      { "id": "initial-status", "componentId": "status-card", "target": "allParticipants", "countResource": "status", "visibility": "private" }
     ]
   },
   "mechanics": [

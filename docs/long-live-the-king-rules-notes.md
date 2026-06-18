@@ -15,6 +15,7 @@ Use the spreadsheet as the source of truth for detailed character sheets, role n
 - If the King is sick, the heir or regent may rule directly; without an heir, Council becomes democratic.
 - Status controls petition order and voting order, from low Status upward, with high Status interruption rights.
 - Intrigue cards are freely tradable and start at 2 per main courtier.
+- Status cards are distributed from the role's current `status` resource.
 - Health uses 10 cards, with 6 lined up at setup; no health card is normally revealed on turn 1.
 - Mobilization and Rebellion are public 5-card tracks.
 - The last Council cannot be missed by the King.
@@ -22,7 +23,6 @@ Use the spreadsheet as the source of truth for detailed character sheets, role n
 ## Still To Model
 
 - Exact role sheets from the spreadsheet.
-- Dynamic Status-card distribution equal to each role's starting Status.
 - Audience automation for income and Intrigue draws by role.
 - Decision-card draw and petition outcome calculation.
 - Dungeon automatic release petitions at the start of Council.

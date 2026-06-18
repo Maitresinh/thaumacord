@@ -706,20 +706,21 @@ test("runs module setup distributions into participant inventories", async () =>
   assert.equal(body.accepted, true);
   assert.equal(body.setupResult.applied, true);
   assert.equal(body.setupResult.phaseId, "setup");
-  assert.equal(body.setupResult.distributions.length, 3);
+  assert.equal(body.setupResult.distributions.length, 2);
+  assert.equal(body.setupResult.distributions.find((distribution: JsonObject) => distribution.id === "initial-status").countResource, "status");
   assert.equal(body.dashboard.componentPools["intrigue-card"].remaining, 76);
-  assert.equal(body.dashboard.componentPools["status-card"].remaining, 29);
+  assert.equal(body.dashboard.componentPools["status-card"].remaining, 25);
   assert.equal(body.dashboard.aggregates.inventory["intrigue-card"], 4);
-  assert.equal(body.dashboard.aggregates.inventory["status-card"], 3);
+  assert.equal(body.dashboard.aggregates.inventory["status-card"], 7);
   assert.equal(body.dashboard.aggregates.componentPools["intrigue-card"].remaining, 76);
 
   const queenModel = await injectJson("GET", `/sessions/${code}/read-models/device/${queenDevice.device.id}`);
   const baronModel = await injectJson("GET", `/sessions/${code}/read-models/device/${baronDevice.device.id}`);
   assert.equal(queenModel.participant.inventory["intrigue-card"], 2);
-  assert.equal(queenModel.participant.inventory["status-card"], 2);
+  assert.equal(queenModel.participant.inventory["status-card"], 4);
   assert.equal(queenModel.aggregates, undefined);
   assert.equal(baronModel.participant.inventory["intrigue-card"], 2);
-  assert.equal(baronModel.participant.inventory["status-card"], 1);
+  assert.equal(baronModel.participant.inventory["status-card"], 3);
 });
 
 test("draws components from pools into participant inventories", async () => {

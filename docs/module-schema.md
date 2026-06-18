@@ -89,6 +89,13 @@ This is the first conceptual schema for importable Thaumacord modules.
         "target": "allParticipants",
         "count": 1,
         "visibility": "private"
+      },
+      {
+        "id": "initial-status",
+        "componentId": "status-card",
+        "target": "allParticipants",
+        "countResource": "status",
+        "visibility": "private"
       }
     ]
   },
@@ -194,6 +201,8 @@ Default phase durations come from `phases[].durationSeconds`. A facilitator can 
 - `phaseId`: setup phase;
 - `instructions`: facilitator-facing setup checklist;
 - `distributions`: initial component distribution rules.
+
+Distribution entries can use either a fixed `count` or `countResource`. `countResource` draws a different number of components for each target participant based on that participant's current resource value, which is useful for Long Live the King status cards and similar role-derived setup.
 
 The prototype supports `POST /sessions/:code/setup/distribute`, which draws from session `componentPools`, applies setup distributions to `participant.inventory`, and audits `setup.distributed`.
 

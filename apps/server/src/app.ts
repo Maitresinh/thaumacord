@@ -99,8 +99,11 @@ const setupDistributionSchema = z.object({
   componentId: z.string().min(1),
   target: z.enum(["allParticipants", "role"]),
   roleId: z.string().min(1).optional(),
-  count: z.number().int().positive(),
+  count: z.number().int().positive().optional(),
+  countResource: z.string().min(1).optional(),
   visibility: z.string().default("private")
+}).refine((value) => value.count !== undefined || value.countResource !== undefined, {
+  message: "count or countResource is required"
 });
 
 const setupSchema = z.object({
@@ -904,15 +907,25 @@ function runSetupDistribution(session: Session): Record<string, unknown> {
       return participant.roleId === distribution.roleId;
     });
 
-    const draw = drawComponents(session, component.id, targets.length * distribution.count);
+    const countsByParticipant = Object.fromEntries(
+      targets.map((participant) => [
+        participant.id,
+        distribution.countResource ? Math.max(0, Math.floor(participant.resources[distribution.countResource] ?? 0)) : distribution.count!
+      ])
+    );
+    const totalCount = Object.values(countsByParticipant).reduce((sum, count) => sum + count, 0);
+
+    const draw = drawComponents(session, component.id, totalCount);
     for (const participant of targets) {
-      participant.inventory[component.id] = (participant.inventory[component.id] ?? 0) + distribution.count;
+      participant.inventory[component.id] = (participant.inventory[component.id] ?? 0) + countsByParticipant[participant.id]!;
     }
 
     return {
       id: distribution.id,
       componentId: component.id,
       count: distribution.count,
+      countResource: distribution.countResource,
+      countsByParticipant,
       target: distribution.target,
       roleId: distribution.roleId,
       participantIds: targets.map((participant) => participant.id),

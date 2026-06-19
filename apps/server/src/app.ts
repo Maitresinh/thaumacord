@@ -1424,6 +1424,7 @@ function actionAvailability(session: Session, participant: Participant): ActionA
       gesture: action.gesture,
       fallback: action.fallback,
       mechanicId: action.mechanicId,
+      mechanicFamily: mechanic?.family,
       inputs,
       available: blockedBy.length === 0,
       blockedBy
@@ -2622,7 +2623,15 @@ function renderParticipantApp(): string {
       return "Tour " + clock.turn + " - " + (clock.phaseDurationSeconds || "sans duree") + "s - fin " + end;
     }
     function actionInputLabel(input) {
-      return input.label || input.name || input.id;
+      const labels = {
+        toParticipantId: "Envoyer a",
+        defenderId: "Cible",
+        leaderIds: "Leaders",
+        resources: "Ressources engagees",
+        petitionText: "Demande",
+        votes: "Vote"
+      };
+      return input.label || input.name || labels[input.id] || input.id;
     }
     function participantOptions(model, includeSelf) {
       return (model.visibleParticipants || [])
@@ -2648,9 +2657,21 @@ function renderParticipantApp(): string {
       }
       if (input.type === "resource-bundle") {
         const resources = input.allowed || Object.keys(model.participant.resources || {});
-        return '<div class="stack">' + resources.map((resourceId) => '<label>' + resourceLabel(model, resourceId) + '</label><input type="number" min="0" value="0" data-action-input="' + input.id + '" data-resource-id="' + resourceId + '" />').join("") + '</div>';
+        return '<div class="stack">' + resources.map((resourceId) => '<label>' + resourceLabel(model, resourceId) + ' <span class="muted">dispo ' + ((model.participant.resources || {})[resourceId] ?? 0) + '</span></label><input type="number" min="0" max="' + ((model.participant.resources || {})[resourceId] ?? 0) + '" value="0" data-action-input="' + input.id + '" data-resource-id="' + resourceId + '" />').join("") + '</div>';
       }
       return '<label>' + label + '</label><input data-action-input="' + input.id + '" placeholder="' + label + '" />';
+    }
+    function actionVerb(action) {
+      if (action.mechanicFamily === "exchange") return "Proposer l'echange";
+      if (action.mechanicFamily === "contest") return "Declarer";
+      if (action.mechanicFamily === "petition") return "Soumettre";
+      return "Declencher";
+    }
+    function actionHint(action) {
+      if (action.mechanicFamily === "exchange") return "Action disponible pendant cette phase: le transfert sera controle par les regles.";
+      if (action.mechanicFamily === "contest") return "Choisis la cible, les leaders et les ressources engagees.";
+      if (action.mechanicFamily === "petition") return "La demande sera envoyee au meneur pour resolution.";
+      return action.fallback || action.id;
     }
     function actionForm(model, action) {
       const inputs = action.inputs || [];
@@ -2707,7 +2728,7 @@ function renderParticipantApp(): string {
         return '<div class="item"><strong>' + direction + '</strong><div>' + resources + '</div></div>';
       }).join("") || '<div class="muted">Aucun echange</div>';
       byId("messages").innerHTML = (model.messages || []).slice(-5).map((message) => '<div class="item"><strong>' + message.channel + '</strong><div>' + message.text + '</div></div>').join("") || '<div class="muted">Aucun message</div>';
-      byId("actions").innerHTML = (model.availableActions || []).filter((action) => action.available).map((action) => '<div class="item"><strong>' + action.name + '</strong><div class="muted">' + (action.fallback || action.id) + '</div>' + actionForm(model, action) + '<button class="secondary actionButton" data-action-id="' + action.id + '">Declencher</button></div>').join("") || '<div class="muted">Aucune action disponible</div>';
+      byId("actions").innerHTML = (model.availableActions || []).filter((action) => action.available).map((action) => '<div class="item actionCard action-' + (action.mechanicFamily || "generic") + '"><strong>' + action.name + '</strong><div class="muted">' + actionHint(action) + '</div>' + actionForm(model, action) + '<button class="secondary actionButton" data-action-id="' + action.id + '">' + actionVerb(action) + '</button></div>').join("") || '<div class="muted">Aucune action disponible</div>';
     }
     byId("loadSession").addEventListener("click", () => run(loadSession));
     byId("join").addEventListener("click", () => run(async () => {

@@ -197,6 +197,10 @@ test("serves a mobile participant app for session join", async () => {
   assert.match(response.body, /id="statuses"/);
   assert.match(response.body, /renderStatuses/);
   assert.match(response.body, /actionInputControl/);
+  assert.match(response.body, /actionVerb/);
+  assert.match(response.body, /actionHint/);
+  assert.match(response.body, /Proposer l'echange/);
+  assert.match(response.body, /Ressources engagees/);
   assert.match(response.body, /collectActionPayload/);
   assert.match(response.body, /data-action-input/);
   assert.match(response.body, /Afficher debug/);
@@ -605,6 +609,7 @@ test("exposes mechanic inputs on participant action read models", async () => {
   const marketModel = await injectJson("GET", `/sessions/${code}/read-models/device/${joined.device.id}`);
   const sellWeapons = marketModel.availableActions.find((action: JsonObject) => action.id === "sell-weapons");
   assert.equal(sellWeapons.available, true);
+  assert.equal(sellWeapons.mechanicFamily, "exchange");
   assert.deepEqual(sellWeapons.inputs.find((input: JsonObject) => input.id === "resources").allowed, ["money", "weapons"]);
 
   await advancePhase(code);
@@ -613,6 +618,7 @@ test("exposes mechanic inputs on participant action read models", async () => {
   const coup = model.availableActions.find((action: JsonObject) => action.id === "attempt-coup");
 
   assert.equal(coup.available, true);
+  assert.equal(coup.mechanicFamily, "contest");
   assert.deepEqual(
     coup.inputs.map((input: JsonObject) => input.id),
     ["defenderId", "leaderIds", "resources"]

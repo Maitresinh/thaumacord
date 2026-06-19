@@ -1095,6 +1095,18 @@ function mechanicResourceInput(mechanic: GameModule["mechanics"][number] | undef
   return mechanic?.inputs.map(objectRecord).find((input) => input?.type === "resource-bundle");
 }
 
+function actionAllowedResources(
+  module: GameModule,
+  action: GameModule["actions"][number],
+  mechanic: GameModule["mechanics"][number] | undefined
+): string[] {
+  const effect = objectRecord(action.effect);
+  const mechanicAllowed = stringArray(mechanicResourceInput(mechanic)?.allowed);
+  const effectResources = stringArray(effect?.resources);
+  const effectResource = typeof effect?.resource === "string" ? [effect.resource] : undefined;
+  return effectResources ?? effectResource ?? mechanicAllowed ?? module.resources.map((resource) => resource.id);
+}
+
 function actionExchangeResources(
   module: GameModule,
   action: GameModule["actions"][number],
@@ -1106,12 +1118,7 @@ function actionExchangeResources(
     throw new Error("Action exchange requires resources");
   }
 
-  const effect = objectRecord(action.effect);
-  const mechanicAllowed = stringArray(mechanicResourceInput(mechanic)?.allowed);
-  const effectResources = stringArray(effect?.resources);
-  const effectResource = typeof effect?.resource === "string" ? [effect.resource] : undefined;
-  const allowedResources = effectResources ?? effectResource ?? mechanicAllowed ?? module.resources.map((resource) => resource.id);
-  const allowed = new Set(allowedResources);
+  const allowed = new Set(actionAllowedResources(module, action, mechanic));
   if (Object.keys(rawResources).length === 0) {
     throw new Error("Action exchange requires at least one resource");
   }
@@ -1400,6 +1407,15 @@ function actionAvailability(session: Session, participant: Participant): ActionA
     const inputs = (mechanic?.inputs ?? []).filter((input) => {
       if (typeof input !== "object" || input === null) return true;
       return (input as Record<string, unknown>).source !== "actor-or-bound-device";
+    }).map((input) => {
+      const inputRecord = objectRecord(input);
+      if (inputRecord?.type !== "resource-bundle") {
+        return input;
+      }
+      return {
+        ...inputRecord,
+        allowed: actionAllowedResources(module, action, mechanic)
+      };
     });
     return {
       id: action.id,
@@ -1867,25 +1883,6 @@ function renderIndex(): string {
         </section>
 
         <section>
-          <h2>Echange</h2>
-          <label for="exchangeFrom">Depuis</label>
-          <select id="exchangeFrom"></select>
-          <label for="exchangeTo">Vers</label>
-          <select id="exchangeTo"></select>
-          <div class="row">
-            <div>
-              <label for="exchangeResource">Ressource</label>
-              <select id="exchangeResource"></select>
-            </div>
-            <div>
-              <label for="exchangeAmount">Quantite</label>
-              <input id="exchangeAmount" type="number" min="1" value="1" />
-            </div>
-          </div>
-          <button id="exchange" class="success">Transferer</button>
-        </section>
-
-        <section>
           <h2>Controles de jeu</h2>
           <div id="gameControls" class="list"></div>
         </section>
@@ -2230,7 +2227,6 @@ function renderIndex(): string {
       const module = await api("/modules/" + moduleId);
       byId("roleId").innerHTML = module.roles.map((role) => option(role.id, role.name)).join("");
       byId("assignRoleId").innerHTML = module.roles.map((role) => option(role.id, role.name)).join("");
-      byId("exchangeResource").innerHTML = module.resources.map((resource) => option(resource.id, resource.name)).join("");
       byId("resourceId").innerHTML = module.resources.map((resource) => option(resource.id, resource.name)).join("");
     }
     async function refresh() {
@@ -2289,8 +2285,6 @@ function renderIndex(): string {
       const participantOptions = session.participants.map((participant) => option(participant.id, participant.name)).join("");
       const messageOptions = option("allParticipants", "Tous") + option("dashboard", "Dashboard") + session.participants.map((participant) => option("participant:" + participant.id, participant.name)).join("");
       byId("bindParticipantId").innerHTML = participantOptions;
-      byId("exchangeFrom").innerHTML = participantOptions;
-      byId("exchangeTo").innerHTML = participantOptions;
       byId("resourceParticipant").innerHTML = participantOptions;
       byId("roleParticipant").innerHTML = participantOptions;
       byId("sessionRoleParticipant").innerHTML = option("", "Non assigne") + participantOptions;
@@ -2388,14 +2382,6 @@ function renderIndex(): string {
     }));
     byId("bind").addEventListener("click", () => run(async () => {
       await api("/sessions/" + sessionCode + "/devices/" + byId("bindDeviceId").value + "/bind", { method: "POST", body: JSON.stringify({ participantId: byId("bindParticipantId").value }) });
-      await refresh();
-    }));
-    byId("exchange").addEventListener("click", () => run(async () => {
-      await api("/sessions/" + sessionCode + "/exchanges", { method: "POST", body: JSON.stringify({
-        fromParticipantId: byId("exchangeFrom").value,
-        toParticipantId: byId("exchangeTo").value,
-        resources: { [byId("exchangeResource").value]: Number(byId("exchangeAmount").value) }
-      }) });
       await refresh();
     }));
     byId("sendMessage").addEventListener("click", () => run(async () => {
@@ -2539,14 +2525,6 @@ function renderParticipantApp(): string {
       <div id="resources" class="stack"></div>
       <h3>Statuts</h3>
       <div id="statuses" class="stack"></div>
-      <h3>Echange</h3>
-      <label for="exchangeTo">Vers</label>
-      <select id="exchangeTo"></select>
-      <label for="exchangeResource">Ressource</label>
-      <select id="exchangeResource"></select>
-      <label for="exchangeAmount">Quantite</label>
-      <input id="exchangeAmount" type="number" min="1" value="1" />
-      <button id="sendExchange" class="success">Transferer</button>
       <h3>Historique des echanges</h3>
       <div id="exchanges" class="stack"></div>
       <h3>Messages</h3>
@@ -2723,10 +2701,6 @@ function renderParticipantApp(): string {
       byId("roleDetails").innerHTML = renderRoleDetails(model);
       byId("resources").innerHTML = Object.entries(model.participant.resources || {}).map(([key, value]) => '<div class="item"><strong>' + resourceLabel(model, key) + '</strong><div>' + value + '</div></div>').join("") || '<div class="muted">Aucune ressource</div>';
       byId("statuses").innerHTML = renderStatuses(model.participant.statuses);
-      const otherParticipants = (model.visibleParticipants || []).filter((participant) => participant.id !== model.participant.id);
-      byId("exchangeTo").innerHTML = otherParticipants.map((participant) => option(participant.id, participant.name + (participant.roleId ? " (" + roleLabel(model, participant.roleId) + ")" : ""))).join("");
-      byId("exchangeResource").innerHTML = Object.keys(model.participant.resources || {}).map((resourceId) => option(resourceId, resourceLabel(model, resourceId))).join("");
-      byId("sendExchange").disabled = otherParticipants.length === 0;
       byId("exchanges").innerHTML = (model.exchanges || []).slice(-5).map((exchange) => {
         const direction = exchange.fromParticipantId === model.participant.id ? "envoye" : "recu";
         const resources = Object.entries(exchange.resources).map(([key, value]) => resourceLabel(model, key) + ": " + value).join(" / ");
@@ -2748,14 +2722,6 @@ function renderParticipantApp(): string {
       localStorage.setItem("thaumacord.sessionCode", sessionCode);
       connectLive(sessionCode, deviceId);
       render(result.readModel);
-    }));
-    byId("sendExchange").addEventListener("click", () => run(async () => {
-      await api("/sessions/" + sessionCode + "/exchanges", { method: "POST", body: JSON.stringify({
-        sourceDeviceId: deviceId,
-        toParticipantId: byId("exchangeTo").value,
-        resources: { [byId("exchangeResource").value]: Number(byId("exchangeAmount").value) }
-      }) });
-      await refreshDevice();
     }));
     byId("actions").addEventListener("click", (event) => run(async () => {
       const button = event.target.closest(".actionButton");

@@ -36,7 +36,7 @@ Non-goals:
 2. Facilitator creates participants and assigns roles.
 3. Devices are registered and bound to participants.
 4. Participants see resources, current phase, actions, messages, and available actions.
-5. Market phase allows simplified exchanges through buttons/API.
+5. Market phase allows simplified exchanges through game action controls.
 6. Facilitator can send private or public messages.
 7. Facilitator can manually adjust resources or roles.
 8. Dashboard shows participants, device bindings, resources, exchanges, messages, and audit.
@@ -64,7 +64,7 @@ Non-goals:
   - create session;
   - create/bind participant;
   - set resource;
-  - exchange resources;
+  - trigger phase actions such as exchange resources;
   - send message;
   - advance phase only if useful for the demo.
 - Optional seeded scenario for faster setup.
@@ -72,7 +72,7 @@ Non-goals:
 ### Demo Script
 
 1. Click `Scenario Putsch test`.
-2. During `Marche`, make at least one exchange, for example General -> Marchand.
+2. During `Marche`, use `Controles de jeu` to make at least one exchange action, for example General -> Marchand.
 3. Use `Phase suivante` until `Coup d'Etat`.
 4. From a participant phone or API action, trigger `attempt-coup`.
 5. In dashboard `Resolutions`, choose `Attaquant gagne` or `Defense gagne`.

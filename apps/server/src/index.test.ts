@@ -141,7 +141,6 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /Paquito/);
   assert.match(response.body, /facilitator-capitalist/);
   assert.match(response.body, /player.sessionRoleId/);
-  assert.match(response.body, /Transferer/);
   assert.match(response.body, /Echanges/);
   assert.match(response.body, /Controles de jeu/);
   assert.match(response.body, /id="gameControls"/);
@@ -192,7 +191,6 @@ test("serves a mobile participant app for session join", async () => {
   assert.match(response.body, /forgetDevice/);
   assert.match(response.body, /Le MJ attribuera/);
   assert.match(response.body, /Entrer dans la partie/);
-  assert.match(response.body, /Transferer/);
   assert.match(response.body, /Declencher/);
   assert.match(response.body, /id="roleDetails"/);
   assert.match(response.body, /renderRoleDetails/);
@@ -603,6 +601,11 @@ test("exposes mechanic inputs on participant action read models", async () => {
     name: "Ana",
     roleId: "general"
   });
+
+  const marketModel = await injectJson("GET", `/sessions/${code}/read-models/device/${joined.device.id}`);
+  const sellWeapons = marketModel.availableActions.find((action: JsonObject) => action.id === "sell-weapons");
+  assert.equal(sellWeapons.available, true);
+  assert.deepEqual(sellWeapons.inputs.find((input: JsonObject) => input.id === "resources").allowed, ["money", "weapons"]);
 
   await advancePhase(code);
   await advancePhase(code);

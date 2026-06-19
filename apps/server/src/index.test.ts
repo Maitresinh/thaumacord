@@ -203,8 +203,10 @@ test("serves a mobile participant app for session join", async () => {
   assert.match(response.body, /Ressources engagees/);
   assert.match(response.body, /collectActionPayload/);
   assert.match(response.body, /data-action-input/);
-  assert.match(response.body, /Afficher debug/);
-  assert.match(response.body, /id="debugPanel" class="hidden"/);
+  assert.match(response.body, /Actions de cette phase/);
+  assert.match(response.body, /Aucune action disponible dans cette phase/);
+  assert.doesNotMatch(response.body, /Afficher debug/);
+  assert.doesNotMatch(response.body, /id="debugPanel"/);
 });
 
 test("lets a participant join with a chosen role and receive a filtered read model", async () => {

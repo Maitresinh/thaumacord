@@ -2530,16 +2530,10 @@ function renderParticipantApp(): string {
       <div id="exchanges" class="stack"></div>
       <h3>Messages</h3>
       <div id="messages" class="stack"></div>
-      <h3>Actions disponibles</h3>
+      <h3>Actions de cette phase</h3>
       <div id="actions" class="stack"></div>
       <button id="leave" class="secondary">Oublier cet appareil</button>
     </section>
-
-    <section id="debugPanel" class="hidden">
-      <h2>Debug</h2>
-      <pre id="state">Non connecte.</pre>
-    </section>
-    <button id="toggleDebug" class="secondary">Afficher debug</button>
   </main>
   <script>
     let liveSocket;
@@ -2703,7 +2697,6 @@ function renderParticipantApp(): string {
       return payload;
     }
     function render(model) {
-      byId("state").textContent = JSON.stringify(model, null, 2);
       if (model.readModel === "device.unbound") {
         byId("joinPanel").classList.remove("hidden");
         byId("tablePanel").classList.add("hidden");
@@ -2728,7 +2721,7 @@ function renderParticipantApp(): string {
         return '<div class="item"><strong>' + direction + '</strong><div>' + resources + '</div></div>';
       }).join("") || '<div class="muted">Aucun echange</div>';
       byId("messages").innerHTML = (model.messages || []).slice(-5).map((message) => '<div class="item"><strong>' + message.channel + '</strong><div>' + message.text + '</div></div>').join("") || '<div class="muted">Aucun message</div>';
-      byId("actions").innerHTML = (model.availableActions || []).filter((action) => action.available).map((action) => '<div class="item actionCard action-' + (action.mechanicFamily || "generic") + '"><strong>' + action.name + '</strong><div class="muted">' + actionHint(action) + '</div>' + actionForm(model, action) + '<button class="secondary actionButton" data-action-id="' + action.id + '">' + actionVerb(action) + '</button></div>').join("") || '<div class="muted">Aucune action disponible</div>';
+      byId("actions").innerHTML = (model.availableActions || []).filter((action) => action.available).map((action) => '<div class="item actionCard action-' + (action.mechanicFamily || "generic") + '"><strong>' + action.name + '</strong><div class="muted">' + actionHint(action) + '</div>' + actionForm(model, action) + '<button class="secondary actionButton" data-action-id="' + action.id + '">' + actionVerb(action) + '</button></div>').join("") || '<div class="muted">Aucune action disponible dans cette phase</div>';
     }
     byId("loadSession").addEventListener("click", () => run(loadSession));
     byId("join").addEventListener("click", () => run(async () => {
@@ -2759,11 +2752,6 @@ function renderParticipantApp(): string {
     byId("leave").addEventListener("click", () => {
       forgetDevice();
       location.reload();
-    });
-    byId("toggleDebug").addEventListener("click", () => {
-      const panel = byId("debugPanel");
-      panel.classList.toggle("hidden");
-      byId("toggleDebug").textContent = panel.classList.contains("hidden") ? "Afficher debug" : "Masquer debug";
     });
     if (switchingSession) {
       forgetDevice();

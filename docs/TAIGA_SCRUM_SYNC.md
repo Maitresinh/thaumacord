@@ -1,0 +1,51 @@
+# Taiga Scrum Sync
+
+This repo contains a small Taiga API helper for keeping the MVP backlog aligned with Taiga.
+
+## Environment
+
+Do not commit secrets.
+
+```powershell
+$env:TAIGA_BASE_URL = "https://taiga.500nuancesdegeek.fr"
+$env:TAIGA_PROJECT_ID = "<project-id>"
+$env:TAIGA_USERNAME = "<username>"
+```
+
+Then run:
+
+```powershell
+./scripts/taiga-scrum-sync.ps1 -Command audit
+./scripts/taiga-scrum-sync.ps1 -Command apply
+```
+
+The PowerShell wrapper asks for the Taiga password as a `SecureString` when `TAIGA_AUTH_TOKEN` and `TAIGA_PASSWORD` are not set.
+
+## Planned Backlog
+
+Epics:
+
+- Transmission Core
+- Module Import
+- Participant State Model
+- Dashboard Read Model
+- Action and Rule Events
+- Operational Putsch MVP
+- Persistence and Reconnect
+
+Sprint:
+
+- `Thaumacord MVP Putsch`
+
+Stories:
+
+- Player read model exposes only playable current actions.
+- Participant reconnect uses heartbeat and safe fallback to join screen.
+- Putsch Lite supports core market actions.
+- Facilitator dashboard shows an MVP control panel.
+- Ready-to-play Putsch demo session can be created.
+- Sessions persist to local JSON storage.
+
+## Notes
+
+The script is intentionally conservative. It creates missing epics and user stories by subject, but does not delete existing Taiga data.

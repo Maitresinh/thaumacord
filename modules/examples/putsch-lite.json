@@ -241,6 +241,39 @@
       "fallback": "manual-confirmation"
     },
     {
+      "id": "trade-copper-shares",
+      "name": "Acheter ou vendre des actions de cuivre",
+      "phase": "market",
+      "actor": "any",
+      "target": "player",
+      "effect": { "type": "transferBundle", "resources": ["money", "copperShares"] },
+      "mechanicId": "direct-barter",
+      "gesture": "touch-phones",
+      "fallback": "manual-confirmation"
+    },
+    {
+      "id": "trade-arms-caches",
+      "name": "Vendre fusils ou munitions",
+      "phase": "market",
+      "actor": "any",
+      "target": "player",
+      "effect": { "type": "transferBundle", "resources": ["money", "cf25", "cf50", "cf100", "cm25", "cm50", "cm100"] },
+      "mechanicId": "direct-barter",
+      "gesture": "touch-phones",
+      "fallback": "manual-confirmation"
+    },
+    {
+      "id": "sell-drugs",
+      "name": "Ecouler de la drogue",
+      "phase": "intrigue",
+      "actor": "drug-trafficker",
+      "target": "player",
+      "effect": { "type": "transferBundle", "resources": ["money", "drugBags"] },
+      "mechanicId": "direct-barter",
+      "gesture": "touch-phones",
+      "fallback": "manual-confirmation"
+    },
+    {
       "id": "attempt-coup",
       "name": "Tenter un coup d'Etat",
       "phase": "coup",

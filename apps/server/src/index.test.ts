@@ -347,6 +347,9 @@ test("loads module mechanics and links actions to them", async () => {
   const sellWeapons = putsch.actions.find((action: JsonObject) => action.id === "sell-weapons");
   assert.equal(directBarter.family, "exchange");
   assert.equal(sellWeapons.mechanicId, "direct-barter");
+  assert.deepEqual(putsch.actions.find((action: JsonObject) => action.id === "trade-copper-shares").effect.resources, ["money", "copperShares"]);
+  assert.deepEqual(putsch.actions.find((action: JsonObject) => action.id === "trade-arms-caches").effect.resources, ["money", "cf25", "cf50", "cf100", "cm25", "cm50", "cm100"]);
+  assert.equal(putsch.actions.find((action: JsonObject) => action.id === "sell-drugs").actor, "drug-trafficker");
   assert.equal(putsch.state.copperPrice, 1000);
   assert.equal(putsch.roles.find((role: JsonObject) => role.id === "facilitator-capitalist").name, "Paquito Borrachon");
   assert.equal(putsch.roles.find((role: JsonObject) => role.id === "facilitator-capitalist").officialRole, "President des mines de cuivre d'Alcabal et meneur de jeu.");
@@ -615,11 +618,24 @@ test("exposes mechanic inputs on participant action read models", async () => {
 
   const marketModel = await injectJson("GET", `/sessions/${code}/read-models/device/${joined.device.id}`);
   const sellWeapons = marketModel.availableActions.find((action: JsonObject) => action.id === "sell-weapons");
+  const tradeCopper = marketModel.availableActions.find((action: JsonObject) => action.id === "trade-copper-shares");
+  const tradeArms = marketModel.availableActions.find((action: JsonObject) => action.id === "trade-arms-caches");
   assert.equal(sellWeapons.available, true);
   assert.equal(sellWeapons.mechanicFamily, "exchange");
   assert.deepEqual(sellWeapons.inputs.find((input: JsonObject) => input.id === "resources").allowed, ["money", "weapons"]);
+  assert.deepEqual(tradeCopper.inputs.find((input: JsonObject) => input.id === "resources").allowed, ["money", "copperShares"]);
+  assert.deepEqual(tradeArms.inputs.find((input: JsonObject) => input.id === "resources").allowed, ["money", "cf25", "cf50", "cf100", "cm25", "cm50", "cm100"]);
 
+  const trafficker = await injectJson("POST", `/sessions/${code}/join`, {
+    name: "Vladimir",
+    roleId: "drug-trafficker"
+  });
   await advancePhase(code);
+  const intrigueModel = await injectJson("GET", `/sessions/${code}/read-models/device/${trafficker.device.id}`);
+  const sellDrugs = intrigueModel.availableActions.find((action: JsonObject) => action.id === "sell-drugs");
+  assert.equal(sellDrugs.available, true);
+  assert.deepEqual(sellDrugs.inputs.find((input: JsonObject) => input.id === "resources").allowed, ["money", "drugBags"]);
+
   await advancePhase(code);
   const model = await injectJson("GET", `/sessions/${code}/read-models/device/${joined.device.id}`);
   const coup = model.availableActions.find((action: JsonObject) => action.id === "attempt-coup");

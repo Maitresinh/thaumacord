@@ -3,15 +3,16 @@
 ## Taiga
 
 - Taiga URL: `https://taiga.500nuancesdegeek.fr`
-- Taiga project slug/name: `mandragore`
+- Taiga project id: `10`
+- Taiga project slug/name: `thaumacord`
 - Taiga username: `Maitresinh`
 - GitHub repo: `Maitresinh/thaumacord`
 - Project management target: keep Taiga synchronized with the Thaumacord Scrum backlog and MVP increments.
 - Never commit Taiga credentials, password, or auth token.
 - Preferred local variables:
   - `TAIGA_BASE_URL=https://taiga.500nuancesdegeek.fr`
-  - `TAIGA_PROJECT_ID=`
-  - `TAIGA_PROJECT_SLUG=mandragore`
+  - `TAIGA_PROJECT_ID=10`
+  - `TAIGA_PROJECT_SLUG=thaumacord`
   - `TAIGA_USERNAME=`
   - `TAIGA_PASSWORD=`
   - `TAIGA_AUTH_TOKEN=`

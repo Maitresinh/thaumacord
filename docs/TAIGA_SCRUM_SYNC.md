@@ -8,7 +8,8 @@ Do not commit secrets.
 
 ```powershell
 $env:TAIGA_BASE_URL = "https://taiga.500nuancesdegeek.fr"
-$env:TAIGA_PROJECT_SLUG = "mandragore"
+$env:TAIGA_PROJECT_ID = "10"
+$env:TAIGA_PROJECT_SLUG = "thaumacord"
 $env:TAIGA_USERNAME = "Maitresinh"
 ```
 

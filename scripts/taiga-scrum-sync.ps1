@@ -9,7 +9,7 @@ if (-not $env:TAIGA_BASE_URL) {
   $env:TAIGA_BASE_URL = "https://taiga.500nuancesdegeek.fr"
 }
 if (-not $env:TAIGA_PROJECT_SLUG) {
-  $env:TAIGA_PROJECT_SLUG = "mandragore"
+  $env:TAIGA_PROJECT_SLUG = "thaumacord"
 }
 if (-not $env:TAIGA_USERNAME) {
   $env:TAIGA_USERNAME = "Maitresinh"

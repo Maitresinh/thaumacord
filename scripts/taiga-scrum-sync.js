@@ -12,6 +12,7 @@ const plan = {
     "Dashboard Read Model",
     "Action and Rule Events",
     "Operational Putsch MVP",
+    "Putsch MVP+",
     "Persistence and Reconnect"
   ],
   stories: [
@@ -44,6 +45,36 @@ const plan = {
       subject: "Sessions persist to local JSON storage",
       epic: "Persistence and Reconnect",
       description: "Server state is saved to local JSON files and can be reloaded after a restart."
+    },
+    {
+      subject: "Putsch player UI contains only current actions and private state",
+      epic: "Putsch MVP+",
+      description: "Replace raw/debug payloads with a clean mobile player surface showing role, resources, messages, alerts, and playable actions only."
+    },
+    {
+      subject: "Putsch economy models cards resources and copper share market",
+      epic: "Putsch MVP+",
+      description: "Represent CF, CM, drugs, copper shares, vote ballots, inventories, current share price, market limits, exchanges, and audited score-relevant holdings."
+    },
+    {
+      subject: "Putsch coup resolves hidden timed commitments automatically",
+      epic: "Putsch MVP+",
+      description: "Run coup declaration, facilitator-configured countdown, hidden attacker and defender commitments, automatic force comparison, power change, share price effect, and public/private summaries."
+    },
+    {
+      subject: "Putsch election runs from ballot to college update",
+      epic: "Putsch MVP+",
+      description: "Open an election, collect one secret ballot per voter for promotion and elimination, tally results, handle ties, update the council, and publish the allowed result."
+    },
+    {
+      subject: "Putsch council scene is guided and applies consequences",
+      epic: "Putsch MVP+",
+      description: "Guide the council scene with attendees, embezzlement, decisions, facilitator validation, automatic financial consequences, public summary, and private audit."
+    },
+    {
+      subject: "Putsch MVP+ demo mode supports a 60-90 minute playtest",
+      epic: "Putsch MVP+",
+      description: "Provide seeded roles, resettable demo data, a facilitator checklist, critical rule tests, reconnect checks, and an exportable play log for a real table test."
     }
   ]
 };

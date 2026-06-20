@@ -104,6 +104,22 @@ Minimum:
 - exchanges are audited;
 - no price engine required at first.
 
+## Deliverable 4: Putsch MVP+
+
+Goal: run Putsch as a complete table game, not only a technical demo.
+
+Reference programme: [MVP+ Putsch](mvp-plus-putsch.md)
+
+Minimum:
+
+- player UI is clean and contains no raw JSON;
+- facilitator/player host UI exposes full state and rule controls;
+- Putsch cards/resources are modeled well enough for play;
+- coup attempts use hidden commitments and a timed response window;
+- vote/election runs from opening to result application;
+- council scene is guided and applies consequences;
+- a 60-90 minute playtest can be run with 5-6 participants.
+
 ## Sprint Rule
 
 Every two or three technical stories should point back to one operational deliverable. If a story does not improve a deliverable, it should be marked as infrastructure and justified.

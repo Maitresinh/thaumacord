@@ -64,6 +64,18 @@ Operational target:
 
 ## Sprint 5+: Physical Gestures
 
+Before gestures, prioritize the Putsch MVP+ if the goal is an operational playable game.
+
+- Clean player UI.
+- Putsch economy and cards.
+- Complete coup attempt with hidden timed commitments.
+- Complete vote/election loop.
+- Guided council scene.
+- Polished facilitator dashboard.
+- 60-90 minute playtest hardening.
+
+Detailed programme: [MVP+ Putsch](mvp-plus-putsch.md)
+
 - Prototype phone touch confirmation using QR/NFC fallback.
 - Prototype tilt transfer.
 - Prototype strike/parry gesture as optional non-critical interaction.

@@ -23,6 +23,7 @@
 1. Putsch Au Panador Core Demo: players connect, exchange resources, and the facilitator follows/messages/corrects/audits the table.
 2. Long Live The King Council Slice: setup distribution, audience/diplomacy/council, petition resolution workflow.
 3. Economic Simulation Slice: resource exchanges plus dashboard aggregates for sheep/market or monetary confidence simulations.
+4. Putsch MVP+: complete playable Putsch table with clean player UI, hidden coup commitments, election, council, and playtest script.
 
 ## Epics
 

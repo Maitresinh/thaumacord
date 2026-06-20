@@ -144,6 +144,9 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /Echanges/);
   assert.match(response.body, /Controles de jeu/);
   assert.match(response.body, /id="gameControls"/);
+  assert.match(response.body, /Poste de conduite/);
+  assert.match(response.body, /id="mvpPanel"/);
+  assert.match(response.body, /renderMvpPanel/);
   assert.match(response.body, /renderGameControls/);
   assert.match(response.body, /performGameAction/);
   assert.match(response.body, /Corriger/);

@@ -1865,6 +1865,11 @@ function renderIndex(): string {
         </section>
 
         <section>
+          <h2>Poste de conduite</h2>
+          <div id="mvpPanel" class="list"></div>
+        </section>
+
+        <section>
           <h2>Participant</h2>
           <label for="participantName">Nom</label>
           <input id="participantName" placeholder="Ana" />
@@ -2115,6 +2120,21 @@ function renderIndex(): string {
       const poolRows = Object.entries(aggregates.componentPools || {}).map(([componentId, pool]) => '<div class="item"><strong>' + componentId + '</strong><div>Restant: ' + pool.remaining + '</div><div class="muted">' + (pool.exhausted ? "epuise" : "disponible") + '</div></div>').join("");
       return [participantRow, resourceRows, inventoryRows, poolRows].filter(Boolean).join("") || '<div class="muted">Aucun agregat</div>';
     }
+    function renderMvpPanel(session) {
+      const pendingCount = (session.pendingResolutions || []).length;
+      const connectedCount = (session.devices || []).filter((device) => device.connected).length;
+      const currentActions = (session.module.actions || []).filter((action) => action.phase === "*" || action.phase === session.phase.id);
+      const nextStep = pendingCount > 0
+        ? "Traiter " + pendingCount + " resolution(s)"
+        : currentActions.length > 0
+          ? "Phase active: " + currentActions.map((action) => action.name).join(" / ")
+          : "Avancer la phase ou envoyer une consigne";
+      return [
+        '<div class="item"><strong>' + session.module.name + '</strong><div>Phase: ' + session.phase.name + '</div><div class="muted">' + formatClock(session.phaseClock) + '</div></div>',
+        '<div class="item"><strong>Table</strong><div>' + session.participants.length + ' participant(s), ' + connectedCount + '/' + session.devices.length + ' appareil(s) connecte(s)</div><div class="muted">' + renderStatusList(session.statuses) + '</div></div>',
+        '<div class="item"><strong>A faire</strong><div>' + nextStep + '</div></div>'
+      ].join("");
+    }
     function dashboardResolutionClass(resolution) {
       if (resolution.mechanicId === "contested-coup") return " coupResolution";
       if (resolution.mechanicId === "minister-council-record") return " councilResolution";
@@ -2250,6 +2270,7 @@ function renderIndex(): string {
         '<span class="pill">' + session.participants.length + ' participant(s)</span>',
         Object.keys(session.statuses || {}).length ? renderStatusList(session.statuses) : ""
       ].join(" ");
+      byId("mvpPanel").innerHTML = renderMvpPanel(session);
       byId("participants").innerHTML = session.participants.map((participant) => {
         const resources = Object.entries(participant.resources).map(([key, value]) => dashboardResourceLabel(session, key) + ": " + value).join(" / ");
         return '<div class="item"><strong>' + participant.name + '</strong><div>' + dashboardRoleLabel(session, participant.roleId) + '</div><div class="muted">' + resources + '</div><div>' + renderStatusList(participant.statuses) + '</div></div>';

@@ -202,6 +202,8 @@ test("serves a mobile participant app for session join", async () => {
   assert.match(response.body, /Proposer l'echange/);
   assert.match(response.body, /Ressources engagees/);
   assert.match(response.body, /collectActionPayload/);
+  assert.match(response.body, /resetToJoin/);
+  assert.match(response.body, /\/heartbeat/);
   assert.match(response.body, /data-action-input/);
   assert.match(response.body, /Actions de cette phase/);
   assert.match(response.body, /Aucune action disponible dans cette phase/);

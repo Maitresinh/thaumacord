@@ -2569,13 +2569,23 @@ function renderParticipantApp(): string {
     }
     async function refreshDevice() {
       if (!sessionCode || !deviceId) return;
-      const result = await api("/sessions/" + sessionCode + "/devices/" + deviceId + "/sync");
-      render(result.readModel);
+      try {
+        const result = await api("/sessions/" + sessionCode + "/devices/" + deviceId + "/sync");
+        render(result.readModel);
+      } catch (error) {
+        resetToJoin("Appareil a reconnecter: " + error.message);
+      }
     }
     function forgetDevice() {
       deviceId = "";
       localStorage.removeItem("thaumacord.deviceId");
       localStorage.removeItem("thaumacord.sessionCode");
+    }
+    function resetToJoin(message) {
+      forgetDevice();
+      byId("joinPanel").classList.remove("hidden");
+      byId("tablePanel").classList.add("hidden");
+      setError(message);
     }
     function connectLive(code, id) {
       if (liveSocket) liveSocket.close();
@@ -2762,12 +2772,9 @@ function renderParticipantApp(): string {
     }
     if (sessionCode && deviceId) {
       connectLive(sessionCode, deviceId);
-      api("/sessions/" + sessionCode + "/devices/" + deviceId + "/sync").then((result) => render(result.readModel)).catch((error) => {
-        forgetDevice();
-        byId("joinPanel").classList.remove("hidden");
-        byId("tablePanel").classList.add("hidden");
-        setError("Appareil a reconnecter: " + error.message);
-      });
+      api("/sessions/" + sessionCode + "/devices/" + deviceId + "/heartbeat")
+        .then((result) => render(result.readModel))
+        .catch((error) => resetToJoin("Appareil a reconnecter: " + error.message));
     }
   </script>
 </body>

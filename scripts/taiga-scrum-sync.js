@@ -74,6 +74,14 @@ async function taigaFetch(path, options = {}) {
   return response.status === 204 ? undefined : response.json();
 }
 
+async function taigaFetchOptional(path, options = {}) {
+  try {
+    return await taigaFetch(path, options);
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
 let cachedToken;
 async function authToken() {
   if (cachedToken) return cachedToken;
@@ -167,7 +175,60 @@ async function resolveProjectId() {
       lastError = error;
     }
   }
-  throw new Error(`Could not resolve TAIGA_PROJECT_SLUG=${slug}. ${lastError?.message || ""}`.trim());
+  const discovered = await discoverProjects();
+  const normalizedSlug = slug.toLowerCase();
+  const matchingProject = discovered.projects.find((project) => {
+    const fields = [project.slug, project.name, project.description].filter(Boolean).map((value) => String(value).toLowerCase());
+    return fields.some((value) => value.includes(normalizedSlug));
+  });
+  if (matchingProject?.id) {
+    console.log(`resolved project: ${matchingProject.name} (${matchingProject.id}) via project list`);
+    return String(matchingProject.id);
+  }
+
+  const available = discovered.projects.map((project) => `${project.id}: ${project.name} [${project.slug}]`).join("; ");
+  throw new Error(`Could not resolve TAIGA_PROJECT_SLUG=${slug}. Available projects: ${available || "none"}. ${lastError?.message || ""}`.trim());
+}
+
+async function discoverProjects() {
+  const username = requiredEnv("TAIGA_USERNAME");
+  const users = await taigaFetchOptional(`/users?username=${encodeURIComponent(username)}`);
+  const userList = Array.isArray(users) ? users : [];
+  const user = userList.find((candidate) => candidate.username?.toLowerCase() === username.toLowerCase()) ?? userList[0];
+  const queries = [
+    user?.id ? `/projects?member=${user.id}` : undefined,
+    "/projects?is_private=true",
+    "/projects"
+  ].filter(Boolean);
+
+  const byId = new Map();
+  const responses = [];
+  for (const query of queries) {
+    const result = await taigaFetchOptional(query);
+    responses.push({ query, ok: Array.isArray(result), result });
+    if (Array.isArray(result)) {
+      for (const project of result) {
+        if (project?.id) byId.set(project.id, project);
+      }
+    }
+  }
+
+  return {
+    username,
+    user: user ? { id: user.id, username: user.username, full_name: user.full_name } : null,
+    projects: [...byId.values()].map((project) => ({
+      id: project.id,
+      name: project.name,
+      slug: project.slug,
+      is_private: project.is_private,
+      description: project.description
+    })),
+    responses: responses.map((response) => ({
+      query: response.query,
+      ok: response.ok,
+      error: response.ok ? undefined : response.result.error
+    }))
+  };
 }
 
 async function apply() {
@@ -186,12 +247,19 @@ async function apply() {
 
 if (command === "audit") {
   audit();
+} else if (command === "discover") {
+  discoverProjects().then((result) => {
+    console.log(JSON.stringify(result, null, 2));
+  }).catch((error) => {
+    console.error(error.message);
+    process.exit(1);
+  });
 } else if (command === "apply") {
   apply().catch((error) => {
     console.error(error.message);
     process.exit(1);
   });
 } else {
-  console.error("Usage: taiga-scrum-sync.js audit|apply");
+  console.error("Usage: taiga-scrum-sync.js audit|discover|apply");
   process.exit(1);
 }

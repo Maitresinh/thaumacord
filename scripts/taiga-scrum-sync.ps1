@@ -1,5 +1,5 @@
 param(
-  [ValidateSet("audit", "apply")]
+  [ValidateSet("audit", "apply", "discover")]
   [string]$Command = "audit"
 )
 

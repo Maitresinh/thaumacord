@@ -150,6 +150,8 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /interactionCue/);
   assert.match(response.body, /renderGameControls/);
   assert.match(response.body, /performGameAction/);
+  assert.match(response.body, /resourcePushGrid/);
+  assert.match(response.body, /Secours dashboard/);
   assert.match(response.body, /Corriger/);
   assert.match(response.body, /Attribuer role/);
   assert.match(response.body, /Casquette de session/);
@@ -207,11 +209,16 @@ test("serves a mobile participant app for session join", async () => {
   assert.match(response.body, /actionInputControl/);
   assert.match(response.body, /actionVerb/);
   assert.match(response.body, /actionHint/);
+  assert.match(response.body, /resourcePushTile/);
+  assert.match(response.body, /pushResource/);
+  assert.match(response.body, /Receveur au contact/);
+  assert.match(response.body, /Pousse les jetons au pouce/);
   assert.match(response.body, /Proposer l'echange/);
   assert.match(response.body, /Ressources engagees/);
   assert.match(response.body, /collectActionPayload/);
   assert.match(response.body, /resetToJoin/);
   assert.match(response.body, /\/heartbeat/);
+  assert.match(response.body, /method: "POST", body: JSON.stringify\(\{\}\)/);
   assert.match(response.body, /data-action-input/);
   assert.match(response.body, /Actions de cette phase/);
   assert.match(response.body, /Aucune action disponible dans cette phase/);

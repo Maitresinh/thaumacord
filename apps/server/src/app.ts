@@ -2269,6 +2269,12 @@ function renderIndex(): string {
     .fallbackCue { color: var(--muted); font-size: 12px; margin-top: 4px; }
     .action-contest { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
     .action-vote { border-color: color-mix(in srgb, var(--warning) 60%, var(--line)); }
+    .resourcePushGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px; margin-top: 8px; }
+    .resourcePushTile { border: 1px solid #3c454f; border-radius: 8px; padding: 8px; background: #111417; }
+    .resourcePushTile strong { display: flex; align-items: center; gap: 6px; min-height: 34px; font-size: 13px; }
+    .resourceIcon { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 22%, #0d0f11); }
+    .resourcePushControls { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+    .resourcePushControls button { min-height: 34px; margin: 0; padding: 6px; }
     pre { white-space: pre-wrap; background: #0d0f11; padding: 12px; border-radius: 6px; overflow: auto; max-height: 420px; }
     details.debug { border: 1px solid var(--line); border-radius: 8px; background: #111417; padding: 10px; }
     details.debug summary { cursor: pointer; color: var(--muted); }
@@ -2451,6 +2457,24 @@ function renderIndex(): string {
     function dashboardResourceLabel(session, resourceId) {
       return session.module.resources.find((resource) => resource.id === resourceId)?.name || resourceId;
     }
+    function dashboardResourceIcon(resourceId) {
+      const icons = {
+        money: "$",
+        copperShares: "Cu",
+        weapons: "CF",
+        ammo: "CM",
+        influence: "!",
+        drugBags: "D",
+        voteBallots: "V",
+        cf25: "25F",
+        cf50: "50F",
+        cf100: "100F",
+        cm25: "25M",
+        cm50: "50M",
+        cm100: "100M"
+      };
+      return icons[resourceId] || resourceId.slice(0, 2).toUpperCase();
+    }
     function dashboardComponentLabel(session, componentId) {
       return (session.module.components || []).find((component) => component.id === componentId)?.name || componentId;
     }
@@ -2616,7 +2640,7 @@ function renderIndex(): string {
         toParticipantId: "Receveur",
         defenderId: "Cible",
         leaderIds: "Leaders",
-        resources: "Ressources",
+        resources: "Ressources a pousser",
         attendeeIds: "Presents",
         embezzlement: "Detournement",
         decisions: "Decisions",
@@ -2652,7 +2676,7 @@ function renderIndex(): string {
       }
       if (input.type === "resource-bundle") {
         const resources = input.allowed || session.module.resources.map((resource) => resource.id);
-        return '<div class="stack">' + resources.map((resourceId) => '<label>' + dashboardResourceLabel(session, resourceId) + '</label><input type="number" min="0" value="0" data-live-input="' + input.id + '" data-resource-id="' + resourceId + '" />').join("") + '</div>';
+        return '<div class="fallbackCue">Secours dashboard: a la table, le joueur pousse les jetons depuis son telephone.</div><div class="resourcePushGrid">' + resources.map((resourceId) => '<div class="resourcePushTile"><strong><span class="resourceIcon">' + dashboardResourceIcon(resourceId) + '</span>' + dashboardResourceLabel(session, resourceId) + '</strong><label>Quantite</label><input type="number" min="0" value="0" data-live-input="' + input.id + '" data-resource-id="' + resourceId + '" /></div>').join("") + '</div>';
       }
       return '<label>' + label + '</label><input data-live-input="' + input.id + '" placeholder="' + label + '" />';
     }
@@ -2995,6 +3019,7 @@ function renderParticipantApp(): string {
     button { background: var(--accent); color: white; cursor: pointer; margin-top: 12px; min-height: 44px; }
     button.secondary { background: #315875; }
     button.success { background: var(--green); }
+    button.neutral { background: #30363d; }
     .muted { color: var(--muted); }
     .pill { display: inline-block; padding: 4px 8px; border: 1px solid #59616b; border-radius: 999px; margin: 2px; font-size: 12px; color: #dce1e6; }
     .stack { display: grid; gap: 10px; }
@@ -3005,6 +3030,16 @@ function renderParticipantApp(): string {
     .action-exchange { border-color: color-mix(in srgb, var(--green) 55%, var(--line)); }
     .action-contest { border-color: color-mix(in srgb, var(--accent) 60%, var(--line)); }
     .action-vote { border-color: color-mix(in srgb, var(--warning) 60%, var(--line)); }
+    .contactTarget { border: 1px dashed color-mix(in srgb, var(--accent) 45%, var(--line)); border-radius: 8px; padding: 9px; margin: 8px 0; background: color-mix(in srgb, var(--accent) 10%, transparent); }
+    .resourcePushGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 9px; }
+    .resourcePushTile { border: 1px solid #3c454f; border-radius: 8px; padding: 9px; background: #111417; min-width: 0; }
+    .resourcePushTile strong { display: flex; align-items: center; gap: 7px; min-height: 36px; font-size: 13px; line-height: 1.2; }
+    .resourceIcon { flex: 0 0 auto; display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 24%, #0d0f11); color: var(--ink); font-weight: 700; font-size: 12px; }
+    .resourceAmount { font-size: 22px; font-weight: 700; margin-top: 4px; }
+    .resourcePushControls { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+    .resourcePushControls button { min-height: 38px; margin: 0; padding: 7px; }
+    .resourcePushTile input { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
+    @media (max-width: 380px) { .resourcePushGrid { grid-template-columns: 1fr; } }
     .error { color: #ffb1a8; min-height: 20px; }
     .hidden { display: none; }
     pre { white-space: pre-wrap; background: #0d0f11; padding: 12px; border-radius: 6px; overflow: auto; max-height: 260px; }
@@ -3114,6 +3149,24 @@ function renderParticipantApp(): string {
     function resourceLabel(model, resourceId) {
       return model.module.resources.find((resource) => resource.id === resourceId)?.name || resourceId;
     }
+    function resourceIcon(resourceId) {
+      const icons = {
+        money: "$",
+        copperShares: "Cu",
+        weapons: "CF",
+        ammo: "CM",
+        influence: "!",
+        drugBags: "D",
+        voteBallots: "V",
+        cf25: "25F",
+        cf50: "50F",
+        cf100: "100F",
+        cm25: "25M",
+        cm50: "50M",
+        cm100: "100M"
+      };
+      return icons[resourceId] || resourceId.slice(0, 2).toUpperCase();
+    }
     function applyTheme(theme) {
       const colors = theme?.colors || {};
       const root = document.documentElement;
@@ -3168,7 +3221,7 @@ function renderParticipantApp(): string {
     }
     function actionInputLabel(input) {
       const labels = {
-        toParticipantId: "Envoyer a",
+        toParticipantId: "Receveur au contact",
         defenderId: "Cible",
         leaderIds: "Leaders",
         resources: "Ressources engagees",
@@ -3195,7 +3248,7 @@ function renderParticipantApp(): string {
         return '<label>' + label + '</label><input type="number" min="1" value="1" data-action-input="' + input.id + '" />';
       }
       if (input.type === "participant") {
-        return '<label>' + label + '</label><select data-action-input="' + input.id + '">' + participantOptions(model, false) + '</select>';
+        return '<div class="contactTarget"><label>' + label + '</label><select data-action-input="' + input.id + '">' + participantOptions(model, false) + '</select><div class="fallbackCue">Ideal: toucher son telephone pour identifier le receveur. Ici, selection de secours.</div></div>';
       }
       if (input.type === "participant-list") {
         const count = Number(input.count || 2);
@@ -3206,7 +3259,10 @@ function renderParticipantApp(): string {
       }
       if (input.type === "resource-bundle") {
         const resources = input.allowed || Object.keys(model.participant.resources || {});
-        return '<div class="stack">' + resources.map((resourceId) => '<label>' + resourceLabel(model, resourceId) + ' <span class="muted">dispo ' + ((model.participant.resources || {})[resourceId] ?? 0) + '</span></label><input type="number" min="0" max="' + ((model.participant.resources || {})[resourceId] ?? 0) + '" value="0" data-action-input="' + input.id + '" data-resource-id="' + resourceId + '" />').join("") + '</div>';
+        return '<div class="fallbackCue">Pousse les jetons au pouce vers le joueur en contact. Le bouton final reste le secours tactile.</div><div class="resourcePushGrid">' + resources.map((resourceId) => {
+          const available = (model.participant.resources || {})[resourceId] ?? 0;
+          return '<div class="resourcePushTile" data-resource-tile="' + resourceId + '"><strong><span class="resourceIcon">' + resourceIcon(resourceId) + '</span>' + resourceLabel(model, resourceId) + '</strong><div class="muted">dispo ' + available + '</div><div class="resourceAmount" data-resource-amount="' + resourceId + '">0</div><input type="number" min="0" max="' + available + '" value="0" data-action-input="' + input.id + '" data-resource-id="' + resourceId + '" /><div class="resourcePushControls"><button type="button" class="secondary pushResource" data-resource-push="' + resourceId + '" data-step="1">+1</button><button type="button" class="secondary pushResource" data-resource-push="' + resourceId + '" data-step="5">+5</button><button type="button" class="neutral pushResource" data-resource-push="' + resourceId + '" data-step="-1">-1</button><button type="button" class="neutral pushResource" data-resource-push="' + resourceId + '" data-step="0">0</button></div></div>';
+        }).join("") + '</div>';
       }
       return '<label>' + label + '</label><input data-action-input="' + input.id + '" placeholder="' + label + '" />';
     }
@@ -3259,6 +3315,16 @@ function renderParticipantApp(): string {
       });
       return payload;
     }
+    function updateResourcePush(card, resourceId, step) {
+      const field = card.querySelector('[data-resource-id="' + resourceId + '"]');
+      if (!field) return;
+      const max = Number(field.getAttribute("max") || 999999);
+      const current = Number(field.value || 0);
+      const next = step === 0 ? 0 : Math.max(0, Math.min(max, current + step));
+      field.value = String(next);
+      const display = card.querySelector('[data-resource-amount="' + resourceId + '"]');
+      if (display) display.textContent = String(next);
+    }
     function render(model) {
       if (model.readModel === "device.unbound") {
         byId("joinPanel").classList.remove("hidden");
@@ -3304,6 +3370,12 @@ function renderParticipantApp(): string {
       render(result.readModel);
     }));
     byId("actions").addEventListener("click", (event) => run(async () => {
+      const pushButton = event.target.closest(".pushResource");
+      if (pushButton) {
+        const card = pushButton.closest(".actionCard");
+        updateResourcePush(card, pushButton.dataset.resourcePush, Number(pushButton.dataset.step || 1));
+        return;
+      }
       const button = event.target.closest(".actionButton");
       if (!button) return;
       const card = button.closest(".item");
@@ -3328,7 +3400,7 @@ function renderParticipantApp(): string {
     }
     if (sessionCode && deviceId) {
       connectLive(sessionCode, deviceId);
-      api("/sessions/" + sessionCode + "/devices/" + deviceId + "/heartbeat")
+      api("/sessions/" + sessionCode + "/devices/" + deviceId + "/heartbeat", { method: "POST", body: JSON.stringify({}) })
         .then((result) => render(result.readModel))
         .catch((error) => resetToJoin("Appareil a reconnecter: " + error.message));
     }

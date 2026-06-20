@@ -27,6 +27,15 @@ The operational UI is generated from the imported module:
 - Coup: declare coup, choose defender, select two leaders, record commitments, resolve success/failure.
 - Minister Council: record attendees, embezzlement, decisions, apply money and council-state effects.
 
+Exchange controls are gesture-first. A player-to-player transfer should feel like pushing tokens, bills, cards, or contraband from one phone toward another phone in contact. Form fields are fallback controls only.
+
+First browser fallback:
+
+- choose the receiver only until phone contact can identify the receiver automatically;
+- represent resources as tappable/pushable tiles with icons, available count, and quick thumb increments;
+- show the declared gesture before the fallback button;
+- submit through the same structured action payload as future physical gestures.
+
 ## Long Live The King Controls
 
 - Setup: distribute initial Intrigue and Status cards.

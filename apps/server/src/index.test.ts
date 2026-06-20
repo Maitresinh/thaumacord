@@ -152,6 +152,7 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /performGameAction/);
   assert.match(response.body, /resourcePushGrid/);
   assert.match(response.body, /Secours dashboard/);
+  assert.match(response.body, /Telephones au contact ou joueurs cote a cote/);
   assert.match(response.body, /Corriger/);
   assert.match(response.body, /Attribuer role/);
   assert.match(response.body, /Casquette de session/);
@@ -213,6 +214,7 @@ test("serves a mobile participant app for session join", async () => {
   assert.match(response.body, /pushResource/);
   assert.match(response.body, /Receveur au contact/);
   assert.match(response.body, /Pousse les jetons au pouce/);
+  assert.match(response.body, /pas a distance/);
   assert.match(response.body, /Proposer l'echange/);
   assert.match(response.body, /Ressources engagees/);
   assert.match(response.body, /collectActionPayload/);
@@ -1059,6 +1061,7 @@ test("applies immediate exchange actions from participant payloads", async () =>
     sourceDeviceId: generalDevice.device.id,
     payload: {
       toParticipantId: dealer.participant.id,
+      contactConfirmed: true,
       resources: { weapons: 1 }
     }
   });
@@ -1089,6 +1092,7 @@ test("lets the dashboard trigger phase game controls on behalf of an actor", asy
     participantId: general.participant.id,
     payload: {
       toParticipantId: dealer.participant.id,
+      contactConfirmed: true,
       resources: { weapons: 1 }
     }
   });
@@ -1116,6 +1120,7 @@ test("rejects immediate exchange actions with invalid payloads", async () => {
       sourceDeviceId: generalDevice.device.id,
       payload: {
         toParticipantId: dealer.participant.id,
+        contactConfirmed: true,
         resources: { influence: 1 }
       }
     }
@@ -1125,6 +1130,34 @@ test("rejects immediate exchange actions with invalid payloads", async () => {
   assert.match(rejected.json<JsonObject>().error, /not allowed/);
   const dashboard = await injectJson("GET", `/sessions/${code}/read-models/dashboard`);
   assert.equal(dashboard.participants.find((candidate: JsonObject) => candidate.id === general.participant.id).resources.influence, 2);
+  assert.deepEqual(dashboard.exchanges, []);
+});
+
+test("rejects player exchanges without close phone contact confirmation", async () => {
+  const session = await createSession("putsch-lite");
+  const code = session.code;
+  const generalDevice = await createDevice(code, "Telephone general");
+  const general = await createParticipant(code, "General", "general");
+  const dealer = await createParticipant(code, "Marchand", "dealer");
+  await bindDevice(code, generalDevice.device.id, general.participant.id);
+
+  const rejected = await app.inject({
+    method: "POST",
+    url: `/sessions/${code}/events`,
+    payload: {
+      type: "action.requested",
+      actionId: "sell-weapons",
+      sourceDeviceId: generalDevice.device.id,
+      payload: {
+        toParticipantId: dealer.participant.id,
+        resources: { weapons: 1 }
+      }
+    }
+  });
+
+  assert.equal(rejected.statusCode, 400);
+  assert.match(rejected.json<JsonObject>().error, /proximity/);
+  const dashboard = await injectJson("GET", `/sessions/${code}/read-models/dashboard`);
   assert.deepEqual(dashboard.exchanges, []);
 });
 

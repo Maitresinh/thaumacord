@@ -1498,6 +1498,10 @@ function applyExchangeAction(
   if (!hasResources) {
     throw new Error("Action exchange requires resources");
   }
+  const proximityConfirmed = event.payload.contactConfirmed === true || event.payload.proximity === "near" || Boolean(eventGesture(event));
+  if (!proximityConfirmed) {
+    throw new Error("Exchange requires phone proximity/contact confirmation");
+  }
 
   const toParticipantId = event.payload.toParticipantId as string;
   const resources = actionExchangeResources(module, action, mechanic, event.payload);
@@ -2275,6 +2279,8 @@ function renderIndex(): string {
     .resourceIcon { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 22%, #0d0f11); }
     .resourcePushControls { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
     .resourcePushControls button { min-height: 34px; margin: 0; padding: 6px; }
+    .contactTarget { display: block; border: 1px dashed color-mix(in srgb, var(--accent) 45%, var(--line)); border-radius: 8px; padding: 9px; margin: 8px 0; background: color-mix(in srgb, var(--accent) 10%, transparent); }
+    .contactTarget input[type="checkbox"] { width: auto; margin-right: 6px; }
     pre { white-space: pre-wrap; background: #0d0f11; padding: 12px; border-radius: 6px; overflow: auto; max-height: 420px; }
     details.debug { border: 1px solid var(--line); border-radius: 8px; background: #111417; padding: 10px; }
     details.debug summary { cursor: pointer; color: var(--muted); }
@@ -2680,6 +2686,10 @@ function renderIndex(): string {
       }
       return '<label>' + label + '</label><input data-live-input="' + input.id + '" placeholder="' + label + '" />';
     }
+    function dashboardContactConfirm(mechanic) {
+      if (mechanic.family !== "exchange") return "";
+      return '<label class="contactTarget"><input type="checkbox" data-live-input="contactConfirmed" /> Telephones au contact ou joueurs cote a cote</label>';
+    }
     function dashboardActorMatches(action, participant) {
       return action.actor === "any" || participant.roleId === action.actor;
     }
@@ -2697,7 +2707,7 @@ function renderIndex(): string {
       const controls = (mechanic.inputs || []).map((input) => dashboardActionInputControl(session, input)).join("");
       const disabled = actors.length === 0 ? " disabled" : "";
       const hint = actors.length === 0 ? '<div class="muted">Aucun acteur autorise dans cette phase.</div>' : "";
-      return '<div class="item ' + cssClass + ' action-' + (mechanic.family || "generic") + '"><strong>' + (themeIcon(session, mechanic.family || action.id) ? themeIcon(session, mechanic.family || action.id) + " " : "") + action.name + '</strong><div class="muted">' + (mechanic.summary || action.fallback || action.id) + '</div>' + interactionCue(session, { ...action, mechanicFamily: mechanic.family }) + hint + '<label>Acteur</label><select data-live-actor>' + actorOptions + '</select>' + controls + '<button class="secondary ' + buttonClass + '" data-action-id="' + action.id + '"' + disabled + '>' + buttonLabel + '</button></div>';
+      return '<div class="item ' + cssClass + ' action-' + (mechanic.family || "generic") + '"><strong>' + (themeIcon(session, mechanic.family || action.id) ? themeIcon(session, mechanic.family || action.id) + " " : "") + action.name + '</strong><div class="muted">' + (mechanic.summary || action.fallback || action.id) + '</div>' + interactionCue(session, { ...action, mechanicFamily: mechanic.family }) + hint + '<label>Acteur</label><select data-live-actor>' + actorOptions + '</select>' + dashboardContactConfirm(mechanic) + controls + '<button class="secondary ' + buttonClass + '" data-action-id="' + action.id + '"' + disabled + '>' + buttonLabel + '</button></div>';
     }
     function renderGameControls(session) {
       const actions = (session.module.actions || []).filter((action) => {
@@ -2855,6 +2865,10 @@ function renderIndex(): string {
         if (field.type === "checkbox") {
           if (!field.checked) return;
           const list = Array.isArray(payload[key]) ? payload[key] : [];
+          if (key === "contactConfirmed") {
+            payload[key] = true;
+            return;
+          }
           list.push(field.value);
           payload[key] = list;
           return;
@@ -3031,6 +3045,7 @@ function renderParticipantApp(): string {
     .action-contest { border-color: color-mix(in srgb, var(--accent) 60%, var(--line)); }
     .action-vote { border-color: color-mix(in srgb, var(--warning) 60%, var(--line)); }
     .contactTarget { border: 1px dashed color-mix(in srgb, var(--accent) 45%, var(--line)); border-radius: 8px; padding: 9px; margin: 8px 0; background: color-mix(in srgb, var(--accent) 10%, transparent); }
+    .contactTarget input[type="checkbox"] { width: auto; margin-right: 6px; }
     .resourcePushGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 9px; }
     .resourcePushTile { border: 1px solid #3c454f; border-radius: 8px; padding: 9px; background: #111417; min-width: 0; }
     .resourcePushTile strong { display: flex; align-items: center; gap: 7px; min-height: 36px; font-size: 13px; line-height: 1.2; }
@@ -3289,13 +3304,20 @@ function renderParticipantApp(): string {
     function actionForm(model, action) {
       const inputs = action.inputs || [];
       if (!inputs.length) return "";
-      return '<div class="actionInputs">' + inputs.map((input) => actionInputControl(model, input)).join("") + '</div>';
+      const contact = action.mechanicFamily === "exchange"
+        ? '<label class="contactTarget"><input type="checkbox" data-action-input="contactConfirmed" /> Telephones au contact, meme table, pas a distance</label>'
+        : "";
+      return '<div class="actionInputs">' + contact + inputs.map((input) => actionInputControl(model, input)).join("") + '</div>';
     }
     function collectActionPayload(card) {
       const payload = {};
       card.querySelectorAll("[data-action-input]").forEach((field) => {
         const key = field.dataset.actionInput;
         if (!key) return;
+        if (field.type === "checkbox") {
+          payload[key] = Boolean(field.checked);
+          return;
+        }
         if (field.dataset.resourceId) {
           const value = Number(field.value);
           if (value > 0) {

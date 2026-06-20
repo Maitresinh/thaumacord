@@ -25,9 +25,23 @@ The server resolves a gesture only when a module action declares the same `gestu
 ## Rules
 
 - Critical gestures must always have `fallback: "manual-confirmation"`.
+- Player-to-player exchanges require close proximity. They must carry either a detected gesture, `proximity: "near"`, or an explicit fallback `contactConfirmed: true`.
+- A transaction should not be valid from another room or from a remote device unless a module explicitly defines remote communication as the action itself.
 - Nearby-derived gestures are input signals, not rules decisions.
 - The server remains authoritative and validates source device, participant binding, role, phase, resources, and action availability.
 - `actor: "any"` and `actor: "*"` both mean the action is not role-restricted.
+
+## Real Gesture Stack
+
+For Android playtests, the first useful stack is:
+
+- Nearby Connections or Bluetooth Low Energy to discover phones at the same table;
+- NFC or QR tap fallback for explicit contact when available;
+- accelerometer and gyroscope for motion shapes such as pour, strike, parry, shake, face-down;
+- an adapter that emits `{ gesture, proximity: "near", sourceDeviceId, targetDeviceId? }`;
+- server validation that maps the gesture to a currently available module action.
+
+The browser fallback uses a contact confirmation checkbox and pushable resource tiles. It is not a security proof; it is a playtest proxy for the future Android proximity signal.
 
 ## Next Work
 

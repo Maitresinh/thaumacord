@@ -8,8 +8,8 @@ Do not commit secrets.
 
 ```powershell
 $env:TAIGA_BASE_URL = "https://taiga.500nuancesdegeek.fr"
-$env:TAIGA_PROJECT_ID = "<project-id>"
-$env:TAIGA_USERNAME = "<username>"
+$env:TAIGA_PROJECT_SLUG = "mandragore"
+$env:TAIGA_USERNAME = "Maitresinh"
 ```
 
 Then run:
@@ -20,6 +20,8 @@ Then run:
 ```
 
 The PowerShell wrapper asks for the Taiga password as a `SecureString` when `TAIGA_AUTH_TOKEN` and `TAIGA_PASSWORD` are not set.
+
+If `TAIGA_PROJECT_ID` is not set, the Node script tries to resolve the project from `TAIGA_PROJECT_SLUG`. For private Taiga projects, this still requires authentication.
 
 ## Planned Backlog
 

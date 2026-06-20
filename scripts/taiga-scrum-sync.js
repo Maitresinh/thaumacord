@@ -139,12 +139,39 @@ function audit() {
   console.log(JSON.stringify({
     baseUrl: taigaBaseUrl(),
     projectId: process.env.TAIGA_PROJECT_ID || null,
+    projectSlug: process.env.TAIGA_PROJECT_SLUG || null,
+    username: process.env.TAIGA_USERNAME || null,
     plan
   }, null, 2));
 }
 
+async function resolveProjectId() {
+  if (process.env.TAIGA_PROJECT_ID) return process.env.TAIGA_PROJECT_ID;
+  const slug = requiredEnv("TAIGA_PROJECT_SLUG");
+  const username = process.env.TAIGA_USERNAME;
+  const candidates = [
+    slug,
+    username ? `${username}-${slug}` : undefined,
+    username ? `${username.toLowerCase()}-${slug}` : undefined
+  ].filter(Boolean);
+
+  let lastError;
+  for (const candidate of [...new Set(candidates)]) {
+    try {
+      const project = await taigaFetch(`/projects/by_slug?slug=${encodeURIComponent(candidate)}`);
+      if (project?.id) {
+        console.log(`resolved project: ${project.name} (${project.id}) via slug ${candidate}`);
+        return String(project.id);
+      }
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw new Error(`Could not resolve TAIGA_PROJECT_SLUG=${slug}. ${lastError?.message || ""}`.trim());
+}
+
 async function apply() {
-  const projectId = requiredEnv("TAIGA_PROJECT_ID");
+  const projectId = await resolveProjectId();
   const epicBySubject = new Map();
   for (const epicSubject of plan.epics) {
     const epic = await ensureEpic(projectId, epicSubject);

@@ -18,6 +18,7 @@ Then run:
 ```powershell
 ./scripts/taiga-scrum-sync.ps1 -Command audit
 ./scripts/taiga-scrum-sync.ps1 -Command discover
+./scripts/taiga-scrum-sync.ps1 -Command rename-project
 ./scripts/taiga-scrum-sync.ps1 -Command apply
 ./scripts/taiga-scrum-sync.ps1 -Command sandbox-statuses
 ```
@@ -29,6 +30,8 @@ If `TAIGA_PROJECT_ID` is not set, the Node script tries to resolve the project f
 Use `discover` to list the projects visible to `TAIGA_USERNAME` when the slug is not obvious from the Taiga URL.
 
 The product has been renamed to Ludovive. The Taiga slug may remain `thaumacord` until the remote project itself is renamed.
+
+Use `rename-project` after authentication to rename project id `10` to `Ludovive` and set its slug to `ludovive`.
 
 Use `sandbox-statuses` to create a `Sandbox` user-story status on every visible project, placed after `En cours` / `In progress` when that status exists.
 

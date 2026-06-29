@@ -7,7 +7,7 @@
 - Product name: `Ludovive`
 - Taiga project slug/name: currently `thaumacord` / `Thaumacord` until the remote project is renamed
 - Taiga username: `Maitresinh`
-- GitHub repo: currently `Maitresinh/thaumacord` until the remote repository is renamed
+- GitHub repo: `Maitresinh/ludovive`
 - Project management target: keep Taiga synchronized with the Ludovive Scrum backlog and MVP increments.
 - Never commit Taiga credentials, password, or auth token.
 - Preferred local variables:
@@ -36,9 +36,12 @@ Use:
 
 ```powershell
 ./scripts/taiga-scrum-sync.ps1 -Command audit
+./scripts/taiga-scrum-sync.ps1 -Command rename-project
 ./scripts/taiga-scrum-sync.ps1 -Command apply
 ```
 
 `audit` prints the planned epics and stories without calling Taiga.
 
 `apply` calls the Taiga API. It requires either `TAIGA_AUTH_TOKEN`, or `TAIGA_USERNAME` plus a password supplied by the PowerShell wrapper.
+
+`rename-project` updates the Taiga project name/slug to Ludovive when authenticated.

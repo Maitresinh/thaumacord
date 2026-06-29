@@ -1,5 +1,5 @@
 param(
-  [ValidateSet("audit", "apply", "discover", "sandbox-statuses")]
+  [ValidateSet("audit", "apply", "discover", "rename-project", "sandbox-statuses")]
   [string]$Command = "audit"
 )
 
@@ -7,6 +7,9 @@ $ErrorActionPreference = "Stop"
 
 if (-not $env:TAIGA_BASE_URL) {
   $env:TAIGA_BASE_URL = "https://taiga.500nuancesdegeek.fr"
+}
+if (-not $env:TAIGA_PROJECT_ID) {
+  $env:TAIGA_PROJECT_ID = "10"
 }
 if (-not $env:TAIGA_PROJECT_SLUG) {
   $env:TAIGA_PROJECT_SLUG = "thaumacord"

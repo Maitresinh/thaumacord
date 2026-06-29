@@ -289,6 +289,33 @@ async function ensureSandboxStatuses() {
   return results;
 }
 
+function renamedProjectDescription() {
+  return process.env.TAIGA_PROJECT_DESCRIPTION ||
+    "Interface-moteur Android-first pour faire tourner des jeux de plateau live, semi-GN, murder parties, jeux de roles sociaux, jeux de cour et jeux d equipage coordonne, avec modules importables, gestes physiques, cartographie hybride et integration Mandragore en fin de roadmap.";
+}
+
+async function renameProject() {
+  const projectId = await resolveProjectId();
+  const current = await taigaFetch(`/projects/${projectId}`);
+  const renamed = await taigaFetch(`/projects/${projectId}`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      version: current.version,
+      name: process.env.TAIGA_PROJECT_NAME || "Ludovive",
+      slug: process.env.TAIGA_PROJECT_NEW_SLUG || "ludovive",
+      description: renamedProjectDescription()
+    })
+  });
+
+  return {
+    id: renamed.id,
+    name: renamed.name,
+    slug: renamed.slug,
+    is_private: renamed.is_private,
+    description: renamed.description
+  };
+}
+
 function audit() {
   console.log(JSON.stringify({
     baseUrl: taigaBaseUrl(),
@@ -414,12 +441,19 @@ if (command === "audit") {
     console.error(error.message);
     process.exit(1);
   });
+} else if (command === "rename-project") {
+  renameProject().then((project) => {
+    console.log(JSON.stringify(project, null, 2));
+  }).catch((error) => {
+    console.error(error.message);
+    process.exit(1);
+  });
 } else if (command === "apply") {
   apply().catch((error) => {
     console.error(error.message);
     process.exit(1);
   });
 } else {
-  console.error("Usage: taiga-scrum-sync.js audit|discover|apply|sandbox-statuses");
+  console.error("Usage: taiga-scrum-sync.js audit|discover|apply|rename-project|sandbox-statuses");
   process.exit(1);
 }

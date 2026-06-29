@@ -448,6 +448,11 @@ test("returns a dashboard read model with the complete live state", async () => 
   assert.equal(dashboard.code, code);
   assert.equal(dashboard.devices.length, 1);
   assert.equal(Array.isArray(dashboard.audit), true);
+  assert.equal(dashboard.turnPhase.turn, 1);
+  assert.equal(dashboard.turnPhase.phase.id, "market");
+  assert.equal(dashboard.turnPhase.phase.index, 0);
+  assert.equal(dashboard.turnPhase.phase.total, dashboard.module.phases.length);
+  assert.equal(dashboard.turnPhase.durationSeconds, dashboard.phaseClock.phaseDurationSeconds);
   assert.equal(dashboard.aggregates.participants.total, 2);
   assert.equal(dashboard.aggregates.participants.byRole.general, 1);
   assert.equal(dashboard.aggregates.resources.money.total, 20);
@@ -521,6 +526,9 @@ test("returns device sync package with filtered read model and audit catch-up", 
   const boundSync = await injectJson("GET", `/sessions/${code}/devices/${device.device.id}/sync?after=2&limit=10`);
   assert.equal(boundSync.readModel.readModel, "device.participant");
   assert.equal(boundSync.readModel.participant.id, participant.participant.id);
+  assert.equal(boundSync.readModel.turnPhase.turn, 1);
+  assert.equal(boundSync.readModel.turnPhase.phase.id, "briefing");
+  assert.equal(boundSync.readModel.turnPhase.phase.index, 0);
   assert.equal(boundSync.audit.latestSequence, 5);
   assert.deepEqual(
     boundSync.audit.entries.map((entry: JsonObject) => entry.sequence),
@@ -529,6 +537,8 @@ test("returns device sync package with filtered read model and audit catch-up", 
 
   const unboundSync = await injectJson("GET", `/sessions/${code}/devices/${reserve.device.id}/sync?after=5`);
   assert.equal(unboundSync.readModel.readModel, "device.unbound");
+  assert.equal(unboundSync.readModel.turnPhase.phase.id, "briefing");
+  assert.equal(unboundSync.readModel.turnPhase.phase.total, 5);
   assert.deepEqual(unboundSync.audit.entries, []);
 });
 
@@ -734,6 +744,11 @@ test("tracks facilitator-controlled phase timing and turn cycles", async () => {
   assert.equal(audience.phase.id, "audience");
   assert.equal(audience.phaseClock.turn, 1);
   assert.equal(audience.phaseClock.phaseDurationSeconds, 180);
+  assert.equal(audience.turnPhase.turn, 1);
+  assert.equal(audience.turnPhase.phase.id, "audience");
+  assert.equal(audience.turnPhase.phase.index, 1);
+  assert.equal(audience.turnPhase.phase.total, 4);
+  assert.equal(audience.turnPhase.durationSeconds, 180);
 
   const diplomacy = await advancePhase(code);
   assert.equal(diplomacy.phase.id, "diplomacy");
@@ -748,6 +763,9 @@ test("tracks facilitator-controlled phase timing and turn cycles", async () => {
   const nextSetup = await advancePhase(code);
   assert.equal(nextSetup.phase.id, "setup");
   assert.equal(nextSetup.phaseClock.turn, 2);
+  assert.equal(nextSetup.turnPhase.turn, 2);
+  assert.equal(nextSetup.turnPhase.phase.id, "setup");
+  assert.equal(nextSetup.turnPhase.phase.index, 0);
 });
 
 test("sends facilitator messages with participant-filtered visibility", async () => {

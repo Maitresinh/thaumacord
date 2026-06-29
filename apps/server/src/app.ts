@@ -231,6 +231,18 @@ type PhaseClock = {
   facilitatorControlled: boolean;
 };
 
+type TurnPhaseView = {
+  turn: number;
+  phase: z.infer<typeof phaseSchema> & {
+    index: number;
+    total: number;
+  };
+  startedAt: string;
+  durationSeconds?: number;
+  endsAt?: string;
+  facilitatorControlled: boolean;
+};
+
 type Exchange = {
   id: string;
   fromParticipantId: string;
@@ -691,6 +703,23 @@ function setPhaseTimer(session: Session, input: z.infer<typeof phaseTimerSchema>
     facilitatorControlled: input.facilitatorControlled
   };
   return session.phaseClock;
+}
+
+function turnPhaseView(session: Session): TurnPhaseView {
+  const module = getModuleOrThrow(session.moduleId);
+  const phase = currentPhase(session);
+  return {
+    turn: session.phaseClock.turn,
+    phase: {
+      ...phase,
+      index: session.phaseIndex,
+      total: module.phases.length
+    },
+    startedAt: session.phaseClock.phaseStartedAt,
+    durationSeconds: session.phaseClock.phaseDurationSeconds,
+    endsAt: session.phaseClock.phaseEndsAt,
+    facilitatorControlled: session.phaseClock.facilitatorControlled
+  };
 }
 
 function audit(session: Session, type: string, payload: unknown): void {
@@ -1833,6 +1862,7 @@ function minimalReadModel(session: Session): Record<string, unknown> {
     },
     phase: currentPhase(session),
     phaseClock: session.phaseClock,
+    turnPhase: turnPhaseView(session),
     devices: session.devices.map((device) => ({
       id: device.id,
       name: device.name,
@@ -2017,10 +2047,11 @@ function aggregateSession(session: Session): Record<string, unknown> {
   };
 }
 
-function visibleSession(session: Session): Session & { module: GameModule; phase: z.infer<typeof phaseSchema> } {
+function visibleSession(session: Session): Session & { module: GameModule; phase: z.infer<typeof phaseSchema>; turnPhase: TurnPhaseView } {
   return {
     ...session,
     phase: currentPhase(session),
+    turnPhase: turnPhaseView(session),
     module: getModuleOrThrow(session.moduleId)
   };
 }
@@ -2237,6 +2268,7 @@ function participantReadModel(session: Session, participantId: string): Record<s
     },
     phase: currentPhase(session),
     phaseClock: session.phaseClock,
+    turnPhase: turnPhaseView(session),
     tableStatuses: session.statuses,
     participant,
     ownRole,

@@ -4,13 +4,13 @@ Date: 2026-06-16
 
 ## Goal
 
-Avoid reinventing infrastructure that already exists, without forcing Thaumacord into a framework that does not match its table-first, multi-device, visibility-filtered model.
+Avoid reinventing infrastructure that already exists, without forcing Ludovive into a framework that does not match its table-first, multi-device, visibility-filtered model.
 
 This audit focuses on reusable foundations for real-time session synchronization, reconnect, missed-message recovery, rule/action execution, Android proximity, and existing Mafia/Werewolf or RPG-table tooling.
 
 ## Executive Decision
 
-Do not replace the current Thaumacord prototype immediately.
+Do not replace the current Ludovive prototype immediately.
 
 The current server already models the core domain correctly:
 
@@ -48,15 +48,15 @@ What it provides:
 - Room lifecycle, matchmaking, reconnection support.
 - TypeScript/JavaScript clients.
 
-Fit for Thaumacord:
+Fit for Ludovive:
 
-- A Thaumacord session maps naturally to a Colyseus room.
+- A Ludovive session maps naturally to a Colyseus room.
 - Our custom WebSocket live layer, heartbeat, sync, and reconnect could possibly be simplified.
 - The authoritative server model matches our direction.
 
 Risks:
 
-- Thaumacord needs different filtered read models per device.
+- Ludovive needs different filtered read models per device.
 - Colyseus state sync is strongest when clients receive a shared schema state.
 - We may still need a custom visibility layer on top.
 - Schema/decorator constraints may influence TypeScript config.
@@ -70,18 +70,18 @@ Spike result on 2026-06-17:
 - A minimal isolated Colyseus room can send different filtered read models to dashboard, bound device, and unbound device clients.
 - The spike uses targeted `client.send(...)` messages rather than shared schema state.
 - This means Colyseus can host the room/lifecycle layer without forcing all clients to receive the same state.
-- However, adopting Colyseus for Thaumacord would likely mean using it as room/reconnect infrastructure, while keeping Thaumacord's custom read-model and visibility logic.
-- A second test confirms that reconnect still needs Thaumacord-style audit catch-up: the reconnected client receives a filtered read model plus missed audit entries after its last sequence.
+- However, adopting Colyseus for Ludovive would likely mean using it as room/reconnect infrastructure, while keeping Ludovive's custom read-model and visibility logic.
+- A second test confirms that reconnect still needs Ludovive-style audit catch-up: the reconnected client receives a filtered read model plus missed audit entries after its last sequence.
 
 Dependency result:
 
-- Colyseus 0.17.10 expects Zod 4 as an optional peer dependency through `@colyseus/core`, while the current Thaumacord server uses Zod 3.
+- Colyseus 0.17.10 expects Zod 4 as an optional peer dependency through `@colyseus/core`, while the current Ludovive server uses Zod 3.
 - The spike is therefore isolated in `spikes/colyseus-visibility` and uses its own package manifest.
 - `npm audit` reports 8 vulnerabilities in the isolated Colyseus dependency tree, including moderate issues through optional auth/playground dependencies. These must be reassessed before production adoption.
 
 Spike acceptance criteria:
 
-- One Thaumacord session as one Colyseus room.
+- One Ludovive session as one Colyseus room.
 - Two devices in same room receive different visibility-filtered payloads. Done in isolated spike.
 - Reconnection can recover missed state. Tested at room-message level; not yet tested through real Colyseus client/matchmaker transport.
 - Existing audit sequence model can coexist or be replaced cleanly. Partially tested through payload sequence preservation.
@@ -89,7 +89,7 @@ Spike acceptance criteria:
 
 Next decision:
 
-Do not adopt Colyseus yet. Its room abstraction is compatible with Thaumacord, but it does not remove the need for our audit sequence, filtered read models, and sync endpoint. Continue only if a real transport/matchmaker spike proves its reconnect lifecycle is materially better than our current Fastify/WebSocket + audit sync model.
+Do not adopt Colyseus yet. Its room abstraction is compatible with Ludovive, but it does not remove the need for our audit sequence, filtered read models, and sync endpoint. Continue only if a real transport/matchmaker spike proves its reconnect lifecycle is materially better than our current Fastify/WebSocket + audit sync model.
 
 ## boardgame.io
 
@@ -105,14 +105,14 @@ What it provides:
 - Moves, phases, turns, multiplayer, logs.
 - A mature model for board-game-like state transitions.
 
-Fit for Thaumacord:
+Fit for Ludovive:
 
-- Thaumacord has phases, actions, resources, legal/illegal moves, and audit.
+- Ludovive has phases, actions, resources, legal/illegal moves, and audit.
 - Its move functions are close to our module action execution direction.
 
 Risks:
 
-- Thaumacord is not primarily a turn-based board game engine.
+- Ludovive is not primarily a turn-based board game engine.
 - It has live, asynchronous, physical, hidden-information, multi-device flows.
 - Participants can be people, stations, objects, locations, clocks, etc.
 - Visibility-filtered device read models remain a custom concern.
@@ -136,9 +136,9 @@ What it provides:
 - Realtime multiplayer.
 - Accounts, storage, matchmaking, chat, social systems.
 
-Fit for Thaumacord:
+Fit for Ludovive:
 
-- If Thaumacord becomes an online platform, Nakama could cover many backend concerns.
+- If Ludovive becomes an online platform, Nakama could cover many backend concerns.
 
 Risks:
 
@@ -166,7 +166,7 @@ What it provides:
 - Offline/local proximity scenarios.
 - Real-time nearby device interaction.
 
-Fit for Thaumacord:
+Fit for Ludovive:
 
 - Direct match for physical interactions:
   - touching phones;
@@ -196,7 +196,7 @@ Architecture direction:
 ```text
 Nearby gesture/proximity signal
 -> Android client normalizes event
--> Thaumacord server validates sourceDeviceId, participant, action/gesture
+-> Ludovive server validates sourceDeviceId, participant, action/gesture
 -> state/audit/read models update
 ```
 
@@ -258,7 +258,7 @@ But run explicit spikes before hardening:
 
 Acceptance criteria:
 
-- Prototype one Thaumacord session as a Colyseus room.
+- Prototype one Ludovive session as a Colyseus room.
 - Demonstrate dashboard and bound-device filtered payloads.
 - Demonstrate reconnect or state catch-up.
 - Write adoption decision: adopt, hybrid, or reject.
@@ -269,14 +269,14 @@ Acceptance criteria:
 
 - Two Android devices discover/connect locally.
 - One local interaction produces a normalized gesture payload.
-- Payload can be submitted to Thaumacord server.
+- Payload can be submitted to Ludovive server.
 - Document Android/iOS implications.
 
 ### Spike: Compare boardgame.io Rules Model
 
 Acceptance criteria:
 
-- Map Thaumacord phases/actions/resources to boardgame.io phases/moves.
+- Map Ludovive phases/actions/resources to boardgame.io phases/moves.
 - Identify what can be borrowed conceptually.
 - Decide before implementing votes and petitions.
 
@@ -284,4 +284,4 @@ Acceptance criteria:
 
 Do not pivot blindly to an existing repo.
 
-Use Thaumacord's current code as the domain prototype, then run controlled spikes against Colyseus and Nearby. If Colyseus proves compatible with per-device visibility, it may replace part of our custom WebSocket/session infrastructure. If not, keep the current server and borrow only patterns.
+Use Ludovive's current code as the domain prototype, then run controlled spikes against Colyseus and Nearby. If Colyseus proves compatible with per-device visibility, it may replace part of our custom WebSocket/session infrastructure. If not, keep the current server and borrow only patterns.

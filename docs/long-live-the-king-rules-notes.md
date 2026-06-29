@@ -8,7 +8,7 @@ Use the spreadsheet as the source of truth for detailed character sheets, role n
 
 - The game runs for 7 turns.
 - Each turn has 3 phases: Audience, Diplomacy, Council.
-- Audience is an administrative scene led by the King or chamberlain. It can be run directly through the app, or played orally/physically at the table and then recorded in the app.
+- Audience is an administrative phase resolution led by the King or chamberlain. It can be run directly through the app, or played orally/physically at the table and then recorded in the app.
 - Diplomacy is the free negotiation phase.
 - Council is the formal petition phase.
 - Votes in Council are weighted by Favor while the King presides.

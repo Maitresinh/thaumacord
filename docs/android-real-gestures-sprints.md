@@ -49,7 +49,7 @@ Done:
 
 ## Sprint G4: Transport To Server
 
-Outcome: Android can send gestures to Thaumacord.
+Outcome: Android can send gestures to Ludovive.
 
 Stories:
 

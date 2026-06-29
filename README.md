@@ -1,6 +1,6 @@
-# Thaumacord
+# Ludovive
 
-Thaumacord is an Android-first engine for running social live-action games: semi-LARP, murder parties, political intrigue games, hidden-role court games, and other table-adjacent games where phones become props, ledgers, cards, seals, weapons, maps, and secret channels.
+Ludovive is an Android-first engine for running social live-action games: semi-LARP, murder parties, political intrigue games, hidden-role court games, and other table-adjacent games where phones become props, ledgers, cards, seals, weapons, maps, and secret channels.
 
 It is not tied to one game. A game is imported as a module: roles, resources, phases, cards, actions, gestures, zones, visibility rules, votes, and victory conditions.
 
@@ -49,7 +49,7 @@ Gestures, hybrid maps, and Mandragore are planned after the MVP, with extension 
 
 ## Operational Deliverables
 
-Thaumacord will target runnable table slices, not only infrastructure.
+Ludovive will target runnable table slices, not only infrastructure.
 
 First operational target: `Putsch Au Panador Core Demo`.
 
@@ -88,7 +88,7 @@ Sprint 1 focuses on the generic transmission loop. The API now also exposes:
 
 Live clients receive a read model filtered for their audience: dashboard clients receive the full dashboard state, unbound devices receive a minimal public pairing state, and bound devices receive their participant-specific state.
 
-Devices can report heartbeat/disconnect events. Thaumacord updates `connected`, `lastSeenAt`, audit, and live clients.
+Devices can report heartbeat/disconnect events. Ludovive updates `connected`, `lastSeenAt`, audit, and live clients.
 
 Audit entries include a stable `id` and monotonic `sequence` per session. Live broadcasts carry those audit entries when they represent state changes, so clients can order updates.
 
@@ -121,4 +121,4 @@ The Android app is a native skeleton. Open `apps/android` in Android Studio afte
 
 Target account: https://github.com/Maitresinh
 
-Recommended repository name: `thaumacord`.
+Recommended repository name: `ludovive`.

@@ -25,7 +25,7 @@ Ce qui doit etre automatise:
 - resolution automatique du rapport de force;
 - effet sur le cours des actions de cuivre;
 - vote/election jouable de bout en bout;
-- conseil des ministres/audience comme scene guidee;
+- conseil des ministres/audience comme resolution de phase;
 - detournement de fonds, decisions et traces d'arbitrage;
 - tableau de bord meneur complet;
 - journal lisible des evenements.
@@ -120,7 +120,7 @@ Acceptance:
 - les joueurs voient seulement le resultat public;
 - le systeme conserve la preuve de chaque bulletin sans exposer les secrets aux joueurs.
 
-## Sprint MVP+ 5: Conseil Des Ministres / Scene Dirigee
+## Sprint MVP+ 5: Conseil Des Ministres / Resolution De Phase
 
 But: faire du conseil un moment de jeu structure, pas seulement une note saisie par le meneur.
 

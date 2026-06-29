@@ -1,12 +1,12 @@
 # Operational Deliverables
 
-Thaumacord should regularly converge toward playable operational slices, not only technical foundations.
+Ludovive should regularly converge toward playable operational slices, not only technical foundations.
 
 An operational deliverable is a simplified but runnable table experience. It can use buttons and dashboard controls instead of gestures, polished UI, or full rule automation.
 
 ## Deliverable 1: Putsch Au Panador Core Demo
 
-Goal: demonstrate the core value of Thaumacord with a stripped-down Putsch session: players are connected, exchange resources, and the facilitator can follow and manage the game without losing the table state.
+Goal: demonstrate the core value of Ludovive with a stripped-down Putsch session: players are connected, exchange resources, and the facilitator can follow and manage the game without losing the table state.
 
 Core verbs:
 
@@ -14,7 +14,7 @@ Core verbs:
 - bind players/devices to game participants;
 - exchange resources between participants;
 - declare and resolve a coup attempt;
-- record and resolve a minister council scene;
+- record and resolve a minister council phase resolution;
 - help the facilitator follow, message, correct, and audit the table.
 
 Non-goals:
@@ -77,7 +77,7 @@ Non-goals:
 4. From a participant phone or API action, trigger `attempt-coup`.
 5. In dashboard `Resolutions`, choose `Attaquant gagne` or `Defense gagne`.
 6. Use `Phase suivante` until `Premier conseil`.
-7. In `Scenes guidees`, use `Enregistrer le conseil`: select attendees, enter the embezzlement amount and decision text.
+7. In `Resolutions de phase`, use `Enregistrer le conseil`: select attendees, enter the embezzlement amount and decision text.
 8. In `Resolutions`, mark the council resolved.
 9. Confirm dashboard resources, `firstCouncilDue`, messages, and audit changed.
 
@@ -117,7 +117,7 @@ Minimum:
 - Putsch cards/resources are modeled well enough for play;
 - coup attempts use hidden commitments and a timed response window;
 - vote/election runs from opening to result application;
-- council scene is guided and applies consequences;
+- council phase resolution is guided and applies consequences;
 - a 60-90 minute playtest can be run with 5-6 participants.
 
 ## Sprint Rule

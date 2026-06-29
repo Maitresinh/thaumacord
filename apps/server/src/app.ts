@@ -4,7 +4,11 @@ import Fastify from "fastify";
 import websocket from "@fastify/websocket";
 import { z } from "zod";
 
-export const app = Fastify({ logger: process.env.THAUMACORD_LOGGER === "true" });
+function envValue(name: string, legacyName: string): string | undefined {
+  return process.env[name] ?? process.env[legacyName];
+}
+
+export const app = Fastify({ logger: envValue("LUDOVIVE_LOGGER", "THAUMACORD_LOGGER") === "true" });
 await app.register(websocket);
 
 app.setErrorHandler((error, _request, reply) => {
@@ -296,13 +300,13 @@ type ActionAvailability = {
   blockedBy: string[];
 };
 
-type SceneParticipant = {
+type PhaseResolutionParticipant = {
   id: string;
   name: string;
   role: "actor" | "defender" | "leader" | "attendee" | "candidate" | "involved";
 };
 
-type ResolutionScene = {
+type PhaseResolutionView = {
   id: string;
   kind: string;
   title: string;
@@ -312,7 +316,7 @@ type ResolutionScene = {
   mechanicId?: string;
   mechanicFamily?: string;
   deadline?: unknown;
-  participants: SceneParticipant[];
+  participants: PhaseResolutionParticipant[];
   inputHints: unknown[];
 };
 
@@ -327,11 +331,11 @@ export function resetRuntimeState(): void {
 }
 
 function persistenceEnabled(): boolean {
-  return process.env.THAUMACORD_PERSISTENCE !== "false";
+  return envValue("LUDOVIVE_PERSISTENCE", "THAUMACORD_PERSISTENCE") !== "false";
 }
 
 function persistenceDir(): string {
-  return process.env.THAUMACORD_DATA_DIR ?? path.resolve(process.cwd(), "../../.thaumacord/sessions");
+  return envValue("LUDOVIVE_DATA_DIR", "THAUMACORD_DATA_DIR") ?? path.resolve(process.cwd(), "../../.ludovive/sessions");
 }
 
 function persistenceFilePath(code: string): string {
@@ -2031,7 +2035,7 @@ function participantNames(session: Session, participantIds: unknown): string[] {
     : [];
 }
 
-function sceneParticipant(session: Session, participantId: unknown, role: SceneParticipant["role"]): SceneParticipant | undefined {
+function phaseResolutionParticipant(session: Session, participantId: unknown, role: PhaseResolutionParticipant["role"]): PhaseResolutionParticipant | undefined {
   if (typeof participantId !== "string") {
     return undefined;
   }
@@ -2046,9 +2050,9 @@ function sceneParticipant(session: Session, participantId: unknown, role: SceneP
   };
 }
 
-function pushSceneParticipant(
-  participants: SceneParticipant[],
-  participant: SceneParticipant | undefined
+function pushPhaseResolutionParticipant(
+  participants: PhaseResolutionParticipant[],
+  participant: PhaseResolutionParticipant | undefined
 ): void {
   if (!participant) {
     return;
@@ -2078,28 +2082,28 @@ function resolutionInputHints(session: Session, resolution: PendingResolution): 
   });
 }
 
-function resolutionScene(session: Session, resolution: PendingResolution): ResolutionScene {
+function phaseResolutionView(session: Session, resolution: PendingResolution): PhaseResolutionView {
   const module = getModuleOrThrow(session.moduleId);
   const mechanic = module.mechanics.find((candidate) => candidate.id === resolution.mechanicId);
   const action = module.actions.find((candidate) => candidate.id === resolution.actionId);
   const payload = objectRecord(resolution.payload) ?? {};
-  const participants: SceneParticipant[] = [];
+  const participants: PhaseResolutionParticipant[] = [];
 
-  pushSceneParticipant(participants, sceneParticipant(session, resolution.participantId, "actor"));
-  pushSceneParticipant(participants, sceneParticipant(session, payload.defenderId, "defender"));
+  pushPhaseResolutionParticipant(participants, phaseResolutionParticipant(session, resolution.participantId, "actor"));
+  pushPhaseResolutionParticipant(participants, phaseResolutionParticipant(session, payload.defenderId, "defender"));
   for (const leaderId of Array.isArray(payload.leaderIds) ? payload.leaderIds : []) {
-    pushSceneParticipant(participants, sceneParticipant(session, leaderId, "leader"));
+    pushPhaseResolutionParticipant(participants, phaseResolutionParticipant(session, leaderId, "leader"));
   }
   for (const attendeeId of Array.isArray(payload.attendeeIds) ? payload.attendeeIds : []) {
-    pushSceneParticipant(participants, sceneParticipant(session, attendeeId, "attendee"));
+    pushPhaseResolutionParticipant(participants, phaseResolutionParticipant(session, attendeeId, "attendee"));
   }
-  pushSceneParticipant(participants, sceneParticipant(session, payload.promotionCandidateId, "candidate"));
-  pushSceneParticipant(participants, sceneParticipant(session, payload.eliminationCandidateId, "candidate"));
+  pushPhaseResolutionParticipant(participants, phaseResolutionParticipant(session, payload.promotionCandidateId, "candidate"));
+  pushPhaseResolutionParticipant(participants, phaseResolutionParticipant(session, payload.eliminationCandidateId, "candidate"));
 
   const title = action?.name ?? mechanic?.name ?? resolution.type;
   const prompt =
     mechanic?.summary ??
-    (resolution.zoneId ? `Resoudre l'effet de zone ${resolution.zoneId}.` : "Scene a traiter par la table.");
+    (resolution.zoneId ? `Resoudre l'effet de zone ${resolution.zoneId}.` : "Resolution de phase a traiter par la table.");
 
   return {
     id: resolution.id,
@@ -2175,7 +2179,7 @@ function resolutionSummary(session: Session, resolution: PendingResolution): str
 function enrichResolution(session: Session, resolution: PendingResolution): PendingResolution & {
   participantName?: string;
   summary: string;
-  scene: ResolutionScene;
+  phaseResolution: PhaseResolutionView;
   recommendedOutcomes: ResolutionOutcome[];
   automaticEffects: ResolutionEffect[];
 } {
@@ -2183,7 +2187,7 @@ function enrichResolution(session: Session, resolution: PendingResolution): Pend
     ...resolution,
     participantName: participantName(session, resolution.participantId),
     summary: resolutionSummary(session, resolution),
-    scene: resolutionScene(session, resolution),
+    phaseResolution: phaseResolutionView(session, resolution),
     recommendedOutcomes: resolutionOutcomes(resolution),
     automaticEffects: [...defaultResolutionEffects(resolution), ...liveAdministrationPayloadEffects(resolution)]
   };
@@ -2344,7 +2348,7 @@ function renderIndex(): string {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Thaumacord Demo</title>
+  <title>Ludovive Demo</title>
   <style>
     :root { color-scheme: dark; --bg: #101214; --panel: #181b1f; --line: #343a42; --ink: #f2f4f5; --muted: #aab2bb; --accent: #b94b42; --blue: #315875; --green: #3f6b4d; --warning: #b88a3b; }
     * { box-sizing: border-box; }
@@ -2399,7 +2403,7 @@ function renderIndex(): string {
   <main>
     <div class="topbar">
       <div>
-        <h1>Thaumacord</h1>
+        <h1>Ludovive</h1>
         <div class="muted">Putsch au Panador core</div>
       </div>
       <div>
@@ -2479,8 +2483,8 @@ function renderIndex(): string {
           <div id="sessionRoles" class="list"></div>
           <div id="injectionAuthorityNotice" class="muted"></div>
 
-          <h3>Scenes guidees</h3>
-          <div id="liveScenes" class="list"></div>
+          <h3>Resolutions de phase</h3>
+          <div id="phaseResolutions" class="list"></div>
 
           <h3>Correction</h3>
           <label for="resourceParticipant">Participant</label>
@@ -2657,7 +2661,7 @@ function renderIndex(): string {
         button.disabled = !hasAuthority;
         button.title = hasAuthority ? "" : "Casquette d'injection requise";
       });
-      document.querySelectorAll(".recordLiveScene").forEach((button) => {
+      document.querySelectorAll(".recordPhaseResolution").forEach((button) => {
         button.disabled = !hasAuthority;
         button.title = hasAuthority ? "" : "Casquette d'injection requise";
       });
@@ -2803,7 +2807,7 @@ function renderIndex(): string {
     function dashboardActionModes(mechanic) {
       return Array.isArray(mechanic?.resolution?.modes) ? mechanic.resolution.modes : [mechanic?.resolution?.mode].filter(Boolean);
     }
-    function isGuidedSceneMechanic(mechanic) {
+    function isPhaseResolutionMechanic(mechanic) {
       const modes = dashboardActionModes(mechanic);
       return mechanic && (mechanic.family === "live-administration" || modes.includes("liveThenRecord") || modes.includes("guidedInApp"));
     }
@@ -2820,17 +2824,17 @@ function renderIndex(): string {
       const actions = (session.module.actions || []).filter((action) => {
         if (action.phase !== "*" && action.phase !== session.phase.id) return false;
         const mechanic = (session.module.mechanics || []).find((candidate) => candidate.id === action.mechanicId);
-        return !isGuidedSceneMechanic(mechanic);
+        return !isPhaseResolutionMechanic(mechanic);
       });
       return actions.map((action) => renderDashboardActionCard(session, action, "gameControlCard", "performGameAction", "Declencher")).join("") || '<div class="muted">Aucun controle de jeu dans cette phase</div>';
     }
-    function renderLiveSceneActions(session) {
+    function renderPhaseResolutionActions(session) {
       const actions = (session.module.actions || []).filter((action) => {
         if (action.phase !== "*" && action.phase !== session.phase.id) return false;
         const mechanic = (session.module.mechanics || []).find((candidate) => candidate.id === action.mechanicId);
-        return isGuidedSceneMechanic(mechanic);
+        return isPhaseResolutionMechanic(mechanic);
       });
-      return actions.map((action) => renderDashboardActionCard(session, action, "liveSceneCard", "recordLiveScene", "Valider la scene")).join("") || '<div class="muted">Aucune scene guidee dans cette phase</div>';
+      return actions.map((action) => renderDashboardActionCard(session, action, "phaseResolutionCard", "recordPhaseResolution", "Valider la resolution")).join("") || '<div class="muted">Aucune resolution guidee dans cette phase</div>';
     }
     function formatClock(clock) {
       if (!clock) return "sans minuteur";
@@ -2919,7 +2923,7 @@ function renderIndex(): string {
       }).join("") || '<div class="muted">Aucun echange</div>';
       byId("sessionRoles").innerHTML = renderSessionRoles(session);
       byId("gameControls").innerHTML = renderGameControls(session);
-      byId("liveScenes").innerHTML = renderLiveSceneActions(session);
+      byId("phaseResolutions").innerHTML = renderPhaseResolutionActions(session);
       byId("pendingResolutions").innerHTML = (session.pendingResolutions || []).map((resolution) => {
         const participant = session.participants.find((candidate) => candidate.id === resolution.participantId);
         const payload = dashboardResolutionPayloadDetails(session, resolution);
@@ -2964,7 +2968,7 @@ function renderIndex(): string {
       if (effects.length) payload.effects = effects;
       return payload;
     }
-    function collectLiveScenePayload(card) {
+    function collectPhaseResolutionPayload(card) {
       const payload = {};
       card.querySelectorAll("[data-live-input]").forEach((field) => {
         const key = field.dataset.liveInput;
@@ -3067,19 +3071,19 @@ function renderIndex(): string {
         type: "action.triggered",
         actionId: button.dataset.actionId,
         participantId: card.querySelector("[data-live-actor]")?.value,
-        payload: collectLiveScenePayload(card)
+        payload: collectPhaseResolutionPayload(card)
       }) });
       await refresh();
     }));
-    byId("liveScenes").addEventListener("click", (event) => run(async () => {
-      const button = event.target.closest(".recordLiveScene");
+    byId("phaseResolutions").addEventListener("click", (event) => run(async () => {
+      const button = event.target.closest(".recordPhaseResolution");
       if (!button) return;
-      const card = button.closest(".liveSceneCard");
+      const card = button.closest(".phaseResolutionCard");
       await api("/sessions/" + sessionCode + "/events", { method: "POST", body: JSON.stringify({
         type: "action.recorded",
         actionId: button.dataset.actionId,
         participantId: card.querySelector("[data-live-actor]")?.value,
-        payload: collectLiveScenePayload(card)
+        payload: collectPhaseResolutionPayload(card)
       }) });
       await refresh();
     }));
@@ -3125,7 +3129,7 @@ function renderParticipantApp(): string {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Thaumacord Participant</title>
+  <title>Ludovive Participant</title>
   <style>
     :root { color-scheme: dark; --bg: #101214; --panel: #181b1f; --line: #343a42; --ink: #f2f4f5; --muted: #aab2bb; --accent: #b94b42; --green: #3f6b4d; --blue: #315875; --warning: #b88a3b; }
     * { box-sizing: border-box; }
@@ -3169,7 +3173,7 @@ function renderParticipantApp(): string {
 </head>
 <body>
   <main>
-    <h1>Thaumacord</h1>
+    <h1>Ludovive</h1>
     <div class="muted">App participant</div>
 
     <section id="joinPanel">
@@ -3209,11 +3213,11 @@ function renderParticipantApp(): string {
   </main>
   <script>
     let liveSocket;
-    const storedSessionCode = (localStorage.getItem("thaumacord.sessionCode") || "").toUpperCase();
+    const storedSessionCode = (localStorage.getItem("ludovive.sessionCode") || localStorage.getItem("thaumacord.sessionCode") || "").toUpperCase();
     const urlCode = new URLSearchParams(location.search).get("code") || "";
     const invitedSessionCode = urlCode.toUpperCase();
     const switchingSession = Boolean(invitedSessionCode && storedSessionCode && invitedSessionCode !== storedSessionCode);
-    let deviceId = switchingSession ? "" : localStorage.getItem("thaumacord.deviceId") || "";
+    let deviceId = switchingSession ? "" : localStorage.getItem("ludovive.deviceId") || localStorage.getItem("thaumacord.deviceId") || "";
     let sessionCode = invitedSessionCode || storedSessionCode;
     function byId(id) { return document.querySelector("#" + id); }
     function option(value, label) { return '<option value="' + value + '">' + label + '</option>'; }
@@ -3250,6 +3254,8 @@ function renderParticipantApp(): string {
     }
     function forgetDevice() {
       deviceId = "";
+      localStorage.removeItem("ludovive.deviceId");
+      localStorage.removeItem("ludovive.sessionCode");
       localStorage.removeItem("thaumacord.deviceId");
       localStorage.removeItem("thaumacord.sessionCode");
     }
@@ -3493,8 +3499,8 @@ function renderParticipantApp(): string {
       const result = await api("/sessions/" + sessionCode + "/join", { method: "POST", body: JSON.stringify(payload) });
       deviceId = result.device.id;
       sessionCode = result.sessionCode;
-      localStorage.setItem("thaumacord.deviceId", deviceId);
-      localStorage.setItem("thaumacord.sessionCode", sessionCode);
+      localStorage.setItem("ludovive.deviceId", deviceId);
+      localStorage.setItem("ludovive.sessionCode", sessionCode);
       connectLive(sessionCode, deviceId);
       render(result.readModel);
     }));
@@ -3543,7 +3549,7 @@ await loadPersistedSessions();
 
 app.get("/", async (_request, reply) => reply.type("text/html").send(renderIndex()));
 app.get("/play", async (_request, reply) => reply.type("text/html").send(renderParticipantApp()));
-app.get("/health", async () => ({ ok: true, service: "thaumacord-server" }));
+app.get("/health", async () => ({ ok: true, service: "ludovive-server" }));
 
 app.get("/sessions/:code/live", { websocket: true }, (connection, request) => {
   const { code } = request.params as { code: string };

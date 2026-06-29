@@ -1,4 +1,4 @@
-package fr.maitresinh.thaumacord.gesture
+package fr.maitresinh.ludovive.gesture
 
 data class CanonicalGestureEvent(
     val sessionCode: String,
@@ -17,7 +17,7 @@ data class CanonicalGestureEvent(
         require(confidence in 0f..1f) { "confidence must be between 0 and 1" }
     }
 
-    fun toThaumacordPayload(): Map<String, Any> =
+    fun toLudovivePayload(): Map<String, Any> =
         mapOf(
             "type" to "gesture.detected",
             "gesture" to gesture,

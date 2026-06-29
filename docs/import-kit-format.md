@@ -1,6 +1,6 @@
 # Import Kit Format
 
-The import kit is the target format for turning a game rulebook into a Thaumacord module with AI assistance.
+The import kit is the target format for turning a game rulebook into a Ludovive module with AI assistance.
 
 It is not only a rules summary. It must contain the playable structure: phases, setup, game components, roles, resources, actions, mechanisms, timing, visibility, and facilitator controls.
 
@@ -13,7 +13,7 @@ It is not only a rules summary. It must contain the playable structure: phases, 
 5. Generate a module JSON.
 6. Validate schema and references.
 7. Produce a designer review report with uncertainties and manual choices.
-8. Import into Thaumacord.
+8. Import into Ludovive.
 
 ## Kit Sections
 
@@ -107,7 +107,7 @@ The importer must ask for review when:
 - a role can interrupt another rule;
 - an ability can be used once per turn/phase/game;
 - hidden information has unclear audience;
-- a live table scene must be recorded after being played physically or orally;
+- a live table phase resolution must be recorded after being played physically or orally;
 - a resource can go below zero or has no explicit cap;
 - a setup distribution depends on player count;
 - a deck order, shuffle, reveal, discard, or recycle rule is important;

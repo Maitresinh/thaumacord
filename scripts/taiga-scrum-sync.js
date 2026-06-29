@@ -3,8 +3,8 @@
 const command = process.argv[2] || "audit";
 
 const plan = {
-  projectName: "Thaumacord",
-  sprintName: process.env.TAIGA_SPRINT_NAME || "Thaumacord MVP Putsch",
+  projectName: "Ludovive",
+  sprintName: process.env.TAIGA_SPRINT_NAME || "Ludovive MVP Putsch",
   epics: [
     "Transmission Core",
     "Module Import",
@@ -68,9 +68,9 @@ const plan = {
       description: "Open an election, collect one secret ballot per voter for promotion and elimination, tally results, handle ties, update the council, and publish the allowed result."
     },
     {
-      subject: "Putsch council scene is guided and applies consequences",
+      subject: "Putsch council phase resolution is guided and applies consequences",
       epic: "Putsch MVP+",
-      description: "Guide the council scene with attendees, embezzlement, decisions, facilitator validation, automatic financial consequences, public summary, and private audit."
+      description: "Guide the council phase resolution with attendees, embezzlement, decisions, facilitator validation, automatic financial consequences, public summary, and private audit."
     },
     {
       subject: "Putsch MVP+ demo mode supports a 60-90 minute playtest",
@@ -80,7 +80,7 @@ const plan = {
     {
       subject: "G1 canonical Android gesture event",
       epic: "Android Real Gestures",
-      description: "Define one normalized Android gesture event with gesture, proximity, sourceDeviceId, targetDeviceId, transport, confidence, and payload, then convert it to the Thaumacord server event shape."
+      description: "Define one normalized Android gesture event with gesture, proximity, sourceDeviceId, targetDeviceId, transport, confidence, and payload, then convert it to the Ludovive server event shape."
     },
     {
       subject: "G2 proximity layer requires close phones for exchanges",

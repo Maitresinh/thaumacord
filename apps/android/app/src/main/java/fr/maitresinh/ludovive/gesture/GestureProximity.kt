@@ -1,4 +1,4 @@
-package fr.maitresinh.thaumacord.gesture
+package fr.maitresinh.ludovive.gesture
 
 enum class GestureProximity(val wireValue: String) {
     Unknown("unknown"),

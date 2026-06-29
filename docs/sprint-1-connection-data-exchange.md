@@ -2,7 +2,7 @@
 
 ## Sprint Goal
 
-Prove the core Thaumacord loop before building game-specific interfaces.
+Prove the core Ludovive loop before building game-specific interfaces.
 
 The sprint is successful when several devices can connect to a session, bind to participants, send structured events, receive synchronized state, and leave a readable audit trail.
 
@@ -42,7 +42,7 @@ Acceptance criteria:
 
 ### Register Device
 
-As a table device, I can register in a session so that Thaumacord can identify the source of future data.
+As a table device, I can register in a session so that Ludovive can identify the source of future data.
 
 Acceptance criteria:
 

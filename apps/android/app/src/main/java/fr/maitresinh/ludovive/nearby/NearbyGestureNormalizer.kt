@@ -1,7 +1,7 @@
-package fr.maitresinh.thaumacord.nearby
+package fr.maitresinh.ludovive.nearby
 
-import fr.maitresinh.thaumacord.gesture.GestureNormalizer
-import fr.maitresinh.thaumacord.gesture.GestureTransport
+import fr.maitresinh.ludovive.gesture.GestureNormalizer
+import fr.maitresinh.ludovive.gesture.GestureTransport
 
 class NearbyGestureNormalizer {
     private val normalizer = GestureNormalizer()

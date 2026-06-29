@@ -2,7 +2,7 @@
 
 ## Recommended Shape
 
-Thaumacord starts as:
+Ludovive starts as:
 
 - Android native client;
 - TypeScript backend for real-time sessions;
@@ -13,7 +13,7 @@ Thaumacord starts as:
 
 ## Core Problem
 
-The foundation of Thaumacord is not "GM screen versus player screen".
+The foundation of Ludovive is not "GM screen versus player screen".
 
 The foundation is a generic live-game data layer:
 

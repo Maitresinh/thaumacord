@@ -3,7 +3,7 @@
   "name": "Wolfpack Lite",
   "version": "0.1.0",
   "pitch": "Un equipage de sous-marin pendant la Seconde Guerre mondiale coordonne navigation, machines, sonar, armement et commandement pour traquer ou fuir un ennemi.",
-  "inspirationNotes": "Module original pour Thaumacord, inspire des jeux d'equipage coordonne en temps reel comme Captain Sonar de Roberto Fraga et Yohan Lemonnier, sans reprendre leurs regles.",
+  "inspirationNotes": "Module original pour Ludovive, inspire des jeux d'equipage coordonne en temps reel comme Captain Sonar de Roberto Fraga et Yohan Lemonnier, sans reprendre leurs regles.",
   "players": { "min": 3, "max": 10 },
   "teamMode": {
     "enabled": true,

@@ -1,6 +1,6 @@
 ---
 name: User Story
-about: Scrum user story for Thaumacord
+about: Scrum user story for Ludovive
 title: "[Story] "
 labels: story
 assignees: ""

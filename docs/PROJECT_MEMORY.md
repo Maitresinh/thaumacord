@@ -4,10 +4,11 @@
 
 - Taiga URL: `https://taiga.500nuancesdegeek.fr`
 - Taiga project id: `10`
-- Taiga project slug/name: `thaumacord`
+- Product name: `Ludovive`
+- Taiga project slug/name: currently `thaumacord` / `Thaumacord` until the remote project is renamed
 - Taiga username: `Maitresinh`
-- GitHub repo: `Maitresinh/thaumacord`
-- Project management target: keep Taiga synchronized with the Thaumacord Scrum backlog and MVP increments.
+- GitHub repo: currently `Maitresinh/thaumacord` until the remote repository is renamed
+- Project management target: keep Taiga synchronized with the Ludovive Scrum backlog and MVP increments.
 - Never commit Taiga credentials, password, or auth token.
 - Preferred local variables:
   - `TAIGA_BASE_URL=https://taiga.500nuancesdegeek.fr`
@@ -16,7 +17,7 @@
   - `TAIGA_USERNAME=`
   - `TAIGA_PASSWORD=`
   - `TAIGA_AUTH_TOKEN=`
-  - `TAIGA_SPRINT_NAME=Thaumacord MVP Putsch`
+  - `TAIGA_SPRINT_NAME=Ludovive MVP Putsch`
 
 ## Current MVP Done Slice
 

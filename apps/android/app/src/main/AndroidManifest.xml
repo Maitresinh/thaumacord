@@ -10,7 +10,7 @@
 
     <application
         android:allowBackup="true"
-        android:label="Thaumacord"
+        android:label="Ludovive"
         android:usesCleartextTraffic="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">

@@ -1,4 +1,4 @@
-package fr.maitresinh.thaumacord.gesture
+package fr.maitresinh.ludovive.gesture
 
 class GestureNormalizer {
     fun phoneTouch(

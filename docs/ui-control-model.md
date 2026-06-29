@@ -1,6 +1,6 @@
 # UI Control Model
 
-Thaumacord should not expose raw JSON as the table interface. JSON is a developer/debug surface only.
+Ludovive should not expose raw JSON as the table interface. JSON is a developer/debug surface only.
 
 The operational UI is generated from the imported module:
 
@@ -15,7 +15,7 @@ The operational UI is generated from the imported module:
 - `exchange`: buy, sell, give, barter, accept, refuse.
 - `petition` and `vote`: submit request, call vote, cast vote, close vote, apply result.
 - `contest`: declare attempt, record leaders, record commitments, reveal, choose outcome.
-- `live-administration`: conduct or record a guided scene, then validate effects.
+- `live-administration`: conduct or record a guided phase resolution, then validate effects.
 - `timed-income`: run income, draw cards, refresh allowances, apply phase grants.
 - `information-action`: send private clue, reveal favor/status, ask oracle/assistant.
 - `card-or-object`: draw, give, reveal, discard, exhaust, cancel.

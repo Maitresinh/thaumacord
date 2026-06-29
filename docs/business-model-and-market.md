@@ -2,7 +2,7 @@
 
 ## Positioning
 
-Thaumacord should not be positioned as another virtual tabletop or another character sheet manager.
+Ludovive should not be positioned as another virtual tabletop or another character sheet manager.
 
 The stronger position is:
 
@@ -25,7 +25,7 @@ There are existing moderator apps for Werewolf and Mafia. The strongest products
 - some voting and elimination logic;
 - web joining from player phones in some cases.
 
-The gap for Thaumacord is not "can an app run Werewolf?" but:
+The gap for Ludovive is not "can an app run Werewolf?" but:
 
 - generic importable games, not one social deduction ruleset;
 - persistent state and status effects beyond night/day role calls;
@@ -56,7 +56,7 @@ They usually solve:
 - sharing sheets with a GM or campaign;
 - sometimes live sync or VTT integration.
 
-But Thaumacord is not looking for "online character sheets" in the usual sense. The target is not a document hosted on the web. The target is a **table-first active sheet**: a mobile control surface used during an in-person session, while the GM receives clean, structured, real-time data.
+But Ludovive is not looking for "online character sheets" in the usual sense. The target is not a document hosted on the web. The target is a **table-first active sheet**: a mobile control surface used during an in-person session, while the GM receives clean, structured, real-time data.
 
 The repeated gap is ergonomics during live table play:
 
@@ -66,7 +66,7 @@ The repeated gap is ergonomics during live table play:
 - most tools are system-specific, sheet-template-specific, or VTT-centric;
 - AI features, when present, are often narrative or note-taking rather than rule-state enforcement.
 
-Thaumacord should treat the sheet as a dynamic control surface:
+Ludovive should treat the sheet as a dynamic control surface:
 
 - show only relevant actions for the current phase, role, zone, and state;
 - convert rule text into buttons, gestures, timers, prompts, and state transitions;
@@ -153,7 +153,7 @@ Do not monetize Mandragore early. It should arrive at the end as a premium accel
 
 ## Product implication
 
-Thaumacord's moat is not the character sheet. It is the combination of:
+Ludovive's moat is not the character sheet. It is the combination of:
 
 - rules as executable state;
 - private/public visibility control;

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "fr.maitresinh.thaumacord"
+    namespace = "fr.maitresinh.ludovive"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "fr.maitresinh.thaumacord"
+        applicationId = "fr.maitresinh.ludovive"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

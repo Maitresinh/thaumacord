@@ -42,7 +42,7 @@ The phone and the computer must be on the same network.
 
 ## First Test
 
-1. Start the Thaumacord server on the computer.
+1. Start the Ludovive server on the computer.
 2. Create a Putsch demo session from the browser dashboard.
 3. Open the Android project in Android Studio.
 4. Run the app on emulator or phone.

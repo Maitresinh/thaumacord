@@ -1,4 +1,4 @@
-package fr.maitresinh.thaumacord.gesture
+package fr.maitresinh.ludovive.gesture
 
 class SensorGestureClassifier {
     fun classify(samples: List<MotionSample>): Pair<String, Float>? {

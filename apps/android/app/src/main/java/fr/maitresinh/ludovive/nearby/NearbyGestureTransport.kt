@@ -1,4 +1,4 @@
-package fr.maitresinh.thaumacord.nearby
+package fr.maitresinh.ludovive.nearby
 
 interface NearbyGestureTransport {
     fun startAdvertising(localDeviceId: String)

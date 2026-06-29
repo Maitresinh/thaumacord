@@ -2,7 +2,7 @@
 
 ## Vision
 
-Thaumacord helps organizers run social live-action games where rules, secrecy, resources, roles, votes, and timed events are hard to manage on paper.
+Ludovive helps organizers run social live-action games where rules, secrecy, resources, roles, votes, and timed events are hard to manage on paper.
 
 The app should feel like an invisible game master assistant and a set of digital props rather than a normal mobile form interface.
 

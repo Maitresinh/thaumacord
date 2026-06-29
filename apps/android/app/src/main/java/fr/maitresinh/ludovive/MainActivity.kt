@@ -1,4 +1,4 @@
-package fr.maitresinh.thaumacord
+package fr.maitresinh.ludovive
 
 import android.app.Activity
 import android.graphics.Color
@@ -10,10 +10,10 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import fr.maitresinh.thaumacord.gesture.CanonicalGestureEvent
-import fr.maitresinh.thaumacord.gesture.ContactProofNormalizer
-import fr.maitresinh.thaumacord.gesture.GestureEventSender
-import fr.maitresinh.thaumacord.gesture.GestureNormalizer
+import fr.maitresinh.ludovive.gesture.CanonicalGestureEvent
+import fr.maitresinh.ludovive.gesture.ContactProofNormalizer
+import fr.maitresinh.ludovive.gesture.GestureEventSender
+import fr.maitresinh.ludovive.gesture.GestureNormalizer
 
 class MainActivity : Activity() {
     private val gestureNormalizer = GestureNormalizer()
@@ -33,7 +33,7 @@ class MainActivity : Activity() {
         }
 
         val title = TextView(this).apply {
-            text = "Thaumacord"
+            text = "Ludovive"
             textSize = 32f
             gravity = Gravity.CENTER
         }

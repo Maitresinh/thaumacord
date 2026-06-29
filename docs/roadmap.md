@@ -70,7 +70,7 @@ Before gestures, prioritize the Putsch MVP+ if the goal is an operational playab
 - Putsch economy and cards.
 - Complete coup attempt with hidden timed commitments.
 - Complete vote/election loop.
-- Guided council scene.
+- Guided council phase resolution.
 - Polished facilitator dashboard.
 - 60-90 minute playtest hardening.
 

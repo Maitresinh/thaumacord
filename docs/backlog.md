@@ -133,7 +133,7 @@ Acceptance criteria:
 
 ### Epic 10: Reuse And Architecture Spikes
 
-As a product team, we can evaluate existing open source foundations so that Thaumacord does not reinvent mature infrastructure unnecessarily.
+As a product team, we can evaluate existing open source foundations so that Ludovive does not reinvent mature infrastructure unnecessarily.
 
 Acceptance criteria:
 
@@ -146,4 +146,4 @@ Stories:
 
 - Spike Colyseus live rooms with filtered dashboard and device payloads.
 - Spike Android Nearby Connections with two-device discovery and a normalized gesture event.
-- Compare boardgame.io phases/moves with Thaumacord modules/actions before votes and petitions.
+- Compare boardgame.io phases/moves with Ludovive modules/actions before votes and petitions.

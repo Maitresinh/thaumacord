@@ -14,6 +14,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Thaumacord"
+rootProject.name = "Ludovive"
 include(":app")
 

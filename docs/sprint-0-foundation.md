@@ -2,7 +2,7 @@
 
 ## Goal
 
-Establish Thaumacord as a generic live-game data transmission app, not as a GM/player screen pair.
+Establish Ludovive as a generic live-game data transmission app, not as a GM/player screen pair.
 
 The first architectural target is a reliable loop:
 

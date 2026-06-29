@@ -1,12 +1,12 @@
 # Mechanic Catalog
 
-This catalog extracts reusable mechanisms from the current Thaumacord examples and nearby role/social/table games. A mechanism is not a rulebook by itself. It is a configurable pattern that a module can bind to actions, phases, resources, statuses, visibility rules, and facilitator decisions.
+This catalog extracts reusable mechanisms from the current Ludovive examples and nearby role/social/table games. A mechanism is not a rulebook by itself. It is a configurable pattern that a module can bind to actions, phases, resources, statuses, visibility rules, and facilitator decisions.
 
 ## Sources Read
 
 - `Putsch cahier des charges.doc`: resource transactions, timed income, coup attempts, hidden counter-bids, facilitator backoffice.
 - `Long Live the King` spreadsheet: petitions, weighted votes, democratic votes, authority rulings, status cards, intrigue cards, immunity, cancellation, delayed effects, role-specific victory conditions.
-- Thaumacord examples: `putsch-lite`, `long-live-the-king-lite`, `wolfpack-lite`.
+- Ludovive examples: `putsch-lite`, `long-live-the-king-lite`, `wolfpack-lite`.
 - Related families: Mafia/Werewolf, Blood on the Clocktower, Two Rooms and a Boom, Captain Sonar-like crew coordination.
 
 ## Mechanism Families
@@ -51,7 +51,7 @@ Actions bind to mechanisms with `mechanicId`. The action remains the player-faci
 1. `exchange`: direct transfer is implemented; add pending/accepted/cancelled exchanges next.
 2. `petition` plus `vote`: opening pending petition resolutions is implemented; add vote collection and authority decision next.
 3. `contest`: opening pending contest resolutions is implemented; add sealed commitments and opposed checks next.
-4. `live-administration` and `facilitator-action`: table scenes are guided or recorded, then dashboards approve, reject, edit, reveal, and send.
+4. `live-administration` and `facilitator-action`: table phase resolutions are guided or recorded, then dashboards approve, reject, edit, reveal, and send.
 5. `triggered-ability`: counters, immunities, once-per-turn abilities.
 6. `hidden-role` and `information-action`: Mafia/Werewolf/Blood-on-the-Clocktower-like support.
 7. `economic-simulation`: sheep market, money creation, bank run, liquidity, confidence, supply/demand shocks.
@@ -69,7 +69,7 @@ The pending resolution stores:
 - the original event payload;
 - the module-declared `resolution` and `visibility` policy.
 
-This deliberately does not decide the outcome yet. Follow-up runners will collect votes, sealed commitments, live-scene records, facilitator decisions, or other inputs before closing the resolution.
+This deliberately does not decide the outcome yet. Follow-up runners will collect votes, sealed commitments, live-phase-resolution records, facilitator decisions, or other inputs before closing the resolution.
 
 ## Design Notes
 

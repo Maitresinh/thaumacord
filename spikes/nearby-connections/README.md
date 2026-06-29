@@ -1,13 +1,13 @@
 # Android Nearby Connections Spike
 
-Goal: evaluate Google Nearby Connections as a local input adapter for Thaumacord physical interactions.
+Goal: evaluate Google Nearby Connections as a local input adapter for Ludovive physical interactions.
 
 Architecture decision:
 
 ```text
 Nearby/local proximity signal
 -> Android normalizer creates NearbyGestureEvent
--> Android sends a normal Thaumacord event to the server
+-> Android sends a normal Ludovive event to the server
 -> Server remains authoritative
 ```
 
@@ -31,4 +31,4 @@ Acceptance criteria for the next device spike:
 - Two Android devices discover each other.
 - A local payload is exchanged.
 - The app converts it to a `gesture.detected` event.
-- Thaumacord server validates `sourceDeviceId`, participant binding, gesture/action availability, and audit.
+- Ludovive server validates `sourceDeviceId`, participant binding, gesture/action availability, and audit.

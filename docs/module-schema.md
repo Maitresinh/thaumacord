@@ -1,6 +1,6 @@
 # Module Schema Draft
 
-This is the first conceptual schema for importable Thaumacord modules.
+This is the first conceptual schema for importable Ludovive modules.
 
 ```json
 {
@@ -271,7 +271,7 @@ Supported effects:
 - `revealContactHint`: stores a contact hint status;
 - `runTimedIncome`: runs a table-level income step from a source resource into a target resource, optionally drawing components by turn parity and role.
 
-`runTimedIncome` is meant for repeated administrative phases such as Long Live the King Audience or economic-simulation ticks. In live games, it can be used either as a guided in-app sequence led by the authority, or as the recording/application step after the table scene has happened. It supports:
+`runTimedIncome` is meant for repeated administrative phases such as Long Live the King Audience or economic-simulation ticks. In live games, it can be used either as a guided in-app sequence led by the authority, or as the recording/application step after the table phase resolution has happened. It supports:
 
 - `resource`: participant resource to credit;
 - `amountResource`: participant resource used as the credit amount;

@@ -1,6 +1,6 @@
 # Timing Model
 
-Thaumacord games are table-time games. The server tracks time as a facilitator-controlled structure, not as an autonomous board-game clock.
+Ludovive games are table-time games. The server tracks time as a facilitator-controlled structure, not as an autonomous board-game clock.
 
 ## Concepts
 

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { Room } from "colyseus";
 
-class ThaumacordVisibilityRoom extends Room {
+class LudoviveVisibilityRoom extends Room {
   constructor() {
     super();
     this.audit = [];
@@ -81,7 +81,7 @@ function fakeClient(id) {
 }
 
 test("a Colyseus room can send filtered per-client read models without shared schema state", () => {
-  const room = new ThaumacordVisibilityRoom();
+  const room = new LudoviveVisibilityRoom();
   const dashboard = fakeClient("dashboard");
   const sonar = fakeClient("sonar-device");
   const unbound = fakeClient("unbound-device");
@@ -104,8 +104,8 @@ test("a Colyseus room can send filtered per-client read models without shared sc
   assert.equal(dashboard.messages.at(-1).payload.audit.sequence, 1);
 });
 
-test("a Colyseus room still needs Thaumacord audit catch-up after reconnect", () => {
-  const room = new ThaumacordVisibilityRoom();
+test("a Colyseus room still needs Ludovive audit catch-up after reconnect", () => {
+  const room = new LudoviveVisibilityRoom();
   const firstConnection = fakeClient("sonar-device-1");
   room.connectClient(firstConnection, { kind: "device", participantId: "sonar" });
   room.acceptEvent({ type: "sonar.ping", participantId: "sonar", payload: { bearing: 47 } });

@@ -1,4 +1,4 @@
-package fr.maitresinh.thaumacord.gesture
+package fr.maitresinh.ludovive.gesture
 
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
@@ -12,7 +12,7 @@ class GestureEventSender(private val baseUrl: String) {
         connection.setRequestProperty("content-type", "application/json")
         connection.doOutput = true
         OutputStreamWriter(connection.outputStream).use { writer ->
-            writer.write(toJson(event.toThaumacordPayload()))
+            writer.write(toJson(event.toLudovivePayload()))
         }
         return connection.responseCode
     }

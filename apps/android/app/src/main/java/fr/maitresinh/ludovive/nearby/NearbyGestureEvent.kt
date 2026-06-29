@@ -1,8 +1,8 @@
-package fr.maitresinh.thaumacord.nearby
+package fr.maitresinh.ludovive.nearby
 
-import fr.maitresinh.thaumacord.gesture.CanonicalGestureEvent
-import fr.maitresinh.thaumacord.gesture.GestureProximity
-import fr.maitresinh.thaumacord.gesture.GestureTransport
+import fr.maitresinh.ludovive.gesture.CanonicalGestureEvent
+import fr.maitresinh.ludovive.gesture.GestureProximity
+import fr.maitresinh.ludovive.gesture.GestureTransport
 
 typealias NearbyGestureEvent = CanonicalGestureEvent
 

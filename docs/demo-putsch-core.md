@@ -1,6 +1,6 @@
 # Demo: Putsch Au Panador Core
 
-Purpose: prove the core Thaumacord loop with the smallest possible table demo.
+Purpose: prove the core Ludovive loop with the smallest possible table demo.
 
 ## Demo Rule
 

@@ -297,12 +297,13 @@ function renamedProjectDescription() {
 async function renameProject() {
   const projectId = await resolveProjectId();
   const current = await taigaFetch(`/projects/${projectId}`);
+  const requestedSlug = process.env.TAIGA_PROJECT_NEW_SLUG || "ludovive";
   const renamed = await taigaFetch(`/projects/${projectId}`, {
     method: "PATCH",
     body: JSON.stringify({
       version: current.version,
       name: process.env.TAIGA_PROJECT_NAME || "Ludovive",
-      slug: process.env.TAIGA_PROJECT_NEW_SLUG || "ludovive",
+      slug: requestedSlug,
       description: renamedProjectDescription()
     })
   });
@@ -311,6 +312,8 @@ async function renameProject() {
     id: renamed.id,
     name: renamed.name,
     slug: renamed.slug,
+    requestedSlug,
+    slugChanged: renamed.slug === requestedSlug,
     is_private: renamed.is_private,
     description: renamed.description
   };

@@ -5,7 +5,8 @@
 - Taiga URL: `https://taiga.500nuancesdegeek.fr`
 - Taiga project id: `10`
 - Product name: `Ludovive`
-- Taiga project slug/name: currently `thaumacord` / `Thaumacord` until the remote project is renamed
+- Taiga project name/slug: `Ludovive` / `thaumacord`
+- Taiga keeps the historical slug `thaumacord` after the product rename, so use project id `10` or slug `thaumacord` for API calls.
 - Taiga username: `Maitresinh`
 - GitHub repo: `Maitresinh/ludovive`
 - Project management target: keep Taiga synchronized with the Ludovive Scrum backlog and MVP increments.
@@ -44,4 +45,4 @@ Use:
 
 `apply` calls the Taiga API. It requires either `TAIGA_AUTH_TOKEN`, or `TAIGA_USERNAME` plus a password supplied by the PowerShell wrapper.
 
-`rename-project` updates the Taiga project name/slug to Ludovive when authenticated.
+`rename-project` updates the Taiga project name and description to Ludovive when authenticated. It also asks Taiga for slug `ludovive`, but this Taiga instance may keep the existing slug `thaumacord`; that is expected.

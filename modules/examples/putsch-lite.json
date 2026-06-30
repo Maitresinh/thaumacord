@@ -50,18 +50,18 @@
     "max": 12
   },
   "resources": [
-    { "id": "money", "name": "Escudos", "visibility": "private", "min": 0 },
-    { "id": "copperShares", "name": "Actions des mines de cuivre", "visibility": "private", "min": 0 },
+    { "id": "money", "name": "Escudos", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 1 } },
+    { "id": "copperShares", "name": "Actions des mines de cuivre", "visibility": "private", "min": 0, "score": { "valueState": "copperPrice", "roleMultipliers": { "facilitator-capitalist": 0.5 }, "label": "cours courant" } },
     { "id": "weapons", "name": "Armes", "visibility": "private", "min": 0 },
     { "id": "ammo", "name": "Munitions", "visibility": "private", "min": 0 },
     { "id": "influence", "name": "Influence", "visibility": "private", "min": 0 },
-    { "id": "cf25", "name": "25 caisses de fusils", "visibility": "private", "min": 0 },
-    { "id": "cf50", "name": "50 caisses de fusils", "visibility": "private", "min": 0 },
-    { "id": "cf100", "name": "100 caisses de fusils", "visibility": "private", "min": 0 },
-    { "id": "cm25", "name": "25 caisses de munitions", "visibility": "private", "min": 0 },
-    { "id": "cm50", "name": "50 caisses de munitions", "visibility": "private", "min": 0 },
-    { "id": "cm100", "name": "100 caisses de munitions", "visibility": "private", "min": 0 },
-    { "id": "drugBags", "name": "Sacs de drogue", "visibility": "private", "min": 0 },
+    { "id": "cf25", "name": "25 caisses de fusils", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 2500 } },
+    { "id": "cf50", "name": "50 caisses de fusils", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 5000 } },
+    { "id": "cf100", "name": "100 caisses de fusils", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 10000 } },
+    { "id": "cm25", "name": "25 caisses de munitions", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 2500 } },
+    { "id": "cm50", "name": "50 caisses de munitions", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 5000 } },
+    { "id": "cm100", "name": "100 caisses de munitions", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 10000 } },
+    { "id": "drugBags", "name": "Sacs de drogue", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 5000 } },
     { "id": "voteBallots", "name": "Bulletins de vote", "visibility": "private", "min": 0 }
   ],
   "sessionRoles": [

@@ -25,12 +25,22 @@ app.setErrorHandler((error, _request, reply) => {
   return reply.code(500).send({ error: "Internal server error" });
 });
 
+const resourceScoreSchema = z.object({
+  pointsPerUnit: z.number().optional(),
+  valueState: z.string().min(1).optional(),
+  roleMultipliers: z.record(z.number()).default({}),
+  label: z.string().optional()
+}).refine((value) => value.pointsPerUnit !== undefined || value.valueState !== undefined, {
+  message: "pointsPerUnit or valueState is required"
+});
+
 const resourceSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   visibility: z.string().default("private"),
   min: z.number().optional(),
-  max: z.number().optional()
+  max: z.number().optional(),
+  score: resourceScoreSchema.optional()
 });
 
 const phaseSchema = z.object({
@@ -2271,6 +2281,51 @@ function aggregateSession(session: Session): Record<string, unknown> {
   };
 }
 
+function resourceScoreUnit(session: Session, resource: z.infer<typeof resourceSchema>): number | undefined {
+  if (!resource.score) {
+    return undefined;
+  }
+  const unit = resource.score.valueState ? Number(session.statuses[resource.score.valueState]) : resource.score.pointsPerUnit;
+  return Number.isFinite(unit) ? unit : undefined;
+}
+
+function scoreParticipants(session: Session): Record<string, unknown>[] {
+  const module = getModuleOrThrow(session.moduleId);
+  return session.participants.map((participant) => {
+    const role = participant.roleId ? module.roles.find((candidate) => candidate.id === participant.roleId) : undefined;
+    const breakdown = module.resources.flatMap((resource) => {
+      const unit = resourceScoreUnit(session, resource);
+      if (!resource.score || unit === undefined) {
+        return [];
+      }
+      const quantity = participant.resources[resource.id] ?? resource.min ?? 0;
+      if (!quantity) {
+        return [];
+      }
+      const multiplier = participant.roleId ? resource.score.roleMultipliers[participant.roleId] ?? 1 : 1;
+      const points = quantity * unit * multiplier;
+      return [{
+        resourceId: resource.id,
+        name: resource.name,
+        quantity,
+        unit,
+        multiplier,
+        points,
+        label: resource.score.label
+      }];
+    });
+    const total = breakdown.reduce((sum, entry) => sum + entry.points, 0);
+    return {
+      participantId: participant.id,
+      name: participant.name,
+      roleId: participant.roleId,
+      roleName: role?.name,
+      total,
+      breakdown
+    };
+  }).sort((left, right) => Number(right.total) - Number(left.total));
+}
+
 function visibleSession(session: Session): Session & { module: GameModule; phase: z.infer<typeof phaseSchema>; turnPhase: TurnPhaseView; phasePlan: PhasePlanView } {
   return {
     ...session,
@@ -2449,10 +2504,11 @@ function enrichResolution(session: Session, resolution: PendingResolution): Pend
   };
 }
 
-function dashboardReadModel(session: Session): ReturnType<typeof visibleSession> & { readModel: "dashboard"; aggregates: Record<string, unknown> } {
+function dashboardReadModel(session: Session): ReturnType<typeof visibleSession> & { readModel: "dashboard"; aggregates: Record<string, unknown>; scores: Record<string, unknown>[] } {
   return {
     ...visibleSession(session),
     aggregates: aggregateSession(session),
+    scores: scoreParticipants(session),
     messages: session.messages,
     pendingResolutions: session.pendingResolutions.map((resolution) => enrichResolution(session, resolution)),
     readModel: "dashboard"
@@ -2790,6 +2846,10 @@ function renderIndex(): string {
               <h3>Appareils</h3>
               <div id="devices" class="list"></div>
             </div>
+            <div>
+              <h3>Scores</h3>
+              <div id="scores" class="list"></div>
+            </div>
           </div>
         </section>
 
@@ -3020,6 +3080,13 @@ function renderIndex(): string {
       const poolRows = Object.entries(aggregates.componentPools || {}).map(([componentId, pool]) => '<div class="item"><strong>' + dashboardComponentLabel(session, componentId) + '</strong><div>Restant: ' + pool.remaining + '</div><div class="muted">' + (pool.exhausted ? "epuise" : "disponible") + '</div></div>').join("");
       return [participantRow, resourceRows, inventoryRows, poolRows].filter(Boolean).join("") || '<div class="muted">Aucun agregat</div>';
     }
+    function renderDashboardScores(session) {
+      const scores = session.scores || [];
+      return scores.map((score, index) => {
+        const details = (score.breakdown || []).map((entry) => dashboardResourceLabel(session, entry.resourceId) + ": " + Math.round(entry.points)).join(" / ");
+        return '<div class="item"><strong>#' + (index + 1) + ' ' + score.name + '</strong><div>' + Math.round(score.total) + ' point(s)</div><div class="muted">' + (score.roleName || dashboardRoleLabel(session, score.roleId)) + '</div><div class="muted">' + details + '</div></div>';
+      }).join("") || '<div class="muted">Aucun score declare pour ce module</div>';
+    }
     function renderMvpPanel(session) {
       const pendingCount = (session.pendingResolutions || []).length;
       const connectedCount = (session.devices || []).filter((device) => device.connected).length;
@@ -3201,6 +3268,7 @@ function renderIndex(): string {
         const participant = session.participants.find((candidate) => candidate.id === device.participantId);
         return '<div class="item"><strong>' + device.name + '</strong><div>' + (participant ? participant.name : "non lie") + '</div><div class="muted">' + (device.connected ? "connecte" : "deconnecte") + '</div></div>';
       }).join("") || '<div class="muted">Aucun appareil</div>';
+      byId("scores").innerHTML = renderDashboardScores(session);
       byId("aggregates").innerHTML = renderDashboardAggregates(session);
       byId("messages").innerHTML = (session.messages || []).slice(-6).map((message) => '<div class="item"><strong>' + message.channel + '</strong><div>' + message.text + '</div><div class="muted">' + message.target + '</div></div>').join("") || '<div class="muted">Aucun message</div>';
       byId("exchangeLog").innerHTML = (session.exchanges || []).slice(-8).map((exchange) => {

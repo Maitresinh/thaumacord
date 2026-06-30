@@ -488,6 +488,9 @@ test("returns a dashboard read model with the complete live state", async () => 
   assert.equal(dashboard.aggregates.participants.byRole.general, 1);
   assert.equal(dashboard.aggregates.resources.money.total, 20);
   assert.equal(dashboard.aggregates.resources.weapons.max, 2);
+  assert.equal(dashboard.scores.length, 2);
+  assert.equal(dashboard.scores[0].name, "Marchand");
+  assert.equal(dashboard.scores[0].total, 12);
 });
 
 test("persists sessions to local storage and reloads them", async () => {
@@ -975,6 +978,12 @@ test("runs Putsch copper mine market buys with price stock and buyer limits", as
   assert.equal(jamesState.resources.copperShares, 3);
   assert.equal(jamesState.inventory["copper-share-card"], 3);
   assert.equal(jamesState.statuses.marketPurchases["1:market:copperShares"], 3);
+  const paquitoScore = buy.dashboard.scores.find((score: JsonObject) => score.participantId === paquito.participant.id);
+  const jamesScore = buy.dashboard.scores.find((score: JsonObject) => score.participantId === james.participant.id);
+  assert.equal(paquitoScore.total, 26500);
+  assert.equal(paquitoScore.breakdown.find((entry: JsonObject) => entry.resourceId === "copperShares").multiplier, 0.5);
+  assert.equal(jamesScore.total, 55000);
+  assert.equal(jamesScore.breakdown.find((entry: JsonObject) => entry.resourceId === "copperShares").points, 3000);
 
   const blocked = await app.inject({
     method: "POST",

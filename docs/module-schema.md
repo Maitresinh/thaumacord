@@ -23,7 +23,11 @@ This is the first conceptual schema for importable Ludovive modules.
       "id": "gold",
       "name": "Gold",
       "visibility": "private",
-      "min": 0
+      "min": 0,
+      "score": {
+        "pointsPerUnit": 1,
+        "roleMultipliers": {}
+      }
     }
   ],
   "phases": [
@@ -194,6 +198,22 @@ POST /sessions/:code/session-roles/:sessionRoleId
 The server validates that the session role exists, that the participant exists when supplied, and that `assignableToRoles` allows the participant's current in-game role.
 
 When a module declares at least one session role with `canInjectGameElements: true`, sensitive table mutations require one of those roles to be enabled and assigned to a participant. The current prototype enforces this for resolution arbitration, direct resource correction, and component draws. Modules without an injection-authority role keep the previous open dashboard behavior.
+
+## Resource Scoring
+
+A resource can declare an optional `score` block. The dashboard uses it to build an explainable score table for the facilitator.
+
+- `pointsPerUnit`: fixed point value for one unit.
+- `valueState`: session state key used as the current point value, for example a market price.
+- `roleMultipliers`: optional role-specific multiplier map, useful for special scoring rules.
+- `label`: optional human note shown by clients or tooling.
+
+Examples:
+
+```json
+{ "id": "money", "name": "Escudos", "score": { "pointsPerUnit": 1 } }
+{ "id": "copperShares", "name": "Copper Shares", "score": { "valueState": "copperPrice", "roleMultipliers": { "mine-owner": 0.5 } } }
+```
 
 The server keeps an active `phaseClock` on each session:
 

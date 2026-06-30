@@ -19,9 +19,9 @@ But: transformer Putsch de module de demonstration en jeu pilote complet, tout e
 | Conseil | Partiel | saisie/record et resolution guidee existent | `collective-phase` |
 | Election | Partiel | vote/tally existe, cloture et college a finaliser | `vote-engine` |
 | Mine de cuivre | Partiel | cours et compteurs existent, ventes horaires non strictes | `market-economy` |
-| Score | Manquant | conditions textuelles seulement | `score-engine` |
+| Score | Partiel solide | calcul estime declaratif par ressource, actions cuivre au cours courant, multiplicateur Paquito | `score-engine` |
 | Sons | Manquant | aucun schema son/module audio | `event-soundboard` |
-| Dashboard specialise | Partiel | dashboard general + phase plan, pas encore panneau mine/personnages/score | `dashboard-panels` |
+| Dashboard specialise | Partiel | dashboard general + phase plan + scores, pas encore panneau mine/personnages dedie | `dashboard-panels` |
 
 ## Personnages
 

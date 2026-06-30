@@ -58,9 +58,29 @@ const plan = {
       description: "Represent CF, CM, drugs, copper shares, vote ballots, inventories, current share price, market limits, exchanges, and audited score-relevant holdings."
     },
     {
+      subject: "Putsch setup distributes role material from module declarations",
+      epic: "Putsch MVP+",
+      description: "Use module setup distributions to give participants their private role material, cards, copper shares, vote ballots, and inventories without manual JSON editing."
+    },
+    {
+      subject: "Putsch copper mine market enforces price stock and buyer limits",
+      epic: "Putsch MVP+",
+      description: "Let players buy copper shares from the mine at the current price while transferring money, cards, shares, stock counters, and Paquito holdings atomically."
+    },
+    {
+      subject: "Putsch score dashboard explains estimated standings",
+      epic: "Dashboard Read Model",
+      description: "Compute facilitator-visible scores from declarative resource scoring rules, including current copper share price and Paquito's special half-value rule."
+    },
+    {
       subject: "Putsch coup resolves hidden timed commitments automatically",
       epic: "Putsch MVP+",
       description: "Run coup declaration, facilitator-configured countdown, hidden attacker and defender commitments, automatic force comparison, power change, share price effect, and public/private summaries."
+    },
+    {
+      subject: "Putsch hidden coup commitments are private and deadline enforced",
+      epic: "Putsch MVP+",
+      description: "Filter hidden commitments out of participant read models except for their own bid, expose commitment status, and reject late defense commitments after the countdown."
     },
     {
       subject: "Putsch election runs from ballot to college update",
@@ -68,9 +88,24 @@ const plan = {
       description: "Open an election, collect one secret ballot per voter for promotion and elimination, tally results, handle ties, update the council, and publish the allowed result."
     },
     {
+      subject: "Putsch council election can be finalized declaratively",
+      epic: "Putsch MVP+",
+      description: "Finalize the minister council election through a module-declared action that computes promoted and eliminated participants and writes council statuses."
+    },
+    {
       subject: "Putsch council phase resolution is guided and applies consequences",
       epic: "Putsch MVP+",
       description: "Guide the council phase resolution with attendees, embezzlement, decisions, facilitator validation, automatic financial consequences, public summary, and private audit."
+    },
+    {
+      subject: "Modules expose UI templates and soundboard cues",
+      epic: "Module Import",
+      description: "Let imported games declare visual theme, gesture language, and event sound cues so Putsch and future games can carry their own table identity."
+    },
+    {
+      subject: "Module loader validates reusable kit references",
+      epic: "Module Import",
+      description: "Validate module references for phases, mechanics, roles, resources, components, setup distributions, scoring states, market states, and sound cue phases at load time."
     },
     {
       subject: "Putsch MVP+ demo mode supports a 60-90 minute playtest",

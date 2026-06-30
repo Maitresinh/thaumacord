@@ -197,6 +197,18 @@ Buttons remain available as fallback, but player-facing controls should first pr
 
 Dashboard read models expose the full list. Participant read models receive cues marked `participants` or `all`.
 
+## Module Validation
+
+When the server loads modules, it validates common references before any session can use the kit:
+
+- setup distributions must reference known components, roles, and resources;
+- actions must reference known phases, actor roles, and mechanics;
+- action effects must reference known resources, components, seller roles, and market session states where applicable;
+- resource scoring by `valueState` must reference a known initial session state;
+- sound cues with a phase must reference a known phase.
+
+Participant statuses created by effects such as `setState` remain intentionally dynamic. This keeps modules like the submarine prototype free to invent table-specific state such as `depth`, `noise`, or `damage` during play.
+
 ## Session Roles
 
 `sessionRoles` separates table operation from in-fiction player roles. This matters because the person who opens a session is not always a classical GM.

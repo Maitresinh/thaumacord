@@ -708,14 +708,73 @@ function modulesDir(): string {
   return path.resolve(process.cwd(), "../../modules/examples");
 }
 
+function assertModuleReference(condition: boolean, message: string): void {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
+
 function validateModuleReferences(module: GameModule): void {
   const componentIds = new Set(module.components.map((component) => component.id));
-  for (const distribution of module.setup?.distributions ?? []) {
-    if (!componentIds.has(distribution.componentId)) {
-      throw new Error(`Module ${module.id} setup distribution references unknown component: ${distribution.componentId}`);
+  const phaseIds = new Set(module.phases.map((phase) => phase.id));
+  const roleIds = new Set(module.roles.map((role) => role.id));
+  const resourceIds = new Set(module.resources.map((resource) => resource.id));
+  const mechanicIds = new Set(module.mechanics.map((mechanic) => mechanic.id));
+  const stateIds = new Set(Object.keys(module.state));
+  const actionIds = new Set<string>();
+
+  for (const resource of module.resources) {
+    if (resource.score?.valueState) {
+      assertModuleReference(stateIds.has(resource.score.valueState), `Module ${module.id} resource ${resource.id} scores from unknown state: ${resource.score.valueState}`);
     }
-    if (distribution.target === "role" && !module.roles.some((role) => role.id === distribution.roleId)) {
-      throw new Error(`Module ${module.id} setup distribution references unknown role: ${distribution.roleId}`);
+  }
+
+  for (const cue of module.soundboard) {
+    if (cue.phase) {
+      assertModuleReference(phaseIds.has(cue.phase), `Module ${module.id} sound cue ${cue.id} references unknown phase: ${cue.phase}`);
+    }
+  }
+
+  for (const distribution of module.setup?.distributions ?? []) {
+    assertModuleReference(componentIds.has(distribution.componentId), `Module ${module.id} setup distribution references unknown component: ${distribution.componentId}`);
+    assertModuleReference(!distribution.countResource || resourceIds.has(distribution.countResource), `Module ${module.id} setup distribution references unknown resource: ${distribution.countResource}`);
+    assertModuleReference(distribution.target !== "role" || Boolean(distribution.roleId && roleIds.has(distribution.roleId)), `Module ${module.id} setup distribution references unknown role: ${distribution.roleId}`);
+  }
+
+  for (const action of module.actions) {
+    assertModuleReference(!actionIds.has(action.id), `Module ${module.id} has duplicate action id: ${action.id}`);
+    actionIds.add(action.id);
+    assertModuleReference(action.phase === "*" || phaseIds.has(action.phase), `Module ${module.id} action ${action.id} references unknown phase: ${action.phase}`);
+    assertModuleReference(action.actor === "any" || roleIds.has(action.actor), `Module ${module.id} action ${action.id} references unknown actor role: ${action.actor}`);
+    assertModuleReference(!action.mechanicId || mechanicIds.has(action.mechanicId), `Module ${module.id} action ${action.id} references unknown mechanic: ${action.mechanicId}`);
+
+    const effect = objectRecord(action.effect);
+    if (!effect?.type) {
+      continue;
+    }
+    if (typeof effect.resource === "string") {
+      assertModuleReference(resourceIds.has(effect.resource), `Module ${module.id} action ${action.id} references unknown resource: ${effect.resource}`);
+    }
+    if (typeof effect.currencyResource === "string") {
+      assertModuleReference(resourceIds.has(effect.currencyResource), `Module ${module.id} action ${action.id} references unknown currency resource: ${effect.currencyResource}`);
+    }
+    for (const resourceId of stringArray(effect.resources) ?? []) {
+      assertModuleReference(resourceIds.has(resourceId), `Module ${module.id} action ${action.id} references unknown resource: ${resourceId}`);
+    }
+    if (typeof effect.componentId === "string") {
+      assertModuleReference(componentIds.has(effect.componentId), `Module ${module.id} action ${action.id} references unknown component: ${effect.componentId}`);
+    }
+    if (typeof effect.amountResource === "string") {
+      assertModuleReference(resourceIds.has(effect.amountResource), `Module ${module.id} action ${action.id} references unknown amount resource: ${effect.amountResource}`);
+    }
+    if (typeof effect.lowStatusResource === "string") {
+      assertModuleReference(resourceIds.has(effect.lowStatusResource), `Module ${module.id} action ${action.id} references unknown low-status resource: ${effect.lowStatusResource}`);
+    }
+    if (typeof effect.sellerRoleId === "string") {
+      assertModuleReference(roleIds.has(effect.sellerRoleId), `Module ${module.id} action ${action.id} references unknown seller role: ${effect.sellerRoleId}`);
+    }
+    for (const stateKey of [effect.priceState, effect.stockState, effect.limitState].filter((value): value is string => typeof value === "string")) {
+      assertModuleReference(stateIds.has(stateKey), `Module ${module.id} action ${action.id} references unknown session state: ${stateKey}`);
     }
   }
 }

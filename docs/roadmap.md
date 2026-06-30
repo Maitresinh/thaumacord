@@ -74,7 +74,9 @@ Before gestures, prioritize the Putsch MVP+ if the goal is an operational playab
 - Polished facilitator dashboard.
 - 60-90 minute playtest hardening.
 
-Detailed programme: [MVP+ Putsch](mvp-plus-putsch.md)
+Detailed Putsch programme: [MVP+ Putsch](mvp-plus-putsch.md)
+
+Reusable MVP sprint programme: [Programme Des Sprints MVP Complet](mvp-complet-sprints.md)
 
 - Prototype phone touch confirmation using QR/NFC fallback.
 - Prototype tilt transfer.

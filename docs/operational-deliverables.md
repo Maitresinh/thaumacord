@@ -108,7 +108,10 @@ Minimum:
 
 Goal: run Putsch as a complete table game, not only a technical demo.
 
-Reference programme: [MVP+ Putsch](mvp-plus-putsch.md)
+Reference programmes:
+
+- [MVP+ Putsch](mvp-plus-putsch.md)
+- [Programme Des Sprints MVP Complet](mvp-complet-sprints.md)
 
 Minimum:
 

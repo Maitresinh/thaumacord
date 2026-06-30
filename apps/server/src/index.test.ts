@@ -136,6 +136,10 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /Interface de jeu live/);
   assert.match(response.body, /id="participantLink"/);
   assert.match(response.body, /Copier lien participant/);
+  assert.match(response.body, /Acces Wi-Fi/);
+  assert.match(response.body, /networkPanel/);
+  assert.match(response.body, /loadNetworkInfo/);
+  assert.match(response.body, /\/network/);
   assert.match(response.body, /navigator.clipboard/);
   assert.match(response.body, /Scenario Putsch test/);
   assert.match(response.body, /\/demo\/putsch-lite/);
@@ -205,6 +209,28 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /Regler minuteur/);
   assert.match(response.body, /Duree engagements putsch/);
   assert.match(response.body, /setCoupCommitmentDuration/);
+});
+
+test("exposes health and PC Wi-Fi network discovery", async () => {
+  const health = await app.inject({ method: "GET", url: "/health" });
+  assert.equal(health.statusCode, 200);
+  const healthBody = health.json<JsonObject>();
+  assert.equal(healthBody.ok, true);
+  assert.equal(healthBody.service, "ludovive-server");
+  assert.equal(typeof healthBody.uptimeSeconds, "number");
+  assert.equal(typeof healthBody.sessions, "number");
+
+  const network = await app.inject({ method: "GET", url: "/network" });
+  assert.equal(network.statusCode, 200);
+  const body = network.json<JsonObject>();
+  assert.equal(body.ok, true);
+  assert.equal(body.mode, "pc-wifi-host");
+  assert.equal(body.port, 3333);
+  assert.equal((body.localhost as JsonObject).participantUrl, "http://127.0.0.1:3333/play");
+  assert.equal(Array.isArray(body.interfaces), true);
+  assert.equal(Array.isArray(body.recommendedUrls), true);
+  assert.equal((body.websocket as JsonObject).devicePath, "/sessions/:code/live?deviceId=:deviceId");
+  assert.equal(((body.tableReliability as JsonObject).guidance as unknown[]).length > 0, true);
 });
 
 test("serves a mobile participant app for session join", async () => {

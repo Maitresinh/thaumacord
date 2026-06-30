@@ -69,8 +69,18 @@ npm run dev
 
 Then open `http://localhost:3333/` to use the browser-based dashboard prototype. The API also exposes `GET /modules`, `POST /sessions`, `POST /sessions/:code/join`, and `POST /sessions/:code/phases/advance`.
 
+For a real table test with phones on the same Wi-Fi, start the PC host mode from the repository root:
+
+```powershell
+.\scripts\start-ludovive-lan.ps1
+```
+
+The script prints participant URLs such as `http://192.168.x.x:3333/play`. The dashboard also shows them in the `Acces Wi-Fi` panel. See `docs/server-reliability-and-pc-wifi.md`.
+
 Sprint 1 focuses on the generic transmission loop. The API now also exposes:
 
+- `GET /health`
+- `GET /network`
 - `POST /sessions/:code/devices`
 - `POST /sessions/:code/participants`
 - `POST /sessions/:code/devices/:deviceId/bind`

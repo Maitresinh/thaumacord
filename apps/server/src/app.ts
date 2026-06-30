@@ -1,4 +1,5 @@
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { networkInterfaces } from "node:os";
 import path from "node:path";
 import Fastify from "fastify";
 import websocket from "@fastify/websocket";
@@ -723,6 +724,68 @@ type EventInput = z.infer<typeof eventSchema>;
 
 function modulesDir(): string {
   return path.resolve(process.cwd(), "../../modules/examples");
+}
+
+function serverPort(): number {
+  return Number(envValue("PORT", "THAUMACORD_PORT") ?? 3333);
+}
+
+function serverHost(): string {
+  return envValue("LUDOVIVE_HOST", "THAUMACORD_HOST") ?? "0.0.0.0";
+}
+
+function localNetworkAddresses(): { name: string; address: string; family: string; url: string }[] {
+  const port = serverPort();
+  const entries = Object.entries(networkInterfaces()).flatMap(([name, addresses]) =>
+    (addresses ?? [])
+      .filter((address) => address.family === "IPv4" && !address.internal)
+      .map((address) => ({
+        name,
+        address: address.address,
+        family: address.family,
+        url: `http://${address.address}:${port}/`
+      }))
+  );
+  return entries.sort((left, right) => left.name.localeCompare(right.name) || left.address.localeCompare(right.address));
+}
+
+function networkReadModel(): Record<string, unknown> {
+  const port = serverPort();
+  const interfaces = localNetworkAddresses();
+  return {
+    ok: true,
+    service: "ludovive-server",
+    mode: "pc-wifi-host",
+    host: serverHost(),
+    port,
+    uptimeSeconds: Math.round(process.uptime()),
+    sessions: sessions.size,
+    liveClientSessions: liveClients.size,
+    localhost: {
+      dashboardUrl: `http://127.0.0.1:${port}/`,
+      participantUrl: `http://127.0.0.1:${port}/play`
+    },
+    interfaces,
+    recommendedUrls: interfaces.map((entry) => ({
+      name: entry.name,
+      dashboardUrl: entry.url,
+      participantUrl: `${entry.url}play`
+    })),
+    websocket: {
+      dashboardPath: "/sessions/:code/live?dashboard=true",
+      devicePath: "/sessions/:code/live?deviceId=:deviceId"
+    },
+    tableReliability: {
+      heartbeatPath: "/sessions/:code/devices/:deviceId/heartbeat",
+      syncPath: "/sessions/:code/devices/:deviceId/sync?after=:sequence&limit=:limit",
+      guidance: [
+        "Use the same Wi-Fi network for PC and phones.",
+        "Prefer a 5 GHz network or a dedicated phone hotspot for playtests.",
+        "Keep the PC awake and plugged in.",
+        "If WebSocket drops, clients should heartbeat then sync."
+      ]
+    }
+  };
 }
 
 function assertModuleReference(condition: boolean, message: string): void {
@@ -3101,6 +3164,8 @@ function renderIndex(): string {
     .resourcePushControls button { min-height: 34px; margin: 0; padding: 6px; }
     .contactTarget { display: block; border: 1px dashed color-mix(in srgb, var(--accent) 45%, var(--line)); border-radius: 8px; padding: 9px; margin: 8px 0; background: color-mix(in srgb, var(--accent) 10%, transparent); }
     .contactTarget input[type="checkbox"] { width: auto; margin-right: 6px; }
+    .networkUrl { display: grid; gap: 3px; border: 1px solid #3c454f; border-radius: var(--radius); padding: 8px; background: var(--field); overflow-wrap: anywhere; }
+    .networkUrl a { color: var(--ink); font-weight: 700; }
     pre { white-space: pre-wrap; background: #0d0f11; padding: 12px; border-radius: 6px; overflow: auto; max-height: 420px; }
     details.debug { border: 1px solid var(--line); border-radius: 8px; background: #111417; padding: 10px; }
     details.debug summary { cursor: pointer; color: var(--muted); }
@@ -3135,6 +3200,11 @@ function renderIndex(): string {
         <input id="code" placeholder="ABC123" />
           <button id="copyParticipantLink" class="neutral">Copier lien participant</button>
           <div class="error" id="error"></div>
+        </section>
+
+        <section>
+          <h2>Acces Wi-Fi</h2>
+          <div id="networkPanel" class="list"><div class="muted">Detection reseau...</div></div>
         </section>
 
         <section>
@@ -3677,6 +3747,17 @@ function renderIndex(): string {
       byId("module").value = "putsch-lite";
       await loadModuleDetails("putsch-lite");
     }
+    async function loadNetworkInfo() {
+      try {
+        const info = await api("/network");
+        const urls = (info.recommendedUrls || []).map((entry) => (
+          '<div class="networkUrl"><div class="muted">' + entry.name + '</div><a href="' + entry.participantUrl + '">' + entry.participantUrl + '</a><div class="muted">Dashboard: ' + entry.dashboardUrl + '</div></div>'
+        )).join("");
+        byId("networkPanel").innerHTML = urls || '<div class="networkUrl"><div class="muted">Aucune IP Wi-Fi detectee.</div><a href="' + info.localhost.participantUrl + '">' + info.localhost.participantUrl + '</a><div class="muted">Sur telephone: verifier le meme Wi-Fi ou le pare-feu Windows.</div></div>';
+      } catch (error) {
+        byId("networkPanel").innerHTML = '<div class="muted">Infos reseau indisponibles: ' + error.message + '</div>';
+      }
+    }
     async function loadModuleDetails(moduleId) {
       const module = await api("/modules/" + moduleId);
       byId("roleId").innerHTML = module.roles.map((role) => option(role.id, role.name)).join("");
@@ -3916,6 +3997,7 @@ function renderIndex(): string {
       byId("code").value = link;
       setError("Lien place dans le champ code.");
     }));
+    loadNetworkInfo();
     loadModules();
   </script>
 </body>
@@ -4467,7 +4549,14 @@ await loadPersistedSessions();
 
 app.get("/", async (_request, reply) => reply.type("text/html").send(renderIndex()));
 app.get("/play", async (_request, reply) => reply.type("text/html").send(renderParticipantApp()));
-app.get("/health", async () => ({ ok: true, service: "ludovive-server" }));
+app.get("/health", async () => ({
+  ok: true,
+  service: "ludovive-server",
+  uptimeSeconds: Math.round(process.uptime()),
+  sessions: sessions.size,
+  liveClientSessions: liveClients.size
+}));
+app.get("/network", async () => networkReadModel());
 
 app.get("/sessions/:code/live", { websocket: true }, (connection, request) => {
   const { code } = request.params as { code: string };

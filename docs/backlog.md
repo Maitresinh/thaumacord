@@ -26,6 +26,7 @@
 4. Putsch MVP+: complete playable Putsch table with clean player UI, hidden coup commitments, election, council, and playtest script.
 5. UI/Ergo MVP: table-first interface with readable phase state, resource wallets, gesture-first action cards, and module visual identity.
 6. Design System Ludovive: compact shared components, icons, timers, gesture illustrations, and resilient module theming.
+7. PC Wi-Fi Host Mode: robust local server access, LAN URLs, health checks, and reconnect guidance for real table playtests.
 
 ## Epics
 

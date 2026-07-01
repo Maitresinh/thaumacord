@@ -250,17 +250,19 @@ test("serves local visual and sound assets for game themes", async () => {
   assert.match(icon.body, /<svg/);
   assert.match(icon.body, /viewBox="0 0 512 512"/);
   assert.match(icon.body, /fill="#fff"/);
+  assert.match(icon.body, /linearGradient/);
 
   const sound = await app.inject({ method: "GET", url: "/assets/sounds/market-open.wav" });
   assert.equal(sound.statusCode, 200);
   assert.match(sound.headers["content-type"] as string, /audio\/wav/);
   assert.equal(sound.body.slice(0, 4), "RIFF");
-  assert.equal(sound.body.length > 50000, true);
+  assert.equal(sound.body.length > 300000, true);
 
   const credits = await app.inject({ method: "GET", url: "/assets/ATTRIBUTION.md" });
   assert.equal(credits.statusCode, 200);
   assert.match(credits.body, /Game-icons\.net/);
   assert.match(credits.body, /original synthesized cues/);
+  assert.match(credits.body, /multi-layer cues/);
 
   const blocked = await app.inject({ method: "GET", url: "/assets/../apps/server/package.json" });
   assert.equal(blocked.statusCode, 404);
@@ -280,7 +282,7 @@ test("serves every module referenced icon and sound asset", async () => {
       assert.equal(icon.statusCode, 200, `${moduleId} missing ${iconRef}`);
       assert.match(icon.headers["content-type"] as string, /image\/svg\+xml/);
       assert.match(icon.body, /viewBox="0 0 512 512"/);
-      assert.equal(icon.body.length > 200, true, `${moduleId} has a too-small icon ${iconRef}`);
+      assert.equal(icon.body.length > 500, true, `${moduleId} has a too-small icon ${iconRef}`);
     }
 
     for (const soundRef of soundRefs) {

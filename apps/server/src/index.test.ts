@@ -245,14 +245,50 @@ test("serves local visual and sound assets for game themes", async () => {
   assert.equal(icon.statusCode, 200);
   assert.match(icon.headers["content-type"] as string, /image\/svg\+xml/);
   assert.match(icon.body, /<svg/);
+  assert.match(icon.body, /viewBox="0 0 512 512"/);
+  assert.match(icon.body, /fill="#fff"/);
 
   const sound = await app.inject({ method: "GET", url: "/assets/sounds/market-open.wav" });
   assert.equal(sound.statusCode, 200);
   assert.match(sound.headers["content-type"] as string, /audio\/wav/);
   assert.equal(sound.body.slice(0, 4), "RIFF");
+  assert.equal(sound.body.length > 50000, true);
+
+  const credits = await app.inject({ method: "GET", url: "/assets/ATTRIBUTION.md" });
+  assert.equal(credits.statusCode, 200);
+  assert.match(credits.body, /Game-icons\.net/);
+  assert.match(credits.body, /Kenney UI Audio/);
 
   const blocked = await app.inject({ method: "GET", url: "/assets/../apps/server/package.json" });
   assert.equal(blocked.statusCode, 404);
+});
+
+test("serves every module referenced icon and sound asset", async () => {
+  const moduleIds = ["putsch-lite", "long-live-the-king-lite", "wolfpack-lite", "origins-ww1-lite"];
+
+  for (const moduleId of moduleIds) {
+    const module = await injectJson("GET", `/modules/${moduleId}`);
+    const iconRefs = new Set(Object.values(module.uiTheme.icons).filter((value) => typeof value === "string" && value.startsWith("icon:")));
+    const soundRefs = new Set(module.soundboard.map((cue: JsonObject) => cue.url).filter((value: string) => value.startsWith("sound:")));
+
+    for (const iconRef of iconRefs) {
+      const iconName = (iconRef as string).slice("icon:".length);
+      const icon = await app.inject({ method: "GET", url: `/assets/icons/${iconName}.svg` });
+      assert.equal(icon.statusCode, 200, `${moduleId} missing ${iconRef}`);
+      assert.match(icon.headers["content-type"] as string, /image\/svg\+xml/);
+      assert.match(icon.body, /viewBox="0 0 512 512"/);
+      assert.equal(icon.body.length > 200, true, `${moduleId} has a too-small icon ${iconRef}`);
+    }
+
+    for (const soundRef of soundRefs) {
+      const soundName = (soundRef as string).slice("sound:".length);
+      const sound = await app.inject({ method: "GET", url: `/assets/sounds/${soundName}.wav` });
+      assert.equal(sound.statusCode, 200, `${moduleId} missing ${soundRef}`);
+      assert.match(sound.headers["content-type"] as string, /audio\/wav/);
+      assert.equal(sound.body.slice(0, 4), "RIFF");
+      assert.equal(sound.body.length > 1000, true, `${moduleId} has a too-small sound ${soundRef}`);
+    }
+  }
 });
 
 test("serves a mobile participant app for session join", async () => {

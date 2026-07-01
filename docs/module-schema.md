@@ -180,7 +180,7 @@ It can declare:
 - `tone`: short flavour text displayed by the UI;
 - `fonts`: optional CSS font stacks for `display`, `body`, and `numeric` text;
 - `colors`: background, panel, ink, muted, accent, secondary, success, warning;
-- `icons`: small action/family/resource markers; values may be short text or local asset references such as `icon:banana`, resolved under `assets/icons`;
+- `icons`: small action/family/resource markers; values may be short text or local asset references such as `icon:banana`, resolved under `assets/icons`. The bundled icon set is credited in `assets/ATTRIBUTION.md`;
 - `interactionLabels`: wording for primary gestures and fallback controls.
 
 Buttons remain available as fallback, but player-facing controls should first present the physical gesture declared by the action whenever possible.
@@ -196,7 +196,7 @@ Buttons remain available as fallback, but player-facing controls should first pr
 - `url`: optional asset URL when a real sound file exists;
 - `visibility`: `dashboard`, `participants`, or `all`.
 
-Local sound references such as `sound:coup-declared` are served from `assets/sounds/coup-declared.wav` and shown as preview buttons in the dashboard/player theme panels.
+Local sound references such as `sound:coup-declared` are served from `assets/sounds/coup-declared.wav` and shown as preview buttons in the dashboard/player theme panels. Bundled event sounds are credited in `assets/ATTRIBUTION.md`.
 
 Dashboard read models expose the full list. Participant read models receive cues marked `participants` or `all`.
 

@@ -3304,6 +3304,7 @@ function renderIndex(): string {
     .resourcePushTile strong { display: flex; align-items: center; gap: 6px; min-height: 34px; font-size: 13px; }
     .resourceIcon, .actionIcon { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 7px; background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 34%, #0d0f11), color-mix(in srgb, var(--field) 92%, black)); color: var(--ink); font-weight: 900; font-size: 10px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); box-shadow: 0 1px 0 rgba(255,255,255,.06) inset; overflow: hidden; }
     .resourceIcon img, .actionIcon img { width: 22px; height: 22px; display: block; object-fit: contain; }
+    .roleTitle, .turnPhaseName { display: flex; align-items: center; gap: 8px; }
     .soundCueButton { width: auto; min-height: 30px; margin: 5px 5px 0 0; padding: 5px 8px; font-size: 12px; }
     .resourcePushControls { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
     .resourcePushControls button { min-height: 34px; margin: 0; padding: 6px; }
@@ -3579,6 +3580,12 @@ function renderIndex(): string {
     function themeIcon(session, key) {
       return (session.module.uiTheme?.icons || {})[key] || "";
     }
+    function roleIcon(session, role) {
+      return iconMarkup(themeIcon(session, "role:" + role.id) || themeIcon(session, role.id) || "ROLE");
+    }
+    function phaseIcon(session, phase) {
+      return iconMarkup(themeIcon(session, "phase:" + phase.id) || themeIcon(session, phase.id) || themeIcon(session, "track") || "PH");
+    }
     function actionIcon(session, action) {
       const key = action.mechanicFamily || action.id;
       const fallback = {
@@ -3592,7 +3599,7 @@ function renderIndex(): string {
         coordination: "CMD",
         "resource-action": "SYS"
       };
-      const themed = themeIcon(session, key);
+      const themed = themeIcon(session, "action:" + action.id) || themeIcon(session, key) || themeIcon(session, "role:" + action.actor);
       return iconMarkup(themed || fallback[key] || fallback[action.gesture] || "ACT");
     }
     function gestureMeta(gesture) {
@@ -3649,10 +3656,10 @@ function renderIndex(): string {
     function renderTurnPhase(session) {
       const turnPhase = session.turnPhase;
       if (!turnPhase) {
-        return '<div class="item turnPhase"><strong>' + session.module.name + '</strong><div>Phase: ' + session.phase.name + '</div><div class="muted">' + formatClock(session.phaseClock) + '</div></div>';
+        return '<div class="item turnPhase"><strong><span class="actionIcon">' + phaseIcon(session, session.phase) + '</span> ' + session.module.name + '</strong><div>Phase: ' + session.phase.name + '</div><div class="muted">' + formatClock(session.phaseClock) + '</div></div>';
       }
       const steps = Array.from({ length: turnPhase.phase.total }, (_, index) => '<span class="phaseStep' + (index === turnPhase.phase.index ? " active" : "") + '"></span>').join("");
-      return '<div class="item turnPhase"><div class="turnPhaseHeader"><span class="pill">Tour ' + turnPhase.turn + '</span><span class="pill">Phase ' + (turnPhase.phase.index + 1) + '/' + turnPhase.phase.total + '</span></div><div class="turnPhaseName">' + turnPhase.phase.name + '</div><div class="phaseTrack" style="--phase-total:' + turnPhase.phase.total + '">' + steps + '</div><div class="timerGauge"><span style="width:' + timerPercent(turnPhase) + '%"></span></div><div class="muted">' + formatTurnPhase(turnPhase, session.phaseClock) + '</div></div>';
+      return '<div class="item turnPhase"><div class="turnPhaseHeader"><span class="pill">Tour ' + turnPhase.turn + '</span><span class="pill">Phase ' + (turnPhase.phase.index + 1) + '/' + turnPhase.phase.total + '</span></div><div class="turnPhaseName"><span class="actionIcon">' + phaseIcon(session, turnPhase.phase) + '</span> ' + turnPhase.phase.name + '</div><div class="phaseTrack" style="--phase-total:' + turnPhase.phase.total + '">' + steps + '</div><div class="timerGauge"><span style="width:' + timerPercent(turnPhase) + '%"></span></div><div class="muted">' + formatTurnPhase(turnPhase, session.phaseClock) + '</div></div>';
     }
     function renderPhasePlanSummary(session) {
       const plan = session.phasePlan;
@@ -3686,7 +3693,7 @@ function renderIndex(): string {
       const actions = (role.actions || []).length ? '<h3>Actions</h3><div>' + role.actions.map((item) => '<span class="pill">' + item + '</span>').join("") + '</div>' : "";
       const resources = role.startingResources && Object.keys(role.startingResources).length ? '<h3>Depart</h3><div>' + Object.entries(role.startingResources).map(([key, value]) => '<span class="pill">' + dashboardResourceLabel(session, key) + ': ' + value + '</span>').join("") + '</div>' : "";
       const victory = role.victoryCondition?.text ? '<h3>Victoire</h3><div class="muted">' + role.victoryCondition.text + '</div>' : "";
-      return '<div class="item"><strong>' + role.name + '</strong>' + (role.officialRole ? '<div>' + role.officialRole + '</div>' : '') + (role.secretRole ? '<div class="muted">Secret: ' + role.secretRole + '</div>' : '') + responsibilities + actions + resources + victory + '</div>';
+      return '<div class="item"><strong class="roleTitle"><span class="actionIcon">' + roleIcon(session, role) + '</span> ' + role.name + '</strong>' + (role.officialRole ? '<div>' + role.officialRole + '</div>' : '') + (role.secretRole ? '<div class="muted">Secret: ' + role.secretRole + '</div>' : '') + responsibilities + actions + resources + victory + '</div>';
     }
     function renderDashboardCharacters(session) {
       const roles = session.characterReference?.roles || [];
@@ -4339,6 +4346,7 @@ function renderParticipantApp(): string {
     .resourcePushTile strong { display: flex; align-items: center; gap: 7px; min-height: 36px; font-size: 13px; line-height: 1.2; }
     .resourceIcon, .actionIcon { flex: 0 0 auto; display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 7px; background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 34%, #0d0f11), color-mix(in srgb, var(--field) 92%, black)); color: var(--ink); font-weight: 900; font-size: 10px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); box-shadow: 0 1px 0 rgba(255,255,255,.06) inset; overflow: hidden; }
     .resourceIcon img, .actionIcon img { width: 23px; height: 23px; display: block; object-fit: contain; }
+    .roleTitle, .turnPhaseName { display: flex; align-items: center; gap: 8px; min-width: 0; }
     .soundCueButton { width: auto; min-height: 30px; margin: 5px 5px 0 0; padding: 5px 8px; font-size: 12px; }
     .resourceAmount { font-size: 22px; font-weight: 700; margin-top: 4px; }
     .resourcePushControls { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
@@ -4532,6 +4540,12 @@ function renderParticipantApp(): string {
     function themeIcon(model, key) {
       return (model.module.uiTheme?.icons || {})[key] || "";
     }
+    function roleIcon(model, role) {
+      return iconMarkup(themeIcon(model, "role:" + role.id) || themeIcon(model, role.id) || "ROLE");
+    }
+    function phaseIcon(model, phase) {
+      return iconMarkup(themeIcon(model, "phase:" + phase.id) || themeIcon(model, phase.id) || themeIcon(model, "track") || "PH");
+    }
     function actionIcon(model, action) {
       const key = action.mechanicFamily || action.id;
       const fallback = {
@@ -4545,7 +4559,7 @@ function renderParticipantApp(): string {
         coordination: "CMD",
         "resource-action": "SYS"
       };
-      const themed = themeIcon(model, key);
+      const themed = themeIcon(model, "action:" + action.id) || themeIcon(model, key) || themeIcon(model, "role:" + action.actor);
       return iconMarkup(themed || fallback[key] || "ACT");
     }
     function gestureMeta(gesture) {
@@ -4620,7 +4634,7 @@ function renderParticipantApp(): string {
       const actions = (role.actions || []).length ? '<h3>Actions</h3><div>' + role.actions.map((item) => '<span class="pill">' + item + '</span>').join("") + '</div>' : "";
       const resources = role.startingResources && Object.keys(role.startingResources).length ? '<h3>Depart</h3><div>' + Object.entries(role.startingResources).map(([key, value]) => '<span class="pill">' + resourceLabel(model, key) + ': ' + value + '</span>').join("") + '</div>' : "";
       const victory = role.victoryCondition?.text ? '<h3>Victoire</h3><div class="muted">' + role.victoryCondition.text + '</div>' : "";
-      return '<div class="item"><strong>' + role.name + '</strong>'
+      return '<div class="item"><strong class="roleTitle"><span class="actionIcon">' + roleIcon(model, role) + '</span> ' + role.name + '</strong>'
         + (role.officialRole ? '<div>' + role.officialRole + '</div>' : '')
         + (role.secretRole ? '<div class="muted">Secret: ' + role.secretRole + '</div>' : '')
         + responsibilities + actions + resources + victory
@@ -4644,9 +4658,9 @@ function renderParticipantApp(): string {
     }
     function renderTurnPhase(model) {
       const turnPhase = model.turnPhase;
-      if (!turnPhase) return '<div class="item turnPhase"><strong>Phase ' + model.phase.name + '</strong><div class="muted">' + formatClock(model.phaseClock) + '</div></div>';
+      if (!turnPhase) return '<div class="item turnPhase"><strong><span class="actionIcon">' + phaseIcon(model, model.phase) + '</span> Phase ' + model.phase.name + '</strong><div class="muted">' + formatClock(model.phaseClock) + '</div></div>';
       const steps = Array.from({ length: turnPhase.phase.total }, (_, index) => '<span class="phaseStep' + (index === turnPhase.phase.index ? " active" : "") + '"></span>').join("");
-      return '<div class="item turnPhase"><div class="turnPhaseHeader"><span class="pill">Tour ' + turnPhase.turn + '</span><span class="pill">Phase ' + (turnPhase.phase.index + 1) + '/' + turnPhase.phase.total + '</span></div><div class="turnPhaseName">' + turnPhase.phase.name + '</div><div class="phaseTrack" style="--phase-total:' + turnPhase.phase.total + '">' + steps + '</div><div class="timerGauge"><span style="width:' + timerPercent(turnPhase) + '%"></span></div><div class="muted">' + formatTurnPhase(turnPhase, model.phaseClock) + '</div></div>';
+      return '<div class="item turnPhase"><div class="turnPhaseHeader"><span class="pill">Tour ' + turnPhase.turn + '</span><span class="pill">Phase ' + (turnPhase.phase.index + 1) + '/' + turnPhase.phase.total + '</span></div><div class="turnPhaseName"><span class="actionIcon">' + phaseIcon(model, turnPhase.phase) + '</span> ' + turnPhase.phase.name + '</div><div class="phaseTrack" style="--phase-total:' + turnPhase.phase.total + '">' + steps + '</div><div class="timerGauge"><span style="width:' + timerPercent(turnPhase) + '%"></span></div><div class="muted">' + formatTurnPhase(turnPhase, model.phaseClock) + '</div></div>';
     }
     function renderPhasePlanSummary(model) {
       const plan = model.phasePlan;

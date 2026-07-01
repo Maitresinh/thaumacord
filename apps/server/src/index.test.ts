@@ -178,6 +178,9 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /renderGestureCard/);
   assert.match(response.body, /resourceWallet/);
   assert.match(response.body, /soundCueButton/);
+  assert.match(response.body, /roleIcon/);
+  assert.match(response.body, /phaseIcon/);
+  assert.match(response.body, /roleTitle/);
   assert.match(response.body, /font-body/);
   assert.match(response.body, /resourcePushGrid/);
   assert.match(response.body, /Secours dashboard/);
@@ -257,7 +260,7 @@ test("serves local visual and sound assets for game themes", async () => {
   const credits = await app.inject({ method: "GET", url: "/assets/ATTRIBUTION.md" });
   assert.equal(credits.statusCode, 200);
   assert.match(credits.body, /Game-icons\.net/);
-  assert.match(credits.body, /Kenney UI Audio/);
+  assert.match(credits.body, /original synthesized cues/);
 
   const blocked = await app.inject({ method: "GET", url: "/assets/../apps/server/package.json" });
   assert.equal(blocked.statusCode, 404);
@@ -556,6 +559,9 @@ test("loads module mechanics and links actions to them", async () => {
   assert.equal(putsch.uiTheme.colors.ink, "#165b28");
   assert.equal(putsch.uiTheme.fonts.display.includes("Impact"), true);
   assert.equal(putsch.uiTheme.icons.game, "icon:banana");
+  assert.equal(putsch.uiTheme.icons["role:kgb-agent"], "icon:role-spy");
+  assert.equal(putsch.uiTheme.icons["phase:coup"], "icon:phase-coup");
+  assert.equal(putsch.uiTheme.icons["action:attempt-coup"], "icon:action-gunshot");
   assert.equal(putsch.soundboard.length, 5);
   assert.equal(putsch.soundboard.find((cue: JsonObject) => cue.id === "coup-declared").channel, "alert");
   assert.equal(putsch.soundboard.find((cue: JsonObject) => cue.id === "coup-declared").url, "sound:coup-declared");
@@ -569,6 +575,9 @@ test("loads module mechanics and links actions to them", async () => {
   assert.equal(wolfpack.sessionRoles.find((role: JsonObject) => role.id === "host").canInjectGameElements, false);
   assert.equal(wolfpack.uiTheme.template, "submarine-stations");
   assert.equal(wolfpack.uiTheme.icons.game, "icon:submarine");
+  assert.equal(wolfpack.uiTheme.icons["role:captain"], "icon:role-captain");
+  assert.equal(wolfpack.uiTheme.icons["phase:attack-run"], "icon:phase-attack");
+  assert.equal(wolfpack.uiTheme.icons["action:fire-torpedo"], "icon:action-bullet");
   assert.equal(wolfpack.soundboard.find((cue: JsonObject) => cue.id === "attack-alarm").channel, "alert");
   assert.equal(wolfpack.state.missionMode, "cooperative-hunt");
   assert.equal(wolfpack.resources.some((resource: JsonObject) => resource.id === "solution"), true);
@@ -581,6 +590,9 @@ test("loads module mechanics and links actions to them", async () => {
   assert.equal(king.state.healthCardsInLine, 6);
   assert.equal(king.uiTheme.template, "court-intrigue");
   assert.equal(king.uiTheme.icons.game, "icon:crown");
+  assert.equal(king.uiTheme.icons["role:queen"], "icon:role-queen");
+  assert.equal(king.uiTheme.icons["phase:audience"], "icon:phase-audience");
+  assert.equal(king.uiTheme.icons["action:hold-audience"], "icon:action-fanfare");
   assert.equal(king.soundboard.find((cue: JsonObject) => cue.id === "royal-decision").channel, "alert");
   assert.equal(king.components.find((component: JsonObject) => component.id === "health-card").count, 10);
   assert.equal(king.roles.find((role: JsonObject) => role.id === "king").name, "Roi");

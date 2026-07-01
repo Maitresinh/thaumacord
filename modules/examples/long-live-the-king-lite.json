@@ -40,7 +40,24 @@
       "gold": "icon:coin",
       "income": "icon:coin",
       "favor": "icon:favor",
-      "status": "icon:scroll"
+      "status": "icon:scroll",
+      "phase:setup": "icon:scroll",
+      "phase:audience": "icon:phase-audience",
+      "phase:diplomacy": "icon:phase-diplomacy",
+      "phase:council": "icon:gavel",
+      "role:king": "icon:role-king",
+      "role:queen": "icon:role-queen",
+      "role:baron": "icon:role-baron",
+      "role:treasurer": "icon:role-treasurer",
+      "role:bastard-heir": "icon:role-heir",
+      "role:archbishop": "icon:role-clergy",
+      "role:ambassador": "icon:role-ambassador",
+      "role:steward": "icon:role-steward",
+      "action:submit-petition": "icon:action-paper",
+      "action:vote-petition": "icon:favor",
+      "action:resolve-petition": "icon:gavel",
+      "action:hold-audience": "icon:action-fanfare",
+      "action:transfer-gold": "icon:exchange"
     },
     "interactionLabels": {
       "primary": "Geste de cour",
@@ -78,7 +95,7 @@
       "channel": "event",
       "event": "castPetitionVote",
       "phase": "council",
-      "tone": "jeton pose sur bois",
+      "tone": "petit carillon de pieces et faveur posee",
       "visibility": "participants",
       "url": "sound:favor-cast"
     },
@@ -88,7 +105,7 @@
       "channel": "alert",
       "event": "resolvePetition",
       "phase": "council",
-      "tone": "marteau et annonce solennelle",
+      "tone": "mini fanfare royale de decision",
       "visibility": "all",
       "url": "sound:royal-decision"
     }

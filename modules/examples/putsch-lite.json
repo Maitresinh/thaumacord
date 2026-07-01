@@ -43,7 +43,31 @@
       "cf100": "icon:rifle-crate",
       "cm25": "icon:ammo-crate",
       "cm50": "icon:ammo-crate",
-      "cm100": "icon:ammo-crate"
+      "cm100": "icon:ammo-crate",
+      "phase:market": "icon:phase-market",
+      "phase:intrigue": "icon:phase-intrigue",
+      "phase:coup": "icon:phase-coup",
+      "phase:resolution": "icon:phase-resolution",
+      "phase:first-council": "icon:gavel",
+      "role:general": "icon:role-general",
+      "role:dealer": "icon:role-dealer",
+      "role:facilitator-capitalist": "icon:role-king",
+      "role:kgb-agent": "icon:role-spy",
+      "role:cia-agent": "icon:role-spy",
+      "role:drug-trafficker": "icon:role-smuggler",
+      "role:fun-agent": "icon:role-rebel",
+      "role:gag-agent": "icon:role-hooded",
+      "action:buy-copper-from-mine": "icon:action-mine",
+      "action:sell-weapons": "icon:rifle-crate",
+      "action:trade-copper-shares": "icon:exchange",
+      "action:trade-arms-caches": "icon:ammo-crate",
+      "action:sell-drugs": "icon:sack",
+      "action:attempt-coup": "icon:action-gunshot",
+      "action:defend-coup": "icon:sabers",
+      "action:vote-minister-council": "icon:ballot",
+      "action:finalize-minister-election": "icon:gavel",
+      "action:embezzle-council-funds": "icon:money",
+      "action:record-minister-council": "icon:gavel"
     },
     "interactionLabels": {
       "primary": "Geste de table",
@@ -61,7 +85,7 @@
       "name": "Ouverture du marche",
       "channel": "ambient",
       "phase": "market",
-      "tone": "radio trop chaude et salle enfumee",
+      "tone": "riff mariachi court, cuivre et guitare pour lancer les tractations",
       "visibility": "all",
       "url": "sound:market-open"
     },
@@ -70,7 +94,7 @@
       "name": "Transaction confirmee",
       "channel": "event",
       "event": "exchange.created",
-      "tone": "tampon administratif sec",
+      "tone": "froissement de billets et petit tintement de pieces",
       "visibility": "participants",
       "url": "sound:trade-confirmed"
     },
@@ -80,7 +104,7 @@
       "channel": "alert",
       "event": "contestedBid",
       "phase": "coup",
-      "tone": "sirene courte et foule au loin",
+      "tone": "coup de feu sec et retombee sourde",
       "visibility": "all",
       "url": "sound:coup-declared"
     },
@@ -89,7 +113,7 @@
       "name": "Conseil des ministres",
       "channel": "stinger",
       "phase": "first-council",
-      "tone": "marteau de seance et murmures",
+      "tone": "double coup de marteau de seance",
       "visibility": "all",
       "url": "sound:council-opens"
     },
@@ -99,7 +123,7 @@
       "channel": "event",
       "event": "finalizeVote",
       "phase": "first-council",
-      "tone": "urne, papier, flash d'appareil photo",
+      "tone": "papiers froisses et bulletins manipules",
       "visibility": "all",
       "url": "sound:ballot-drop"
     }

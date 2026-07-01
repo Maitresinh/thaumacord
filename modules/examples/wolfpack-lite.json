@@ -913,5 +913,71 @@
       "type": "team",
       "text": "En mode cooperatif, l'equipage gagne s'il localise l'ennemi, transmet le renseignement, puis quitte la zone."
     }
-  ]
+  ],
+  "rules": {
+    "summary": "Wolfpack est un jeu d equipage coordonne. Chaque telephone represente un poste du sous-marin; le capitaine donne les priorites et les postes executent des actions synchronisees.",
+    "sections": [
+      {
+        "id": "goal",
+        "title": "But de mission",
+        "audience": "all",
+        "body": "L equipage doit detecter, poursuivre, attaquer ou eviter l ennemi en gardant le sous-marin operationnel.",
+        "bullets": [
+          "La coque, l oxygene, les batteries, le bruit, les torpilles et la solution de tir sont des ressources communes.",
+          "Le mode cooperatif utilise un ennemi gere par l hote.",
+          "Le mode duel peut opposer deux equipages avec des informations filtrees."
+        ]
+      },
+      {
+        "id": "stations",
+        "title": "Postes",
+        "audience": "all",
+        "body": "Chaque joueur incarne un poste avec des responsabilites distinctes.",
+        "bullets": [
+          "Capitaine: ordres, autorisation de tir, priorites.",
+          "Pilote: cap, profondeur, manoeuvres evasives.",
+          "Machiniste: batteries, silence machine, reparations.",
+          "Sonar: detection, classification, ecoute.",
+          "Torpilles: chargement, solution, tir.",
+          "Radio: messages, interception, transmissions courtes."
+        ]
+      },
+      {
+        "id": "phases",
+        "title": "Phases",
+        "audience": "all",
+        "body": "La mission avance par phases chronometrees ou declenchees.",
+        "bullets": [
+          "Briefing: affectation des postes et ordre de mission.",
+          "Navigation silencieuse: approche et gestion du bruit.",
+          "Contact sonar: recherche et classification.",
+          "Passe d attaque: calcul de solution et tir.",
+          "Avaries: reparations et survie."
+        ]
+      },
+      {
+        "id": "actions",
+        "title": "Actions et gestes",
+        "audience": "participants",
+        "body": "Les actions de poste sont saisies par telephone et peuvent etre accompagnees d un geste physique.",
+        "bullets": [
+          "Retourner le telephone peut valider une action discrete.",
+          "Un arc lent peut representer le balayage sonar.",
+          "Pousser une ressource au bord represente un transfert d energie ou un chargement.",
+          "Les boutons restent disponibles comme secours."
+        ]
+      },
+      {
+        "id": "resolution",
+        "title": "Resolution",
+        "audience": "dashboard",
+        "body": "Le dashboard suit l etat commun et les resolutions en attente.",
+        "bullets": [
+          "Le capitaine n est pas automatiquement une autorite d injection.",
+          "L hote peut corriger les ressources si la table le decide.",
+          "Les attaques contestee utilisent preparation, cible et defense/evasion."
+        ]
+      }
+    ]
+  }
 }

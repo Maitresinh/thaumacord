@@ -366,6 +366,9 @@ test("lets a participant join with a chosen role and receive a filtered read mod
   assert.equal(joined.readModel.aggregates, undefined);
   assert.equal(joined.readModel.ownRole.name, "General");
   assert.equal(joined.readModel.rulesReference.sections.some((section: JsonObject) => section.id === "phases"), true);
+  assert.equal(joined.readModel.rulesReference.sections.some((section: JsonObject) => section.id === "coup"), true);
+  assert.equal(joined.readModel.rulesReference.sections.some((section: JsonObject) => section.id === "market"), true);
+  assert.equal(joined.readModel.rulesReference.sections.some((section: JsonObject) => section.id === "setup"), true);
   assert.equal(joined.readModel.characterReference.ownRole.name, "General");
   assert.equal(joined.readModel.characterReference.roles, undefined);
   assert.equal(joined.readModel.tableStatuses.copperPrice, 1000);
@@ -657,6 +660,8 @@ test("returns a dashboard read model with the complete live state", async () => 
   assert.equal(dashboard.phasePlan.nextPhase.id, "intrigue");
   assert.equal(dashboard.phasePlan.pendingResolutionCount, 0);
   assert.equal(dashboard.rulesReference.sections.some((section: JsonObject) => section.id === "mechanics"), true);
+  assert.equal(dashboard.rulesReference.sections.some((section: JsonObject) => section.id === "setup" && String(section.body || "").includes("salle d attente")), true);
+  assert.equal(dashboard.rulesReference.sections.some((section: JsonObject) => section.id === "election"), true);
   assert.equal(dashboard.characterReference.roles.some((role: JsonObject) => role.id === "facilitator-capitalist" && role.secretRole === "Aucun role secret."), true);
   assert.equal(dashboard.aggregates.participants.total, 2);
   assert.equal(dashboard.aggregates.participants.byRole.general, 1);

@@ -1164,5 +1164,137 @@
         }
       ]
     }
-  ]
+  ],
+  "rules": {
+    "summary": "Banana Republic est un jeu de negocociation, commerce et coups d Etat. Chaque joueur cherche a finir avec le plus de points, surtout en escudos et en actions de cuivre. Le Roi est aussi joueur par defaut: il gere la table, les mines de cuivre et peut gagner comme les autres.",
+    "sections": [
+      {
+        "id": "goal",
+        "title": "But du jeu",
+        "audience": "all",
+        "body": "La partie se joue en temps limite. A la fin, le joueur qui totalise le plus de points gagne.",
+        "bullets": [
+          "1 escudo vaut 1 point.",
+          "Les actions des mines de cuivre valent leur cours courant en points.",
+          "Pour Le Roi, les actions de cuivre restantes valent la moitie de leur cours.",
+          "Les joueurs FUN ou GAG au pouvoir doublent leur score final selon les regles du scenario.",
+          "Les autres ressources servent surtout a negocier, voter, soutenir ou contrer un coup d Etat."
+        ]
+      },
+      {
+        "id": "roles",
+        "title": "Roles et informations secretes",
+        "audience": "all",
+        "body": "Chaque participant recoit un role public et, sauf Le Roi, une appartenance ou mission secrete.",
+        "bullets": [
+          "Le Roi n a pas de role secret et commence avec la reserve d actions de cuivre.",
+          "Les agents et trafiquants ont des objectifs differents: vendre, acheter, prendre le pouvoir, garder le pouvoir ou accumuler de l argent.",
+          "Un joueur ne voit sur son telephone que ses ressources, ses actions disponibles et les messages qui le concernent.",
+          "Le dashboard de l hote voit l ensemble de la table et sert a arbitrer les points litigieux."
+        ]
+      },
+      {
+        "id": "setup",
+        "title": "Mise en place",
+        "audience": "dashboard",
+        "body": "L hote cree la session Banana Republic, laisse les telephones entrer en salle d attente, puis affecte les roles.",
+        "bullets": [
+          "Les telephones rejoignent la session avec un nom; ils ne choisissent pas eux-memes leur role.",
+          "L hote affecte les roles et peut associer chaque telephone a son joueur.",
+          "L action de mise en place distribue les ressources et composants de depart.",
+          "Verifie que Le Roi porte aussi l autorite royale si l hote doit arbitrer et corriger les elements de jeu.",
+          "Le code de session est donne aux participants; le meme Wi-Fi est recommande."
+        ]
+      },
+      {
+        "id": "phases",
+        "title": "Phases de jeu",
+        "audience": "all",
+        "body": "La partie avance par phases. Le minuteur peut etre fixe par l hote selon la table.",
+        "bullets": [
+          "Marche: achats, ventes et negociations de ressources.",
+          "Intrigue: discussions libres, alliances, preparation des votes ou coups d Etat.",
+          "Coup d Etat: un joueur peut declarer une tentative; les soutiens et defenses sont engages sous compte a rebours.",
+          "Resolution: l app et l hote revelent/comparent les engagements et appliquent les effets.",
+          "Premier conseil: le conseil se tient en direct; l hote enregistre presents, detournements et decisions."
+        ]
+      },
+      {
+        "id": "market",
+        "title": "Mines de cuivre et marche",
+        "audience": "all",
+        "body": "Les actions de cuivre sont la ressource economique centrale. Le Roi gere leur vente depuis les mines.",
+        "bullets": [
+          "Au depart, Le Roi possede la reserve d actions de cuivre des mines.",
+          "Les joueurs peuvent acheter des actions au cours courant si les limites de phase le permettent.",
+          "Le Roi peut refuser certaines ventes selon les contraintes de la regle et de la phase.",
+          "Un coup d Etat rate fait monter le cours des actions.",
+          "Un coup d Etat reussi fait baisser le cours des actions."
+        ]
+      },
+      {
+        "id": "exchanges",
+        "title": "Echanges entre joueurs",
+        "audience": "all",
+        "body": "Les joueurs negocient librement, mais les transferts doivent etre saisis ou confirmes dans l app.",
+        "bullets": [
+          "Les echanges exigent une confirmation de proximite: telephones au contact ou joueurs cote a cote.",
+          "On peut transferer argent, actions, armes, munitions, drogue ou bulletins selon l action disponible.",
+          "Le joueur ne voit que ses propres transferts; le dashboard conserve l historique complet.",
+          "Les gestes proposes par l interface indiquent comment jouer physiquement l echange, avec bouton de secours si besoin."
+        ]
+      },
+      {
+        "id": "coup",
+        "title": "Coup d Etat",
+        "audience": "all",
+        "body": "Un coup d Etat est une contestation entre un attaquant et une defense. Les engagements sont secrets pendant un court delai.",
+        "bullets": [
+          "L attaquant declare la tentative pendant la phase Coup d Etat.",
+          "L app declenche un compte a rebours pour les engagements de soutien ou de defense.",
+          "Les ressources engagees peuvent inclure armes, munitions et influence selon l action.",
+          "A la resolution, les engagements sont compares.",
+          "Si le coup reussit, le pouvoir change et le cours du cuivre baisse; s il echoue, le pouvoir reste en place et le cours monte."
+        ]
+      },
+      {
+        "id": "council",
+        "title": "Conseil et detournement",
+        "audience": "all",
+        "body": "Le conseil est une scene live. L app sert a enregistrer les resultats et a appliquer les effets.",
+        "bullets": [
+          "Le conseil peut avoir lieu regulierement ou apres un coup d Etat selon l etat de la partie.",
+          "Le Roi ou l autorite royale saisit les participants presents.",
+          "Le detournement de fonds est enregistre comme gain ou ajustement de ressources.",
+          "Les decisions du conseil peuvent etre notees dans le journal pour garder trace de la table.",
+          "Les resolutions restent visibles dans le dashboard jusqu a validation."
+        ]
+      },
+      {
+        "id": "election",
+        "title": "Election du conseil",
+        "audience": "all",
+        "body": "Les bulletins de vote servent a faire entrer ou sortir des conseillers.",
+        "bullets": [
+          "Chaque vote indique un candidat a promouvoir et un candidat a eliminer.",
+          "Le nombre de bulletins depenses est retire des ressources du votant.",
+          "Le dashboard cumule les suffrages.",
+          "A la cloture, l app marque les entrees et sorties du conseil selon le resultat.",
+          "En cas de cas limite, l hote tranche et note la decision."
+        ]
+      },
+      {
+        "id": "end",
+        "title": "Fin de partie et score",
+        "audience": "all",
+        "body": "La fin est declenchee par le temps fixe par l hote ou par l objectif de scenario choisi.",
+        "bullets": [
+          "On additionne escudos, valeur des actions et bonus/multiplicateurs de role.",
+          "Les ressources non scorees peuvent departager si l hote l annonce au debut.",
+          "L historique du dashboard sert de reference pour resoudre les contestations.",
+          "La victoire ne retire pas le role de l hote: Le Roi peut gagner comme joueur."
+        ]
+      }
+    ]
+  }
 }

@@ -679,5 +679,68 @@
         }
       ]
     }
-  ]
+  ],
+  "rules": {
+    "summary": "Long Live the King est un jeu de cour en tours. Tout converge vers les audiences et conseils ou le Roi, le chambellan ou l autorite de table enregistrent les revenus, petitions, votes de faveur et decisions royales.",
+    "sections": [
+      {
+        "id": "goal",
+        "title": "But du jeu",
+        "audience": "all",
+        "body": "Chaque personnage cherche a accumuler influence, or, statut ou avantages politiques selon son role.",
+        "bullets": [
+          "Le Roi dirige la table mais reste soumis aux intrigues.",
+          "Les autres personnages negocient, demandent des faveurs et influencent les petitions.",
+          "La victoire depend du scenario et des objectifs de personnage importes."
+        ]
+      },
+      {
+        "id": "turns",
+        "title": "Tour et phases",
+        "audience": "all",
+        "body": "Un tour type suit Audience, Diplomatie, Conseil.",
+        "bullets": [
+          "Audience: revenus et cartes/informations sont distribues.",
+          "Diplomatie: les joueurs negocient librement et transferent des ducats.",
+          "Conseil: petitions, votes de faveur et decisions sont resolus.",
+          "Le dernier conseil ne doit pas etre saute."
+        ]
+      },
+      {
+        "id": "audience",
+        "title": "Audience",
+        "audience": "all",
+        "body": "L audience peut se tenir oralement a table ou etre guidee par l app.",
+        "bullets": [
+          "Le Roi ou le chambellan lance l audience.",
+          "L app applique les revenus et tirages prevus.",
+          "Les informations de sante, mobilisation ou rebellion sont enregistrees selon le module.",
+          "Les demandes non resolues peuvent etre portees au conseil."
+        ]
+      },
+      {
+        "id": "petitions",
+        "title": "Petitions et faveur",
+        "audience": "all",
+        "body": "Une petition ouvre une decision collective ou royale.",
+        "bullets": [
+          "Un joueur depose une petition pendant la phase autorisee.",
+          "Les joueurs engagent de la faveur pour soutenir ou s opposer.",
+          "Le Roi ou l autorite tranche: acceptee, rejetee ou reportee.",
+          "Les pots-de-vin et transferts restent des echanges entre joueurs."
+        ]
+      },
+      {
+        "id": "player-info",
+        "title": "Ce que voit un joueur",
+        "audience": "participants",
+        "body": "Le telephone affiche son personnage, ses ressources, les actions disponibles et les messages qui le concernent.",
+        "bullets": [
+          "Les informations cachees des autres personnages ne sont pas visibles.",
+          "Les votes et transferts n apparaissent que selon leur visibilite.",
+          "L onglet Personnage resume le role courant."
+        ]
+      }
+    ]
+  }
 }

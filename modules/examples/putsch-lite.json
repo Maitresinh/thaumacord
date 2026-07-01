@@ -1,6 +1,6 @@
 {
   "id": "putsch-lite",
-  "name": "Putsch au Panador",
+  "name": "Banana Republic",
   "version": "0.1.0",
   "timeline": {
     "regularCouncilEverySeconds": 3600,
@@ -9,39 +9,100 @@
     "copperPriceIncreasePerHour": 1000
   },
   "uiTheme": {
-    "template": "political-pulp",
-    "tone": "Banana republic, mines de cuivre, faux papiers et coups de telephone nerveux.",
+    "template": "banana-republic",
+    "tone": "Republique bananiere, mines de cuivre, faux papiers et coups de telephone nerveux.",
     "colors": {
-      "background": "#12110d",
-      "panel": "#1d1a13",
-      "ink": "#f5ecd8",
-      "muted": "#c3b694",
-      "accent": "#b13f2e",
-      "secondary": "#3c5f63",
-      "success": "#4f6f3a",
-      "warning": "#c49a38"
+      "background": "#f5e638",
+      "panel": "#fff06a",
+      "ink": "#165b28",
+      "muted": "#4e6f2d",
+      "accent": "#178f3c",
+      "secondary": "#16738b",
+      "success": "#2e9d42",
+      "warning": "#d27813"
     },
     "icons": {
-      "game": "▣",
-      "exchange": "⇄",
-      "contest": "⚔",
-      "vote": "◆",
-      "live-administration": "§",
-      "market": "$",
-      "intrigue": "!",
-      "council": "¶"
+      "game": "icon:banana",
+      "exchange": "icon:exchange",
+      "contest": "icon:sabers",
+      "vote": "icon:ballot",
+      "live-administration": "icon:gavel",
+      "market-economy": "icon:money",
+      "market": "icon:money",
+      "intrigue": "icon:mask",
+      "council": "icon:gavel",
+      "money": "icon:money",
+      "copperShares": "icon:copper",
+      "weapons": "icon:rifle-crate",
+      "ammo": "icon:ammo-crate",
+      "influence": "icon:mask",
+      "drugBags": "icon:sack",
+      "voteBallots": "icon:ballot",
+      "cf25": "icon:rifle-crate",
+      "cf50": "icon:rifle-crate",
+      "cf100": "icon:rifle-crate",
+      "cm25": "icon:ammo-crate",
+      "cm50": "icon:ammo-crate",
+      "cm100": "icon:ammo-crate"
     },
     "interactionLabels": {
       "primary": "Geste de table",
       "fallback": "Secours tactile"
+    },
+    "fonts": {
+      "display": "Impact, 'Arial Black', 'Trebuchet MS', sans-serif",
+      "body": "'Trebuchet MS', 'Segoe UI', Arial, sans-serif",
+      "numeric": "'Arial Black', Impact, ui-monospace, monospace"
     }
   },
   "soundboard": [
-    { "id": "market-open", "name": "Ouverture du marche", "channel": "ambient", "phase": "market", "tone": "radio trop chaude et salle enfumee", "visibility": "all" },
-    { "id": "trade-confirmed", "name": "Transaction confirmee", "channel": "event", "event": "exchange.created", "tone": "tampon administratif sec", "visibility": "participants" },
-    { "id": "coup-declared", "name": "Coup d'Etat declare", "channel": "alert", "event": "contestedBid", "phase": "coup", "tone": "sirene courte et foule au loin", "visibility": "all" },
-    { "id": "council-opens", "name": "Conseil des ministres", "channel": "stinger", "phase": "first-council", "tone": "marteau de seance et murmures", "visibility": "all" },
-    { "id": "ballot-drop", "name": "Bulletins depouilles", "channel": "event", "event": "finalizeVote", "phase": "first-council", "tone": "urne, papier, flash d'appareil photo", "visibility": "all" }
+    {
+      "id": "market-open",
+      "name": "Ouverture du marche",
+      "channel": "ambient",
+      "phase": "market",
+      "tone": "radio trop chaude et salle enfumee",
+      "visibility": "all",
+      "url": "sound:market-open"
+    },
+    {
+      "id": "trade-confirmed",
+      "name": "Transaction confirmee",
+      "channel": "event",
+      "event": "exchange.created",
+      "tone": "tampon administratif sec",
+      "visibility": "participants",
+      "url": "sound:trade-confirmed"
+    },
+    {
+      "id": "coup-declared",
+      "name": "Coup d'Etat declare",
+      "channel": "alert",
+      "event": "contestedBid",
+      "phase": "coup",
+      "tone": "sirene courte et foule au loin",
+      "visibility": "all",
+      "url": "sound:coup-declared"
+    },
+    {
+      "id": "council-opens",
+      "name": "Conseil des ministres",
+      "channel": "stinger",
+      "phase": "first-council",
+      "tone": "marteau de seance et murmures",
+      "visibility": "all",
+      "url": "sound:council-opens"
+    },
+    {
+      "id": "ballot-drop",
+      "name": "Bulletins depouilles",
+      "channel": "event",
+      "event": "finalizeVote",
+      "phase": "first-council",
+      "tone": "urne, papier, flash d'appareil photo",
+      "visibility": "all",
+      "url": "sound:ballot-drop"
+    }
   ],
   "state": {
     "copperPrice": 1000,
@@ -57,122 +118,425 @@
     "max": 12
   },
   "resources": [
-    { "id": "money", "name": "Escudos", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 1 } },
-    { "id": "copperShares", "name": "Actions des mines de cuivre", "visibility": "private", "min": 0, "score": { "valueState": "copperPrice", "roleMultipliers": { "facilitator-capitalist": 0.5 }, "label": "cours courant" } },
-    { "id": "weapons", "name": "Armes", "visibility": "private", "min": 0 },
-    { "id": "ammo", "name": "Munitions", "visibility": "private", "min": 0 },
-    { "id": "influence", "name": "Influence", "visibility": "private", "min": 0 },
-    { "id": "cf25", "name": "25 caisses de fusils", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 2500 } },
-    { "id": "cf50", "name": "50 caisses de fusils", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 5000 } },
-    { "id": "cf100", "name": "100 caisses de fusils", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 10000 } },
-    { "id": "cm25", "name": "25 caisses de munitions", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 2500 } },
-    { "id": "cm50", "name": "50 caisses de munitions", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 5000 } },
-    { "id": "cm100", "name": "100 caisses de munitions", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 10000 } },
-    { "id": "drugBags", "name": "Sacs de drogue", "visibility": "private", "min": 0, "score": { "pointsPerUnit": 5000 } },
-    { "id": "voteBallots", "name": "Bulletins de vote", "visibility": "private", "min": 0 }
+    {
+      "id": "money",
+      "name": "Escudos",
+      "visibility": "private",
+      "min": 0,
+      "score": {
+        "pointsPerUnit": 1
+      }
+    },
+    {
+      "id": "copperShares",
+      "name": "Actions des mines de cuivre",
+      "visibility": "private",
+      "min": 0,
+      "score": {
+        "valueState": "copperPrice",
+        "roleMultipliers": {
+          "facilitator-capitalist": 0.5
+        },
+        "label": "cours courant"
+      }
+    },
+    {
+      "id": "weapons",
+      "name": "Armes",
+      "visibility": "private",
+      "min": 0
+    },
+    {
+      "id": "ammo",
+      "name": "Munitions",
+      "visibility": "private",
+      "min": 0
+    },
+    {
+      "id": "influence",
+      "name": "Influence",
+      "visibility": "private",
+      "min": 0
+    },
+    {
+      "id": "cf25",
+      "name": "25 caisses de fusils",
+      "visibility": "private",
+      "min": 0,
+      "score": {
+        "pointsPerUnit": 2500
+      }
+    },
+    {
+      "id": "cf50",
+      "name": "50 caisses de fusils",
+      "visibility": "private",
+      "min": 0,
+      "score": {
+        "pointsPerUnit": 5000
+      }
+    },
+    {
+      "id": "cf100",
+      "name": "100 caisses de fusils",
+      "visibility": "private",
+      "min": 0,
+      "score": {
+        "pointsPerUnit": 10000
+      }
+    },
+    {
+      "id": "cm25",
+      "name": "25 caisses de munitions",
+      "visibility": "private",
+      "min": 0,
+      "score": {
+        "pointsPerUnit": 2500
+      }
+    },
+    {
+      "id": "cm50",
+      "name": "50 caisses de munitions",
+      "visibility": "private",
+      "min": 0,
+      "score": {
+        "pointsPerUnit": 5000
+      }
+    },
+    {
+      "id": "cm100",
+      "name": "100 caisses de munitions",
+      "visibility": "private",
+      "min": 0,
+      "score": {
+        "pointsPerUnit": 10000
+      }
+    },
+    {
+      "id": "drugBags",
+      "name": "Sacs de drogue",
+      "visibility": "private",
+      "min": 0,
+      "score": {
+        "pointsPerUnit": 5000
+      }
+    },
+    {
+      "id": "voteBallots",
+      "name": "Bulletins de vote",
+      "visibility": "private",
+      "min": 0
+    }
   ],
   "sessionRoles": [
     {
       "id": "host",
       "name": "Hote technique",
       "description": "Ouvre la session, accueille les appareils, assigne les roles et garde le rythme de table.",
-      "capabilities": ["session.host", "participants.manage", "roles.assign", "phase.control"],
+      "capabilities": [
+        "session.host",
+        "participants.manage",
+        "roles.assign",
+        "phase.control"
+      ],
       "canInjectGameElements": false,
       "optional": false,
-      "modes": ["separate", "combined-with-game-authority"]
+      "modes": [
+        "separate",
+        "combined-with-game-authority"
+      ]
     },
     {
       "id": "game-authority",
       "name": "Autorite d'injection",
       "description": "Peut introduire, corriger ou arbitrer des elements de jeu sans les limites normales des joueurs.",
-      "capabilities": ["resources.adjust", "state.adjust", "components.draw", "messages.send", "resolutions.override"],
+      "capabilities": [
+        "resources.adjust",
+        "state.adjust",
+        "components.draw",
+        "messages.send",
+        "resolutions.override"
+      ],
       "canInjectGameElements": true,
       "optional": true,
-      "assignableToRoles": ["facilitator-capitalist"],
+      "assignableToRoles": [
+        "facilitator-capitalist"
+      ],
       "defaultRoleId": "facilitator-capitalist",
-      "modes": ["hote-et-directeur", "hote-separe-directeur-joueur"]
+      "modes": [
+        "hote-et-directeur",
+        "hote-separe-directeur-joueur"
+      ]
     }
   ],
   "phases": [
-    { "id": "market", "name": "Marche", "durationSeconds": 600 },
-    { "id": "intrigue", "name": "Intrigue", "durationSeconds": 900 },
-    { "id": "coup", "name": "Coup d'Etat", "durationSeconds": 300 },
-    { "id": "resolution", "name": "Resolution", "durationSeconds": 180 },
-    { "id": "first-council", "name": "Premier conseil", "durationSeconds": 420 }
+    {
+      "id": "market",
+      "name": "Marche",
+      "durationSeconds": 600
+    },
+    {
+      "id": "intrigue",
+      "name": "Intrigue",
+      "durationSeconds": 900
+    },
+    {
+      "id": "coup",
+      "name": "Coup d'Etat",
+      "durationSeconds": 300
+    },
+    {
+      "id": "resolution",
+      "name": "Resolution",
+      "durationSeconds": 180
+    },
+    {
+      "id": "first-council",
+      "name": "Premier conseil",
+      "durationSeconds": 420
+    }
   ],
   "roles": [
     {
       "id": "general",
       "name": "General",
-      "startingResources": { "money": 8, "weapons": 2, "ammo": 2, "influence": 2 },
-      "victoryCondition": { "type": "text", "text": "Gagne par richesse et controle politique en fin de partie." }
+      "startingResources": {
+        "money": 8,
+        "weapons": 2,
+        "ammo": 2,
+        "influence": 2
+      },
+      "victoryCondition": {
+        "type": "text",
+        "text": "Gagne par richesse et controle politique en fin de partie."
+      }
     },
     {
       "id": "dealer",
       "name": "Marchand",
-      "startingResources": { "money": 12, "weapons": 1, "ammo": 3, "influence": 1 },
-      "victoryCondition": { "type": "text", "text": "Gagne par accumulation de richesse et ventes strategiques." }
+      "startingResources": {
+        "money": 12,
+        "weapons": 1,
+        "ammo": 3,
+        "influence": 1
+      },
+      "victoryCondition": {
+        "type": "text",
+        "text": "Gagne par accumulation de richesse et ventes strategiques."
+      }
     },
     {
       "id": "facilitator-capitalist",
       "name": "Paquito Borrachon",
       "officialRole": "President des mines de cuivre d'Alcabal et meneur de jeu.",
       "secretRole": "Aucun role secret.",
-      "startingResources": { "money": 0, "copperShares": 50, "weapons": 0, "ammo": 0, "influence": 3 },
-      "responsibilities": ["Arbitrer la table", "Gerer les actions des mines de cuivre", "Sieger au premier conseil si elu"],
-      "victoryCondition": { "type": "text", "text": "Gagne en terminant avec le plus d'escudos; les actions restantes valent la moitie du cours." }
+      "startingResources": {
+        "money": 0,
+        "copperShares": 50,
+        "weapons": 0,
+        "ammo": 0,
+        "influence": 3
+      },
+      "responsibilities": [
+        "Arbitrer la table",
+        "Gerer les actions des mines de cuivre",
+        "Sieger au premier conseil si elu"
+      ],
+      "victoryCondition": {
+        "type": "text",
+        "text": "Gagne en terminant avec le plus d'escudos; les actions restantes valent la moitie du cours."
+      }
     },
     {
       "id": "kgb-agent",
       "name": "James Stones",
       "officialRole": "Negociant en matieres premieres, notamment cuivre.",
       "secretRole": "Agent du KGB; vendre des armes aux deux forces armees.",
-      "startingResources": { "money": 20000, "cf50": 2, "cf25": 2, "cm100": 1, "cm25": 2, "cm50": 1, "voteBallots": 8 },
-      "victoryCondition": { "type": "text", "text": "Accumuler des escudos par le commerce et l'influence politique." }
+      "startingResources": {
+        "money": 20000,
+        "cf50": 2,
+        "cf25": 2,
+        "cm100": 1,
+        "cm25": 2,
+        "cm50": 1,
+        "voteBallots": 8
+      },
+      "victoryCondition": {
+        "type": "text",
+        "text": "Accumuler des escudos par le commerce et l'influence politique."
+      }
     },
     {
       "id": "cia-agent",
       "name": "Giani Forlano",
       "officialRole": "Marchand de bananes.",
       "secretRole": "Agent de la CIA; vendre des armes aux deux forces armees.",
-      "startingResources": { "money": 20000, "cf100": 2, "cf25": 2, "cm100": 1, "cm50": 2, "voteBallots": 8 },
-      "victoryCondition": { "type": "text", "text": "Accumuler des escudos par le commerce et l'influence politique." }
+      "startingResources": {
+        "money": 20000,
+        "cf100": 2,
+        "cf25": 2,
+        "cm100": 1,
+        "cm50": 2,
+        "voteBallots": 8
+      },
+      "victoryCondition": {
+        "type": "text",
+        "text": "Accumuler des escudos par le commerce et l'influence politique."
+      }
     },
     {
       "id": "drug-trafficker",
       "name": "Vladimir Doukorof",
       "officialRole": "Marchand de fusils de chasse.",
       "secretRole": "Trafiquant de drogue; ecouler le plus possible de sacs de drogue.",
-      "startingResources": { "money": 15000, "drugBags": 5, "cm25": 1, "voteBallots": 8 },
-      "victoryCondition": { "type": "text", "text": "Transformer la drogue et les arrangements en escudos." }
+      "startingResources": {
+        "money": 15000,
+        "drugBags": 5,
+        "cm25": 1,
+        "voteBallots": 8
+      },
+      "victoryCondition": {
+        "type": "text",
+        "text": "Transformer la drogue et les arrangements en escudos."
+      }
     },
     {
       "id": "fun-agent",
       "name": "Raul Belgrano",
       "officialRole": "Specialiste des reserves de chasse.",
       "secretRole": "Representant du FUN, au pouvoir au debut de partie.",
-      "startingResources": { "money": 15000, "cf50": 1, "cf25": 2, "cm50": 1, "cm25": 1, "drugBags": 1, "voteBallots": 8 },
-      "victoryCondition": { "type": "text", "text": "Conserver ou reprendre le pouvoir; le camp au pouvoir en fin de partie double son total." }
+      "startingResources": {
+        "money": 15000,
+        "cf50": 1,
+        "cf25": 2,
+        "cm50": 1,
+        "cm25": 1,
+        "drugBags": 1,
+        "voteBallots": 8
+      },
+      "victoryCondition": {
+        "type": "text",
+        "text": "Conserver ou reprendre le pouvoir; le camp au pouvoir en fin de partie double son total."
+      }
     },
     {
       "id": "gag-agent",
       "name": "Miltos Agripnakis",
       "officialRole": "Proprietaire terrien.",
       "secretRole": "Agent des forces armees du GAG, dans l'opposition au debut.",
-      "startingResources": { "money": 15000, "cf100": 1, "cf25": 1, "cm50": 1, "cm25": 2, "voteBallots": 8 },
-      "victoryCondition": { "type": "text", "text": "Prendre puis conserver le pouvoir; le camp au pouvoir en fin de partie double son total." }
+      "startingResources": {
+        "money": 15000,
+        "cf100": 1,
+        "cf25": 1,
+        "cm50": 1,
+        "cm25": 2,
+        "voteBallots": 8
+      },
+      "victoryCondition": {
+        "type": "text",
+        "text": "Prendre puis conserver le pouvoir; le camp au pouvoir en fin de partie double son total."
+      }
     }
   ],
   "components": [
-    { "id": "cf25-card", "name": "Carte 25 caisses de fusils", "kind": "resource-card", "count": 25, "visibility": "private", "tags": ["weapon", "putsch"] },
-    { "id": "cf50-card", "name": "Carte 50 caisses de fusils", "kind": "resource-card", "count": 20, "visibility": "private", "tags": ["weapon", "putsch"] },
-    { "id": "cf100-card", "name": "Carte 100 caisses de fusils", "kind": "resource-card", "count": 5, "visibility": "private", "tags": ["weapon", "putsch"] },
-    { "id": "cm25-card", "name": "Carte 25 caisses de munitions", "kind": "resource-card", "count": 30, "visibility": "private", "tags": ["ammo", "putsch"] },
-    { "id": "cm50-card", "name": "Carte 50 caisses de munitions", "kind": "resource-card", "count": 10, "visibility": "private", "tags": ["ammo", "putsch"] },
-    { "id": "cm100-card", "name": "Carte 100 caisses de munitions", "kind": "resource-card", "count": 10, "visibility": "private", "tags": ["ammo", "putsch"] },
-    { "id": "copper-share-card", "name": "Action des mines de cuivre", "kind": "share-card", "count": 50, "visibility": "private", "tags": ["market", "copper"] },
-    { "id": "drug-bag-card", "name": "Sac de drogue", "kind": "contraband-card", "count": 15, "visibility": "private", "tags": ["contraband"] },
-    { "id": "vote-ballot", "name": "Bulletin de vote", "kind": "ballot", "count": 80, "visibility": "private", "tags": ["election", "council"] }
+    {
+      "id": "cf25-card",
+      "name": "Carte 25 caisses de fusils",
+      "kind": "resource-card",
+      "count": 25,
+      "visibility": "private",
+      "tags": [
+        "weapon",
+        "putsch"
+      ]
+    },
+    {
+      "id": "cf50-card",
+      "name": "Carte 50 caisses de fusils",
+      "kind": "resource-card",
+      "count": 20,
+      "visibility": "private",
+      "tags": [
+        "weapon",
+        "putsch"
+      ]
+    },
+    {
+      "id": "cf100-card",
+      "name": "Carte 100 caisses de fusils",
+      "kind": "resource-card",
+      "count": 5,
+      "visibility": "private",
+      "tags": [
+        "weapon",
+        "putsch"
+      ]
+    },
+    {
+      "id": "cm25-card",
+      "name": "Carte 25 caisses de munitions",
+      "kind": "resource-card",
+      "count": 30,
+      "visibility": "private",
+      "tags": [
+        "ammo",
+        "putsch"
+      ]
+    },
+    {
+      "id": "cm50-card",
+      "name": "Carte 50 caisses de munitions",
+      "kind": "resource-card",
+      "count": 10,
+      "visibility": "private",
+      "tags": [
+        "ammo",
+        "putsch"
+      ]
+    },
+    {
+      "id": "cm100-card",
+      "name": "Carte 100 caisses de munitions",
+      "kind": "resource-card",
+      "count": 10,
+      "visibility": "private",
+      "tags": [
+        "ammo",
+        "putsch"
+      ]
+    },
+    {
+      "id": "copper-share-card",
+      "name": "Action des mines de cuivre",
+      "kind": "share-card",
+      "count": 50,
+      "visibility": "private",
+      "tags": [
+        "market",
+        "copper"
+      ]
+    },
+    {
+      "id": "drug-bag-card",
+      "name": "Sac de drogue",
+      "kind": "contraband-card",
+      "count": 15,
+      "visibility": "private",
+      "tags": [
+        "contraband"
+      ]
+    },
+    {
+      "id": "vote-ballot",
+      "name": "Bulletin de vote",
+      "kind": "ballot",
+      "count": 80,
+      "visibility": "private",
+      "tags": [
+        "election",
+        "council"
+      ]
+    }
   ],
   "setup": {
     "phaseId": "market",
@@ -182,15 +546,69 @@
       "Confirmer que Paquito porte la casquette d'autorite si le meneur est aussi directeur des mines."
     ],
     "distributions": [
-      { "id": "initial-cf25", "componentId": "cf25-card", "target": "allParticipants", "countResource": "cf25", "visibility": "private" },
-      { "id": "initial-cf50", "componentId": "cf50-card", "target": "allParticipants", "countResource": "cf50", "visibility": "private" },
-      { "id": "initial-cf100", "componentId": "cf100-card", "target": "allParticipants", "countResource": "cf100", "visibility": "private" },
-      { "id": "initial-cm25", "componentId": "cm25-card", "target": "allParticipants", "countResource": "cm25", "visibility": "private" },
-      { "id": "initial-cm50", "componentId": "cm50-card", "target": "allParticipants", "countResource": "cm50", "visibility": "private" },
-      { "id": "initial-cm100", "componentId": "cm100-card", "target": "allParticipants", "countResource": "cm100", "visibility": "private" },
-      { "id": "initial-drug-bags", "componentId": "drug-bag-card", "target": "allParticipants", "countResource": "drugBags", "visibility": "private" },
-      { "id": "initial-copper-shares", "componentId": "copper-share-card", "target": "allParticipants", "countResource": "copperShares", "visibility": "private" },
-      { "id": "initial-vote-ballots", "componentId": "vote-ballot", "target": "allParticipants", "countResource": "voteBallots", "visibility": "private" }
+      {
+        "id": "initial-cf25",
+        "componentId": "cf25-card",
+        "target": "allParticipants",
+        "countResource": "cf25",
+        "visibility": "private"
+      },
+      {
+        "id": "initial-cf50",
+        "componentId": "cf50-card",
+        "target": "allParticipants",
+        "countResource": "cf50",
+        "visibility": "private"
+      },
+      {
+        "id": "initial-cf100",
+        "componentId": "cf100-card",
+        "target": "allParticipants",
+        "countResource": "cf100",
+        "visibility": "private"
+      },
+      {
+        "id": "initial-cm25",
+        "componentId": "cm25-card",
+        "target": "allParticipants",
+        "countResource": "cm25",
+        "visibility": "private"
+      },
+      {
+        "id": "initial-cm50",
+        "componentId": "cm50-card",
+        "target": "allParticipants",
+        "countResource": "cm50",
+        "visibility": "private"
+      },
+      {
+        "id": "initial-cm100",
+        "componentId": "cm100-card",
+        "target": "allParticipants",
+        "countResource": "cm100",
+        "visibility": "private"
+      },
+      {
+        "id": "initial-drug-bags",
+        "componentId": "drug-bag-card",
+        "target": "allParticipants",
+        "countResource": "drugBags",
+        "visibility": "private"
+      },
+      {
+        "id": "initial-copper-shares",
+        "componentId": "copper-share-card",
+        "target": "allParticipants",
+        "countResource": "copperShares",
+        "visibility": "private"
+      },
+      {
+        "id": "initial-vote-ballots",
+        "componentId": "vote-ballot",
+        "target": "allParticipants",
+        "countResource": "voteBallots",
+        "visibility": "private"
+      }
     ]
   },
   "mechanics": [
@@ -199,10 +617,20 @@
       "name": "Marche des actions de cuivre",
       "family": "market-economy",
       "summary": "Un participant achete des actions de cuivre au directeur des mines, au cours courant, dans les limites de la phase.",
-      "phases": ["market"],
+      "phases": [
+        "market"
+      ],
       "inputs": [
-        { "id": "buyerId", "type": "participant", "source": "actor-or-bound-device" },
-        { "id": "quantity", "type": "number", "label": "Actions a acheter" }
+        {
+          "id": "buyerId",
+          "type": "participant",
+          "source": "actor-or-bound-device"
+        },
+        {
+          "id": "quantity",
+          "type": "number",
+          "label": "Actions a acheter"
+        }
       ],
       "resolution": {
         "type": "marketBuy",
@@ -212,24 +640,67 @@
         "sellerRoleId": "facilitator-capitalist",
         "componentId": "copper-share-card"
       },
-      "visibility": { "dashboard": "full", "participants": "involved-only" }
+      "visibility": {
+        "dashboard": "full",
+        "participants": "involved-only"
+      }
     },
     {
       "id": "direct-barter",
       "name": "Transaction directe",
       "family": "exchange",
       "summary": "Deux participants transferent des ressources declarees, avec validation des soldes et visibilite filtree.",
-      "phases": ["market", "intrigue"],
-      "inputs": [
-        { "id": "fromParticipantId", "type": "participant", "source": "actor-or-bound-device" },
-        { "id": "toParticipantId", "type": "participant" },
-        { "id": "resources", "type": "resource-bundle", "allowed": ["money", "weapons", "ammo", "copperShares", "cf25", "cf50", "cf100", "cm25", "cm50", "cm100", "drugBags"] }
+      "phases": [
+        "market",
+        "intrigue"
       ],
-      "resolution": { "type": "exchange", "mode": "immediate" },
-      "visibility": { "dashboard": "full", "participants": "involved-only" },
+      "inputs": [
+        {
+          "id": "fromParticipantId",
+          "type": "participant",
+          "source": "actor-or-bound-device"
+        },
+        {
+          "id": "toParticipantId",
+          "type": "participant"
+        },
+        {
+          "id": "resources",
+          "type": "resource-bundle",
+          "allowed": [
+            "money",
+            "weapons",
+            "ammo",
+            "copperShares",
+            "cf25",
+            "cf50",
+            "cf100",
+            "cm25",
+            "cm50",
+            "cm100",
+            "drugBags"
+          ]
+        }
+      ],
+      "resolution": {
+        "type": "exchange",
+        "mode": "immediate"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "participants": "involved-only"
+      },
       "variants": [
-        { "id": "brokered", "name": "Transaction arbitree", "requiresFacilitator": true },
-        { "id": "hidden-price", "name": "Prix cache", "hideResourcesUntilResolved": true }
+        {
+          "id": "brokered",
+          "name": "Transaction arbitree",
+          "requiresFacilitator": true
+        },
+        {
+          "id": "hidden-price",
+          "name": "Prix cache",
+          "hideResourcesUntilResolved": true
+        }
       ]
     },
     {
@@ -237,12 +708,34 @@
       "name": "Coup conteste",
       "family": "contest",
       "summary": "Un attaquant declare une tentative, une cible peut repondre, puis les engagements caches sont reveles et compares.",
-      "phases": ["coup", "resolution"],
+      "phases": [
+        "coup",
+        "resolution"
+      ],
       "inputs": [
-        { "id": "attackerId", "type": "participant", "source": "actor-or-bound-device" },
-        { "id": "defenderId", "type": "participant" },
-        { "id": "leaderIds", "type": "participant-list", "count": 2 },
-        { "id": "resources", "type": "resource-bundle", "allowed": ["weapons", "ammo", "influence"] }
+        {
+          "id": "attackerId",
+          "type": "participant",
+          "source": "actor-or-bound-device"
+        },
+        {
+          "id": "defenderId",
+          "type": "participant"
+        },
+        {
+          "id": "leaderIds",
+          "type": "participant-list",
+          "count": 2
+        },
+        {
+          "id": "resources",
+          "type": "resource-bundle",
+          "allowed": [
+            "weapons",
+            "ammo",
+            "influence"
+          ]
+        }
       ],
       "resolution": {
         "type": "sealedCommitment",
@@ -256,9 +749,23 @@
             "label": "Attaquant gagne",
             "description": "La tentative de coup reussit.",
             "effects": [
-              { "type": "setState", "state": "coupOutcome", "value": "attacker-wins" },
-              { "type": "scaleSessionCounter", "state": "copperPrice", "factor": 0.5, "rounding": "floor", "min": 1 },
-              { "type": "setSessionState", "state": "firstCouncilDue", "value": true }
+              {
+                "type": "setState",
+                "state": "coupOutcome",
+                "value": "attacker-wins"
+              },
+              {
+                "type": "scaleSessionCounter",
+                "state": "copperPrice",
+                "factor": 0.5,
+                "rounding": "floor",
+                "min": 1
+              },
+              {
+                "type": "setSessionState",
+                "state": "firstCouncilDue",
+                "value": true
+              }
             ]
           },
           {
@@ -266,9 +773,22 @@
             "label": "Defense gagne",
             "description": "La tentative de coup echoue.",
             "effects": [
-              { "type": "setState", "state": "coupOutcome", "value": "defender-wins" },
-              { "type": "adjustSessionCounter", "state": "copperPrice", "delta": 1000, "min": 1 },
-              { "type": "setSessionState", "state": "firstCouncilDue", "value": true }
+              {
+                "type": "setState",
+                "state": "coupOutcome",
+                "value": "defender-wins"
+              },
+              {
+                "type": "adjustSessionCounter",
+                "state": "copperPrice",
+                "delta": 1000,
+                "min": 1
+              },
+              {
+                "type": "setSessionState",
+                "state": "firstCouncilDue",
+                "value": true
+              }
             ]
           },
           {
@@ -276,16 +796,35 @@
             "label": "Egalite MJ",
             "description": "Le MJ tranche une egalite ou une situation ambigue.",
             "effects": [
-              { "type": "setState", "state": "coupOutcome", "value": "tie-facilitator" },
-              { "type": "setSessionState", "state": "firstCouncilDue", "value": true }
+              {
+                "type": "setState",
+                "state": "coupOutcome",
+                "value": "tie-facilitator"
+              },
+              {
+                "type": "setSessionState",
+                "state": "firstCouncilDue",
+                "value": true
+              }
             ]
           }
         ]
       },
-      "visibility": { "commitments": "hidden-until-reveal", "result": "dashboard-and-involved" },
+      "visibility": {
+        "commitments": "hidden-until-reveal",
+        "result": "dashboard-and-involved"
+      },
       "variants": [
-        { "id": "open-counter", "name": "Contre public", "commitments": "defender-visible" },
-        { "id": "multi-party-coup", "name": "Coup multi-factions", "leaderCount": "2+" }
+        {
+          "id": "open-counter",
+          "name": "Contre public",
+          "commitments": "defender-visible"
+        },
+        {
+          "id": "multi-party-coup",
+          "name": "Coup multi-factions",
+          "leaderCount": "2+"
+        }
       ]
     },
     {
@@ -293,25 +832,58 @@
       "name": "Conseil des ministres",
       "family": "live-administration",
       "summary": "Le conseil se tient en direct; l'autorite saisit ensuite les presents, fonds detournes, decisions et ajustements de ressources.",
-      "phases": ["first-council"],
+      "phases": [
+        "first-council"
+      ],
       "inputs": [
-        { "id": "attendeeIds", "type": "participant-list" },
-        { "id": "embezzlement", "type": "resource-bundle", "allowed": ["money"] },
-        { "id": "decisions", "type": "text" }
+        {
+          "id": "attendeeIds",
+          "type": "participant-list"
+        },
+        {
+          "id": "embezzlement",
+          "type": "resource-bundle",
+          "allowed": [
+            "money"
+          ]
+        },
+        {
+          "id": "decisions",
+          "type": "text"
+        }
       ],
       "resolution": {
         "type": "liveThenRecord",
         "recordedBy": "facilitator-capitalist",
-        "canAdjustResources": ["money"],
-        "canSetSessionState": ["firstCouncilDue"],
+        "canAdjustResources": [
+          "money"
+        ],
+        "canSetSessionState": [
+          "firstCouncilDue"
+        ],
         "defaultEffects": [
-          { "type": "setSessionState", "state": "firstCouncilDue", "value": false }
+          {
+            "type": "setSessionState",
+            "state": "firstCouncilDue",
+            "value": false
+          }
         ]
       },
-      "visibility": { "dashboard": "full", "participants": "public-summary" },
+      "visibility": {
+        "dashboard": "full",
+        "participants": "public-summary"
+      },
       "variants": [
-        { "id": "post-coup", "name": "Conseil apres coup d'Etat", "trigger": "firstCouncilDue" },
-        { "id": "regular-hourly", "name": "Conseil regulier", "trigger": "regularCouncilEverySeconds" }
+        {
+          "id": "post-coup",
+          "name": "Conseil apres coup d'Etat",
+          "trigger": "firstCouncilDue"
+        },
+        {
+          "id": "regular-hourly",
+          "name": "Conseil regulier",
+          "trigger": "regularCouncilEverySeconds"
+        }
       ]
     },
     {
@@ -319,25 +891,59 @@
       "name": "Election du conseil",
       "family": "vote",
       "summary": "Chaque joueur depense des bulletins de vote pour designer les conseillers; le tableau cumule les suffrages.",
-      "phases": ["first-council"],
-      "inputs": [
-        { "id": "voterId", "type": "participant", "source": "actor-or-bound-device" },
-        { "id": "promotionCandidateId", "type": "participant", "label": "Faire entrer au conseil" },
-        { "id": "eliminationCandidateId", "type": "participant", "label": "Eliminer du conseil" },
-        { "id": "votes", "type": "number", "resource": "voteBallots" }
+      "phases": [
+        "first-council"
       ],
-      "resolution": { "type": "tally", "state": "ministerElectionTally", "resource": "voteBallots" },
-      "visibility": { "dashboard": "full", "participants": "own-vote-and-public-tally" }
+      "inputs": [
+        {
+          "id": "voterId",
+          "type": "participant",
+          "source": "actor-or-bound-device"
+        },
+        {
+          "id": "promotionCandidateId",
+          "type": "participant",
+          "label": "Faire entrer au conseil"
+        },
+        {
+          "id": "eliminationCandidateId",
+          "type": "participant",
+          "label": "Eliminer du conseil"
+        },
+        {
+          "id": "votes",
+          "type": "number",
+          "resource": "voteBallots"
+        }
+      ],
+      "resolution": {
+        "type": "tally",
+        "state": "ministerElectionTally",
+        "resource": "voteBallots"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "participants": "own-vote-and-public-tally"
+      }
     },
     {
       "id": "minister-election-finalize",
       "name": "Cloture de l'election du conseil",
       "family": "vote",
       "summary": "Le meneur cloture le vote, calcule les entrees/sorties du college et marque les statuts des conseillers.",
-      "phases": ["first-council"],
+      "phases": [
+        "first-council"
+      ],
       "inputs": [],
-      "resolution": { "type": "finalize", "state": "ministerElectionTally", "resultState": "ministerElectionResult" },
-      "visibility": { "dashboard": "full", "participants": "public-summary" }
+      "resolution": {
+        "type": "finalize",
+        "state": "ministerElectionTally",
+        "resultState": "ministerElectionResult"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "participants": "public-summary"
+      }
     }
   ],
   "actions": [
@@ -367,7 +973,13 @@
       "phase": "market",
       "actor": "any",
       "target": "player",
-      "effect": { "type": "transferBundle", "resources": ["money", "weapons"] },
+      "effect": {
+        "type": "transferBundle",
+        "resources": [
+          "money",
+          "weapons"
+        ]
+      },
       "mechanicId": "direct-barter",
       "gesture": "pour-liquid",
       "fallback": "manual-confirmation"
@@ -378,7 +990,13 @@
       "phase": "market",
       "actor": "any",
       "target": "player",
-      "effect": { "type": "transferBundle", "resources": ["money", "copperShares"] },
+      "effect": {
+        "type": "transferBundle",
+        "resources": [
+          "money",
+          "copperShares"
+        ]
+      },
       "mechanicId": "direct-barter",
       "gesture": "touch-phones",
       "fallback": "manual-confirmation"
@@ -389,7 +1007,18 @@
       "phase": "market",
       "actor": "any",
       "target": "player",
-      "effect": { "type": "transferBundle", "resources": ["money", "cf25", "cf50", "cf100", "cm25", "cm50", "cm100"] },
+      "effect": {
+        "type": "transferBundle",
+        "resources": [
+          "money",
+          "cf25",
+          "cf50",
+          "cf100",
+          "cm25",
+          "cm50",
+          "cm100"
+        ]
+      },
       "mechanicId": "direct-barter",
       "gesture": "pour-liquid",
       "fallback": "manual-confirmation"
@@ -400,7 +1029,13 @@
       "phase": "intrigue",
       "actor": "drug-trafficker",
       "target": "player",
-      "effect": { "type": "transferBundle", "resources": ["money", "drugBags"] },
+      "effect": {
+        "type": "transferBundle",
+        "resources": [
+          "money",
+          "drugBags"
+        ]
+      },
       "mechanicId": "direct-barter",
       "gesture": "palm-cover",
       "fallback": "manual-confirmation"
@@ -411,7 +1046,14 @@
       "phase": "coup",
       "actor": "any",
       "target": "game",
-      "effect": { "type": "contestedBid", "resources": ["weapons", "ammo", "influence"] },
+      "effect": {
+        "type": "contestedBid",
+        "resources": [
+          "weapons",
+          "ammo",
+          "influence"
+        ]
+      },
       "mechanicId": "contested-coup",
       "gesture": "strike-phone",
       "fallback": "manual-confirmation"
@@ -422,7 +1064,14 @@
       "phase": "coup",
       "actor": "any",
       "target": "game",
-      "effect": { "type": "contestResponse", "resources": ["weapons", "ammo", "influence"] },
+      "effect": {
+        "type": "contestResponse",
+        "resources": [
+          "weapons",
+          "ammo",
+          "influence"
+        ]
+      },
       "mechanicId": "contested-coup",
       "gesture": "parry-phone",
       "fallback": "manual-confirmation"
@@ -433,7 +1082,11 @@
       "phase": "first-council",
       "actor": "any",
       "target": "game",
-      "effect": { "type": "castVote", "resource": "voteBallots", "state": "ministerElectionTally" },
+      "effect": {
+        "type": "castVote",
+        "resource": "voteBallots",
+        "state": "ministerElectionTally"
+      },
       "mechanicId": "minister-election",
       "gesture": "ballot-drop",
       "fallback": "manual-confirmation"
@@ -462,7 +1115,11 @@
       "phase": "first-council",
       "actor": "facilitator-capitalist",
       "target": "self",
-      "effect": { "type": "adjustResource", "resource": "money", "delta": 5000 },
+      "effect": {
+        "type": "adjustResource",
+        "resource": "money",
+        "delta": 5000
+      },
       "fallback": "facilitator-confirmation"
     },
     {
@@ -471,7 +1128,9 @@
       "phase": "first-council",
       "actor": "facilitator-capitalist",
       "target": "game",
-      "effect": { "type": "recordLiveResults" },
+      "effect": {
+        "type": "recordLiveResults"
+      },
       "mechanicId": "minister-council-record",
       "fallback": "facilitator-confirmation"
     }
@@ -483,7 +1142,10 @@
       "fictionalType": "market",
       "presenceMethod": "qr",
       "effects": [
-        { "type": "unlockAction", "action": "sell-weapons" }
+        {
+          "type": "unlockAction",
+          "action": "sell-weapons"
+        }
       ]
     },
     {
@@ -492,7 +1154,10 @@
       "fictionalType": "seat-of-power",
       "presenceMethod": "manual",
       "effects": [
-        { "type": "unlockAction", "action": "attempt-coup" }
+        {
+          "type": "unlockAction",
+          "action": "attempt-coup"
+        }
       ]
     }
   ]

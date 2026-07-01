@@ -28,7 +28,7 @@ The server entrypoint is `apps/server/src/index.ts`; the Fastify application and
 
 Current example modules:
 
-- Putsch au Panador (`putsch-lite`)
+- Banana Republic (`putsch-lite`)
 - Long Live the King (`long-live-the-king-lite`)
 - Wolfpack (`wolfpack-lite`), a WWII submarine crew coordination module inspired by the coordinated-stations feel of games like Captain Sonar, without copying its rules.
 - Origins of WWI Live (`origins-ww1-lite`), a live-first diplomatic module where physical cards are replaced by hidden digital orders and special-action permissions.

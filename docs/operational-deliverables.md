@@ -71,7 +71,7 @@ Non-goals:
 
 ### Demo Script
 
-1. Click `Demo Putsch prechargee`.
+1. Click `Demo Banana Republic`.
 2. During `Marche`, use `Controles de jeu` to make at least one exchange action, for example General -> Marchand.
 3. Use `Phase suivante` until `Coup d'Etat`.
 4. From a participant phone or API action, trigger `attempt-coup`.

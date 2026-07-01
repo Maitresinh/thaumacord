@@ -18,29 +18,74 @@
       "warning": "#c69a3d"
     },
     "icons": {
-      "game": "SUB",
-      "coordination": "ORD",
-      "resource-action": "SYS",
-      "contest": "TIR",
-      "hull": "COQ",
-      "oxygen": "O2",
-      "battery": "BAT",
-      "noise": "BR",
-      "torpedoes": "TOR",
-      "solution": "SOL",
-      "intel": "INT"
+      "game": "icon:submarine",
+      "coordination": "icon:radio",
+      "resource-action": "icon:gauge",
+      "contest": "icon:torpedo",
+      "hull": "icon:hull",
+      "oxygen": "icon:oxygen",
+      "battery": "icon:battery",
+      "noise": "icon:sonar",
+      "torpedoes": "icon:torpedo",
+      "solution": "icon:crosshair",
+      "intel": "icon:radio"
     },
     "interactionLabels": {
       "primary": "Geste de poste",
       "fallback": "Controle de bord"
+    },
+    "fonts": {
+      "display": "'Arial Narrow', 'Bahnschrift Condensed', 'Segoe UI', sans-serif",
+      "body": "Bahnschrift, 'Segoe UI', Arial, sans-serif",
+      "numeric": "Consolas, 'Courier New', monospace"
     }
   },
   "soundboard": [
-    { "id": "briefing-bell", "name": "Briefing equipage", "channel": "stinger", "phase": "briefing", "tone": "cloche courte et murmure de salle des cartes", "visibility": "all" },
-    { "id": "silent-running", "name": "Silence machine", "channel": "event", "phase": "silent-running", "tone": "moteurs etouffes, metal sous pression", "visibility": "all" },
-    { "id": "sonar-contact", "name": "Contact sonar", "channel": "alert", "phase": "contact", "tone": "ping sonar isole puis silence", "visibility": "all" },
-    { "id": "attack-alarm", "name": "Postes de combat", "channel": "alert", "phase": "attack-run", "tone": "alarme rouge et ordre bref", "visibility": "all" },
-    { "id": "damage-control", "name": "Equipe avaries", "channel": "alert", "phase": "damage-control", "tone": "fuite, outils, metal qui craque", "visibility": "all" }
+    {
+      "id": "briefing-bell",
+      "name": "Briefing equipage",
+      "channel": "stinger",
+      "phase": "briefing",
+      "tone": "cloche courte et murmure de salle des cartes",
+      "visibility": "all",
+      "url": "sound:briefing-bell"
+    },
+    {
+      "id": "silent-running",
+      "name": "Silence machine",
+      "channel": "event",
+      "phase": "silent-running",
+      "tone": "moteurs etouffes, metal sous pression",
+      "visibility": "all",
+      "url": "sound:silent-running"
+    },
+    {
+      "id": "sonar-contact",
+      "name": "Contact sonar",
+      "channel": "alert",
+      "phase": "contact",
+      "tone": "ping sonar isole puis silence",
+      "visibility": "all",
+      "url": "sound:sonar-contact"
+    },
+    {
+      "id": "attack-alarm",
+      "name": "Postes de combat",
+      "channel": "alert",
+      "phase": "attack-run",
+      "tone": "alarme rouge et ordre bref",
+      "visibility": "all",
+      "url": "sound:attack-alarm"
+    },
+    {
+      "id": "damage-control",
+      "name": "Equipe avaries",
+      "channel": "alert",
+      "phase": "damage-control",
+      "tone": "fuite, outils, metal qui craque",
+      "visibility": "all",
+      "url": "sound:damage-control"
+    }
   ],
   "state": {
     "missionMode": "cooperative-hunt",
@@ -59,7 +104,10 @@
       "liveAdaptation": "Les telephones representent les postes: le geste donne le ton, l'app enregistre l'ordre, le cout et l'effet."
     }
   },
-  "players": { "min": 3, "max": 10 },
+  "players": {
+    "min": 3,
+    "max": 10
+  },
   "teamMode": {
     "enabled": true,
     "minTeams": 1,
@@ -67,20 +115,111 @@
     "teamName": "Equipage"
   },
   "resources": [
-    { "id": "hull", "name": "Coque", "visibility": "team", "min": 0, "max": 6 },
-    { "id": "oxygen", "name": "Oxygene", "visibility": "team", "min": 0, "max": 12 },
-    { "id": "battery", "name": "Batteries", "visibility": "team", "min": 0, "max": 12 },
-    { "id": "noise", "name": "Bruit", "visibility": "team", "min": 0, "max": 10 },
-    { "id": "torpedoes", "name": "Torpilles", "visibility": "team", "min": 0, "max": 6 },
-    { "id": "solution", "name": "Solution de tir", "visibility": "team", "min": 0, "max": 6 },
-    { "id": "intel", "name": "Renseignements", "visibility": "private", "min": 0 }
+    {
+      "id": "hull",
+      "name": "Coque",
+      "visibility": "team",
+      "min": 0,
+      "max": 6
+    },
+    {
+      "id": "oxygen",
+      "name": "Oxygene",
+      "visibility": "team",
+      "min": 0,
+      "max": 12
+    },
+    {
+      "id": "battery",
+      "name": "Batteries",
+      "visibility": "team",
+      "min": 0,
+      "max": 12
+    },
+    {
+      "id": "noise",
+      "name": "Bruit",
+      "visibility": "team",
+      "min": 0,
+      "max": 10
+    },
+    {
+      "id": "torpedoes",
+      "name": "Torpilles",
+      "visibility": "team",
+      "min": 0,
+      "max": 6
+    },
+    {
+      "id": "solution",
+      "name": "Solution de tir",
+      "visibility": "team",
+      "min": 0,
+      "max": 6
+    },
+    {
+      "id": "intel",
+      "name": "Renseignements",
+      "visibility": "private",
+      "min": 0
+    }
   ],
   "components": [
-    { "id": "mission-sheet", "name": "Ordre de mission", "kind": "mission-reference", "count": 1, "visibility": "dashboard", "tags": ["mission", "setup"] },
-    { "id": "station-panel", "name": "Panneau de poste", "kind": "station-reference", "count": 6, "visibility": "private", "tags": ["station", "reference"] },
-    { "id": "contact-marker", "name": "Marqueur contact", "kind": "map-marker", "count": 8, "visibility": "dashboard", "tags": ["map", "contact"] },
-    { "id": "damage-token", "name": "Jeton avarie", "kind": "status-token", "count": 12, "visibility": "team", "tags": ["damage", "repair"] },
-    { "id": "torpedo-tube", "name": "Tube lance-torpille", "kind": "weapon-slot", "count": 4, "visibility": "team", "tags": ["weapon", "slot"] }
+    {
+      "id": "mission-sheet",
+      "name": "Ordre de mission",
+      "kind": "mission-reference",
+      "count": 1,
+      "visibility": "dashboard",
+      "tags": [
+        "mission",
+        "setup"
+      ]
+    },
+    {
+      "id": "station-panel",
+      "name": "Panneau de poste",
+      "kind": "station-reference",
+      "count": 6,
+      "visibility": "private",
+      "tags": [
+        "station",
+        "reference"
+      ]
+    },
+    {
+      "id": "contact-marker",
+      "name": "Marqueur contact",
+      "kind": "map-marker",
+      "count": 8,
+      "visibility": "dashboard",
+      "tags": [
+        "map",
+        "contact"
+      ]
+    },
+    {
+      "id": "damage-token",
+      "name": "Jeton avarie",
+      "kind": "status-token",
+      "count": 12,
+      "visibility": "team",
+      "tags": [
+        "damage",
+        "repair"
+      ]
+    },
+    {
+      "id": "torpedo-tube",
+      "name": "Tube lance-torpille",
+      "kind": "weapon-slot",
+      "count": 4,
+      "visibility": "team",
+      "tags": [
+        "weapon",
+        "slot"
+      ]
+    }
   ],
   "setup": {
     "phaseId": "briefing",
@@ -93,7 +232,13 @@
       "Expliquer aux joueurs que chaque telephone est un poste: les gestes confirment l'action, les boutons restent le secours MVP."
     ],
     "distributions": [
-      { "id": "initial-station-panel", "componentId": "station-panel", "target": "allParticipants", "count": 1, "visibility": "private" }
+      {
+        "id": "initial-station-panel",
+        "componentId": "station-panel",
+        "target": "allParticipants",
+        "count": 1,
+        "visibility": "private"
+      }
     ]
   },
   "sessionRoles": [
@@ -101,61 +246,144 @@
       "id": "host",
       "name": "Hote capitaine",
       "description": "Ouvre la session et garde le rythme, mais reste un membre de l'equipage.",
-      "capabilities": ["session.host", "participants.manage", "roles.assign", "phase.control"],
+      "capabilities": [
+        "session.host",
+        "participants.manage",
+        "roles.assign",
+        "phase.control"
+      ],
       "canInjectGameElements": false,
-      "assignableToRoles": ["captain"],
+      "assignableToRoles": [
+        "captain"
+      ],
       "defaultRoleId": "captain"
     }
   ],
   "phases": [
-    { "id": "briefing", "name": "Briefing", "durationSeconds": 180 },
-    { "id": "silent-running", "name": "Navigation silencieuse", "durationSeconds": 600 },
-    { "id": "contact", "name": "Contact sonar", "durationSeconds": 300 },
-    { "id": "attack-run", "name": "Passe d'attaque", "durationSeconds": 240 },
-    { "id": "damage-control", "name": "Avaries", "durationSeconds": 240 }
+    {
+      "id": "briefing",
+      "name": "Briefing",
+      "durationSeconds": 180
+    },
+    {
+      "id": "silent-running",
+      "name": "Navigation silencieuse",
+      "durationSeconds": 600
+    },
+    {
+      "id": "contact",
+      "name": "Contact sonar",
+      "durationSeconds": 300
+    },
+    {
+      "id": "attack-run",
+      "name": "Passe d'attaque",
+      "durationSeconds": 240
+    },
+    {
+      "id": "damage-control",
+      "name": "Avaries",
+      "durationSeconds": 240
+    }
   ],
   "roles": [
     {
       "id": "captain",
       "name": "Capitaine",
-      "startingResources": { "intel": 1 },
-      "responsibilities": ["Donner les ordres", "Choisir les priorites", "Valider tir, plongee d'urgence et rupture de silence"],
-      "actions": ["issue-order", "authorize-fire", "emergency-dive"]
+      "startingResources": {
+        "intel": 1
+      },
+      "responsibilities": [
+        "Donner les ordres",
+        "Choisir les priorites",
+        "Valider tir, plongee d'urgence et rupture de silence"
+      ],
+      "actions": [
+        "issue-order",
+        "authorize-fire",
+        "emergency-dive"
+      ]
     },
     {
       "id": "helmsman",
       "name": "Pilote",
       "startingResources": {},
-      "responsibilities": ["Maintenir le cap", "Changer de profondeur", "Executer les manoeuvres"],
-      "actions": ["change-depth", "change-heading", "evade"]
+      "responsibilities": [
+        "Maintenir le cap",
+        "Changer de profondeur",
+        "Executer les manoeuvres"
+      ],
+      "actions": [
+        "change-depth",
+        "change-heading",
+        "evade"
+      ]
     },
     {
       "id": "engineer",
       "name": "Machiniste",
       "startingResources": {},
-      "responsibilities": ["Gerer batteries, moteurs et reparations", "Reduire le bruit", "Repartir l'energie"],
-      "actions": ["repair-system", "reroute-power", "quiet-engines"]
+      "responsibilities": [
+        "Gerer batteries, moteurs et reparations",
+        "Reduire le bruit",
+        "Repartir l'energie"
+      ],
+      "actions": [
+        "repair-system",
+        "reroute-power",
+        "quiet-engines"
+      ]
     },
     {
       "id": "sonar",
       "name": "Operateur sonar",
-      "startingResources": { "intel": 1 },
-      "responsibilities": ["Ecouter les contacts", "Interpreter les bruits", "Signaler distance et direction probables"],
-      "actions": ["sonar-sweep", "classify-contact", "listen-silently"]
+      "startingResources": {
+        "intel": 1
+      },
+      "responsibilities": [
+        "Ecouter les contacts",
+        "Interpreter les bruits",
+        "Signaler distance et direction probables"
+      ],
+      "actions": [
+        "sonar-sweep",
+        "classify-contact",
+        "listen-silently"
+      ]
     },
     {
       "id": "weapons",
       "name": "Officier torpilles",
-      "startingResources": { "solution": 0 },
-      "responsibilities": ["Armer les torpilles", "Calculer une solution de tir", "Tirer quand le capitaine autorise"],
-      "actions": ["load-torpedo", "compute-solution", "fire-torpedo"]
+      "startingResources": {
+        "solution": 0
+      },
+      "responsibilities": [
+        "Armer les torpilles",
+        "Calculer une solution de tir",
+        "Tirer quand le capitaine autorise"
+      ],
+      "actions": [
+        "load-torpedo",
+        "compute-solution",
+        "fire-torpedo"
+      ]
     },
     {
       "id": "radio",
       "name": "Radio",
-      "startingResources": { "intel": 1 },
-      "responsibilities": ["Recevoir les ordres", "Decoder les messages", "Risquer une emission radio"],
-      "actions": ["decode-message", "send-burst", "intercept"]
+      "startingResources": {
+        "intel": 1
+      },
+      "responsibilities": [
+        "Recevoir les ordres",
+        "Decoder les messages",
+        "Risquer une emission radio"
+      ],
+      "actions": [
+        "decode-message",
+        "send-burst",
+        "intercept"
+      ]
     }
   ],
   "mechanics": [
@@ -164,19 +392,58 @@
       "name": "Coordination d'equipage",
       "family": "coordination",
       "summary": "Un role emet un ordre ou une information qui devient visible a l'equipe selon une politique de visibilite.",
-      "phases": ["*"],
-      "inputs": [
-        { "id": "actorId", "type": "participant", "source": "actor-or-bound-device" },
-        { "id": "message", "type": "text" },
-        { "id": "visibility", "type": "enum", "choices": ["team", "private", "dashboard"] }
+      "phases": [
+        "*"
       ],
-      "resolution": { "type": "broadcastMessage", "mode": "immediate" },
-      "visibility": { "dashboard": "full", "team": "message-only" },
+      "inputs": [
+        {
+          "id": "actorId",
+          "type": "participant",
+          "source": "actor-or-bound-device"
+        },
+        {
+          "id": "message",
+          "type": "text"
+        },
+        {
+          "id": "visibility",
+          "type": "enum",
+          "choices": [
+            "team",
+            "private",
+            "dashboard"
+          ]
+        }
+      ],
+      "resolution": {
+        "type": "broadcastMessage",
+        "mode": "immediate"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "team": "message-only"
+      },
       "variants": [
-        { "id": "captain-authorization", "name": "Autorisation du capitaine", "setsStatus": "captainAuthorization" },
-        { "id": "radio-risk", "name": "Emission risquee", "addsRisk": "enemy-detection" },
-        { "id": "station-report", "name": "Compte rendu de poste", "visibility": "team" },
-        { "id": "silent-order", "name": "Ordre discret", "visibility": "private-or-dashboard" }
+        {
+          "id": "captain-authorization",
+          "name": "Autorisation du capitaine",
+          "setsStatus": "captainAuthorization"
+        },
+        {
+          "id": "radio-risk",
+          "name": "Emission risquee",
+          "addsRisk": "enemy-detection"
+        },
+        {
+          "id": "station-report",
+          "name": "Compte rendu de poste",
+          "visibility": "team"
+        },
+        {
+          "id": "silent-order",
+          "name": "Ordre discret",
+          "visibility": "private-or-dashboard"
+        }
       ]
     },
     {
@@ -184,20 +451,61 @@
       "name": "Action de poste",
       "family": "resource-action",
       "summary": "Un poste depense une ressource, modifie un statut ou produit une information exploitable par l'equipage.",
-      "phases": ["silent-running", "contact", "attack-run"],
-      "inputs": [
-        { "id": "actorId", "type": "participant", "source": "actor-or-bound-device" },
-        { "id": "cost", "type": "resource-bundle" },
-        { "id": "payload", "type": "structured" }
+      "phases": [
+        "silent-running",
+        "contact",
+        "attack-run"
       ],
-      "resolution": { "type": "applyCostThenEffect", "mode": "immediate" },
-      "visibility": { "dashboard": "full", "team": "effect-summary", "actor": "full" },
+      "inputs": [
+        {
+          "id": "actorId",
+          "type": "participant",
+          "source": "actor-or-bound-device"
+        },
+        {
+          "id": "cost",
+          "type": "resource-bundle"
+        },
+        {
+          "id": "payload",
+          "type": "structured"
+        }
+      ],
+      "resolution": {
+        "type": "applyCostThenEffect",
+        "mode": "immediate"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "team": "effect-summary",
+        "actor": "full"
+      },
       "variants": [
-        { "id": "sensor-check", "name": "Detection partielle", "effect": "hint" },
-        { "id": "armed-state", "name": "Etat arme", "effect": "setState" },
-        { "id": "power-routing", "name": "Repartition d'energie", "effect": "resource-delta" },
-        { "id": "damage-repair", "name": "Controle des avaries", "effect": "resource-delta" },
-        { "id": "evasion-state", "name": "Manoeuvre evasive", "effect": "setState" }
+        {
+          "id": "sensor-check",
+          "name": "Detection partielle",
+          "effect": "hint"
+        },
+        {
+          "id": "armed-state",
+          "name": "Etat arme",
+          "effect": "setState"
+        },
+        {
+          "id": "power-routing",
+          "name": "Repartition d'energie",
+          "effect": "resource-delta"
+        },
+        {
+          "id": "damage-repair",
+          "name": "Controle des avaries",
+          "effect": "resource-delta"
+        },
+        {
+          "id": "evasion-state",
+          "name": "Manoeuvre evasive",
+          "effect": "setState"
+        }
       ]
     },
     {
@@ -205,20 +513,58 @@
       "name": "Attaque contestee",
       "family": "contest",
       "summary": "Une attaque consomme une preparation et se resout contre une defense, une distance ou une evasion.",
-      "phases": ["attack-run"],
-      "inputs": [
-        { "id": "attackerId", "type": "participant", "source": "actor-or-bound-device" },
-        { "id": "targetId", "type": "participant-or-zone" },
-        { "id": "attackResource", "type": "resource-or-status" },
-        { "id": "defenseResource", "type": "resource-or-status" }
+      "phases": [
+        "attack-run"
       ],
-      "resolution": { "type": "opposedCheck", "compare": "attack-vs-defense", "onTie": "miss-or-facilitatorDecision" },
-      "visibility": { "dashboard": "full", "teams": "result-only" },
+      "inputs": [
+        {
+          "id": "attackerId",
+          "type": "participant",
+          "source": "actor-or-bound-device"
+        },
+        {
+          "id": "targetId",
+          "type": "participant-or-zone"
+        },
+        {
+          "id": "attackResource",
+          "type": "resource-or-status"
+        },
+        {
+          "id": "defenseResource",
+          "type": "resource-or-status"
+        }
+      ],
+      "resolution": {
+        "type": "opposedCheck",
+        "compare": "attack-vs-defense",
+        "onTie": "miss-or-facilitatorDecision"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "teams": "result-only"
+      },
       "variants": [
-        { "id": "hidden-target", "name": "Cible estimee", "targetPrecision": "low" },
-        { "id": "simultaneous", "name": "Tirs simultanes", "ordering": "simultaneous" },
-        { "id": "escort-counterattack", "name": "Riposte d'escorte", "onMiss": "increaseDamageRisk" },
-        { "id": "duel-fire", "name": "Duel de sous-marins", "ordering": "phase-or-simultaneous" }
+        {
+          "id": "hidden-target",
+          "name": "Cible estimee",
+          "targetPrecision": "low"
+        },
+        {
+          "id": "simultaneous",
+          "name": "Tirs simultanes",
+          "ordering": "simultaneous"
+        },
+        {
+          "id": "escort-counterattack",
+          "name": "Riposte d'escorte",
+          "onMiss": "increaseDamageRisk"
+        },
+        {
+          "id": "duel-fire",
+          "name": "Duel de sous-marins",
+          "ordering": "phase-or-simultaneous"
+        }
       ]
     }
   ],
@@ -229,7 +575,10 @@
       "phase": "*",
       "actor": "captain",
       "target": "team",
-      "effect": { "type": "message", "visibility": "team" },
+      "effect": {
+        "type": "message",
+        "visibility": "team"
+      },
       "mechanicId": "crew-command",
       "gesture": "hold-phone-up",
       "fallback": "manual-confirmation"
@@ -240,7 +589,11 @@
       "phase": "attack-run",
       "actor": "captain",
       "target": "team",
-      "effect": { "type": "setState", "state": "captainAuthorization", "value": true },
+      "effect": {
+        "type": "setState",
+        "state": "captainAuthorization",
+        "value": true
+      },
       "mechanicId": "crew-command",
       "gesture": "hold-phone-up",
       "fallback": "manual-confirmation"
@@ -251,7 +604,11 @@
       "phase": "*",
       "actor": "captain",
       "target": "team",
-      "effect": { "type": "setState", "state": "depth", "value": "deep" },
+      "effect": {
+        "type": "setState",
+        "state": "depth",
+        "value": "deep"
+      },
       "mechanicId": "crew-command",
       "gesture": "tilt-phone-forward",
       "fallback": "manual-confirmation"
@@ -262,8 +619,13 @@
       "phase": "silent-running",
       "actor": "helmsman",
       "target": "team",
-      "cost": { "battery": 1 },
-      "effect": { "type": "setState", "state": "depth" },
+      "cost": {
+        "battery": 1
+      },
+      "effect": {
+        "type": "setState",
+        "state": "depth"
+      },
       "mechanicId": "station-action",
       "gesture": "tilt-phone-forward",
       "fallback": "manual-confirmation"
@@ -274,8 +636,13 @@
       "phase": "silent-running",
       "actor": "helmsman",
       "target": "team",
-      "cost": { "battery": 1 },
-      "effect": { "type": "setState", "state": "heading" },
+      "cost": {
+        "battery": 1
+      },
+      "effect": {
+        "type": "setState",
+        "state": "heading"
+      },
       "mechanicId": "station-action",
       "gesture": "tilt-phone-side",
       "fallback": "manual-confirmation"
@@ -286,8 +653,14 @@
       "phase": "attack-run",
       "actor": "helmsman",
       "target": "team",
-      "cost": { "battery": 1 },
-      "effect": { "type": "setState", "state": "evasion", "value": "active" },
+      "cost": {
+        "battery": 1
+      },
+      "effect": {
+        "type": "setState",
+        "state": "evasion",
+        "value": "active"
+      },
       "mechanicId": "station-action",
       "gesture": "shake-phone",
       "fallback": "manual-confirmation"
@@ -298,8 +671,14 @@
       "phase": "silent-running",
       "actor": "engineer",
       "target": "team",
-      "cost": { "battery": 1 },
-      "effect": { "type": "adjustResource", "resource": "noise", "delta": -2 },
+      "cost": {
+        "battery": 1
+      },
+      "effect": {
+        "type": "adjustResource",
+        "resource": "noise",
+        "delta": -2
+      },
       "mechanicId": "station-action",
       "gesture": "phone-face-down",
       "fallback": "manual-confirmation"
@@ -310,7 +689,11 @@
       "phase": "damage-control",
       "actor": "engineer",
       "target": "team",
-      "effect": { "type": "adjustResource", "resource": "battery", "delta": 2 },
+      "effect": {
+        "type": "adjustResource",
+        "resource": "battery",
+        "delta": 2
+      },
       "mechanicId": "station-action",
       "gesture": "slide-resource-to-edge",
       "fallback": "manual-confirmation"
@@ -321,8 +704,14 @@
       "phase": "damage-control",
       "actor": "engineer",
       "target": "team",
-      "cost": { "battery": 1 },
-      "effect": { "type": "adjustResource", "resource": "hull", "delta": 1 },
+      "cost": {
+        "battery": 1
+      },
+      "effect": {
+        "type": "adjustResource",
+        "resource": "hull",
+        "delta": 1
+      },
       "mechanicId": "station-action",
       "gesture": "tap-and-hold",
       "fallback": "manual-confirmation"
@@ -333,8 +722,13 @@
       "phase": "contact",
       "actor": "sonar",
       "target": "zone",
-      "cost": { "battery": 1 },
-      "effect": { "type": "revealContactHint", "precision": "low" },
+      "cost": {
+        "battery": 1
+      },
+      "effect": {
+        "type": "revealContactHint",
+        "precision": "low"
+      },
       "mechanicId": "station-action",
       "gesture": "slow-phone-arc",
       "fallback": "manual-confirmation"
@@ -345,7 +739,10 @@
       "phase": "contact",
       "actor": "sonar",
       "target": "zone",
-      "effect": { "type": "revealContactHint", "precision": "medium" },
+      "effect": {
+        "type": "revealContactHint",
+        "precision": "medium"
+      },
       "mechanicId": "station-action",
       "gesture": "slow-phone-arc",
       "fallback": "manual-confirmation"
@@ -356,7 +753,11 @@
       "phase": "contact",
       "actor": "sonar",
       "target": "team",
-      "effect": { "type": "setState", "state": "contactQuality", "value": "passive-listening" },
+      "effect": {
+        "type": "setState",
+        "state": "contactQuality",
+        "value": "passive-listening"
+      },
       "mechanicId": "station-action",
       "gesture": "phone-face-down",
       "fallback": "manual-confirmation"
@@ -367,8 +768,14 @@
       "phase": "attack-run",
       "actor": "weapons",
       "target": "team",
-      "cost": { "torpedoes": 1 },
-      "effect": { "type": "setState", "state": "torpedoLoaded", "value": true },
+      "cost": {
+        "torpedoes": 1
+      },
+      "effect": {
+        "type": "setState",
+        "state": "torpedoLoaded",
+        "value": true
+      },
       "mechanicId": "station-action",
       "gesture": "slide-resource-to-edge",
       "fallback": "manual-confirmation"
@@ -379,7 +786,11 @@
       "phase": "attack-run",
       "actor": "weapons",
       "target": "enemy",
-      "effect": { "type": "adjustResource", "resource": "solution", "delta": 2 },
+      "effect": {
+        "type": "adjustResource",
+        "resource": "solution",
+        "delta": 2
+      },
       "mechanicId": "station-action",
       "gesture": "slow-phone-arc",
       "fallback": "manual-confirmation"
@@ -390,8 +801,15 @@
       "phase": "attack-run",
       "actor": "weapons",
       "target": "enemy",
-      "requires": ["torpedoLoaded", "captainAuthorization"],
-      "effect": { "type": "contestedAttack", "attackResource": "solution", "defenseResource": "evasion" },
+      "requires": [
+        "torpedoLoaded",
+        "captainAuthorization"
+      ],
+      "effect": {
+        "type": "contestedAttack",
+        "attackResource": "solution",
+        "defenseResource": "evasion"
+      },
       "mechanicId": "contested-attack",
       "gesture": "strike-phone",
       "fallback": "manual-confirmation"
@@ -402,7 +820,10 @@
       "phase": "briefing",
       "actor": "radio",
       "target": "team",
-      "effect": { "type": "revealContactHint", "precision": "mission" },
+      "effect": {
+        "type": "revealContactHint",
+        "precision": "mission"
+      },
       "mechanicId": "station-action",
       "gesture": "tap-and-hold",
       "fallback": "manual-confirmation"
@@ -413,7 +834,10 @@
       "phase": "contact",
       "actor": "radio",
       "target": "dashboard",
-      "effect": { "type": "message", "visibility": "dashboard" },
+      "effect": {
+        "type": "message",
+        "visibility": "dashboard"
+      },
       "mechanicId": "crew-command",
       "gesture": "hold-phone-up",
       "fallback": "manual-confirmation"
@@ -424,7 +848,10 @@
       "phase": "contact",
       "actor": "radio",
       "target": "zone",
-      "effect": { "type": "revealContactHint", "precision": "low" },
+      "effect": {
+        "type": "revealContactHint",
+        "precision": "low"
+      },
       "mechanicId": "station-action",
       "gesture": "slow-phone-arc",
       "fallback": "manual-confirmation"
@@ -436,7 +863,12 @@
       "name": "Mer ouverte",
       "fictionalType": "sea-zone",
       "presenceMethod": "fictional-map",
-      "effects": [{ "type": "unlockPhase", "phase": "silent-running" }]
+      "effects": [
+        {
+          "type": "unlockPhase",
+          "phase": "silent-running"
+        }
+      ]
     },
     {
       "id": "convoy-route",
@@ -444,8 +876,15 @@
       "fictionalType": "target-zone",
       "presenceMethod": "fictional-map",
       "effects": [
-        { "type": "unlockPhase", "phase": "contact" },
-        { "type": "increaseRisk", "risk": "escort-detection", "amount": 1 }
+        {
+          "type": "unlockPhase",
+          "phase": "contact"
+        },
+        {
+          "type": "increaseRisk",
+          "risk": "escort-detection",
+          "amount": 1
+        }
       ]
     },
     {
@@ -453,7 +892,12 @@
       "name": "Champ de grenades sous-marines",
       "fictionalType": "danger-zone",
       "presenceMethod": "fictional-map",
-      "effects": [{ "type": "periodicDamageCheck", "resource": "hull" }]
+      "effects": [
+        {
+          "type": "periodicDamageCheck",
+          "resource": "hull"
+        }
+      ]
     }
   ],
   "victoryConditions": [

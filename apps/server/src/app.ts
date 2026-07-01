@@ -138,6 +138,11 @@ const zoneSchema = z.object({
 const uiThemeSchema = z.object({
   template: z.string().min(1).default("tabletop"),
   tone: z.string().min(1).optional(),
+  fonts: z.object({
+    display: z.string().optional(),
+    body: z.string().optional(),
+    numeric: z.string().optional()
+  }).default({}),
   colors: z.object({
     background: z.string().optional(),
     panel: z.string().optional(),
@@ -165,6 +170,23 @@ const soundCueSchema = z.object({
   url: z.string().optional(),
   visibility: z.enum(["dashboard", "participants", "all"]).default("all")
 });
+
+function assetsDir(): string {
+  return path.resolve(process.cwd(), "../../assets");
+}
+
+function assetReferenceToUrl(reference: string | undefined, kind: "icon" | "sound"): string {
+  if (!reference) return "";
+  const folder = kind === "icon" ? "icons" : "sounds";
+  const extension = kind === "icon" ? ".svg" : ".wav";
+  if (reference.startsWith(`/${folder}/`)) return `/assets${reference}`;
+  if (reference.startsWith(`/assets/${folder}/`)) return reference;
+  if (reference.startsWith(`${kind}:`)) {
+    const name = reference.slice(kind.length + 1).replace(/[^a-z0-9-]/gi, "");
+    return name ? `/assets/${folder}/${name}${extension}` : "";
+  }
+  return "";
+}
 
 const rulesSectionSchema = z.object({
   id: z.string().min(1),
@@ -3196,16 +3218,16 @@ function renderIndex(): string {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ludovive Demo</title>
   <style>
-    :root { color-scheme: dark; --bg: #101214; --panel: #181b1f; --surface: #111417; --field: #0d0f11; --line: #343a42; --ink: #f2f4f5; --muted: #aab2bb; --accent: #b94b42; --blue: #315875; --green: #3f6b4d; --warning: #b88a3b; --radius: 8px; --shadow: 0 18px 55px rgba(0,0,0,.32); }
+    :root { color-scheme: dark; --bg: #101214; --panel: #181b1f; --surface: #111417; --field: #0d0f11; --line: #343a42; --ink: #f2f4f5; --muted: #aab2bb; --accent: #b94b42; --blue: #315875; --green: #3f6b4d; --warning: #b88a3b; --radius: 8px; --shadow: 0 18px 55px rgba(0,0,0,.32); --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; --font-display: var(--font-body); --font-numeric: ui-monospace, "SFMono-Regular", Consolas, monospace; }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; background:
+    body { margin: 0; font-family: var(--font-body); background:
       linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 34rem),
       radial-gradient(circle at 82% 2%, color-mix(in srgb, var(--blue) 16%, transparent), transparent 30rem),
       linear-gradient(180deg, color-mix(in srgb, var(--bg) 88%, black), var(--bg)); color: var(--ink); }
     body:before { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .18; background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 28px 28px; mask-image: linear-gradient(to bottom, black, transparent 72%); }
     main { position: relative; width: min(1460px, 100%); margin: 0 auto; padding: 20px; }
-    h1 { margin: 0; font-size: 30px; font-weight: 800; letter-spacing: 0; }
-    h2 { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 12px; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: color-mix(in srgb, var(--ink) 78%, var(--muted)); }
+    h1 { margin: 0; font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: 0; }
+    h2 { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 12px; font-family: var(--font-display); font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: color-mix(in srgb, var(--ink) 78%, var(--muted)); }
     h2:after { content: ""; height: 1px; flex: 1; background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 55%, var(--line)), transparent); }
     h3 { margin: 14px 0 8px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
     section { border: 1px solid color-mix(in srgb, var(--line) 82%, white); border-radius: var(--radius); padding: 14px; background: linear-gradient(180deg, color-mix(in srgb, var(--panel) 94%, white), color-mix(in srgb, var(--panel) 92%, black)); min-width: 0; box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, var(--shadow); }
@@ -3243,7 +3265,7 @@ function renderIndex(): string {
     .statTile strong { font-size: 26px; line-height: 1; }
     .resourceWallet { display: grid; grid-template-columns: repeat(auto-fit, minmax(108px, 1fr)); gap: 8px; margin-top: 8px; }
     .resourceChip { display: grid; grid-template-columns: 34px 1fr; align-items: center; gap: 8px; border: 1px solid color-mix(in srgb, var(--line) 78%, white); border-radius: var(--radius); padding: 8px; min-width: 0; background: linear-gradient(180deg, color-mix(in srgb, var(--field) 92%, white), var(--field)); }
-    .resourceChip .resourceValue { font-size: 20px; font-weight: 700; line-height: 1; }
+    .resourceChip .resourceValue { font-family: var(--font-numeric); font-size: 20px; font-weight: 700; line-height: 1; }
     .resourceChip .resourceName { color: var(--muted); font-size: 12px; line-height: 1.2; overflow-wrap: anywhere; }
     .actionHeader { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
     .actionHeader strong { margin: 0; }
@@ -3280,7 +3302,9 @@ function renderIndex(): string {
     .resourcePushGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px; margin-top: 8px; }
     .resourcePushTile { border: 1px solid #3c454f; border-radius: 8px; padding: 8px; background: #111417; }
     .resourcePushTile strong { display: flex; align-items: center; gap: 6px; min-height: 34px; font-size: 13px; }
-    .resourceIcon, .actionIcon { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 7px; background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 34%, #0d0f11), color-mix(in srgb, var(--field) 92%, black)); color: var(--ink); font-weight: 900; font-size: 10px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); box-shadow: 0 1px 0 rgba(255,255,255,.06) inset; }
+    .resourceIcon, .actionIcon { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 7px; background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 34%, #0d0f11), color-mix(in srgb, var(--field) 92%, black)); color: var(--ink); font-weight: 900; font-size: 10px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); box-shadow: 0 1px 0 rgba(255,255,255,.06) inset; overflow: hidden; }
+    .resourceIcon img, .actionIcon img { width: 22px; height: 22px; display: block; object-fit: contain; }
+    .soundCueButton { width: auto; min-height: 30px; margin: 5px 5px 0 0; padding: 5px 8px; font-size: 12px; }
     .resourcePushControls { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
     .resourcePushControls button { min-height: 34px; margin: 0; padding: 6px; }
     .contactTarget { display: block; border: 1px dashed color-mix(in srgb, var(--accent) 45%, var(--line)); border-radius: 8px; padding: 9px; margin: 8px 0; background: color-mix(in srgb, var(--accent) 10%, transparent); }
@@ -3312,10 +3336,10 @@ function renderIndex(): string {
           <h2>Session</h2>
         <label for="module">Jeu / module</label>
         <select id="module"></select>
-        <div class="muted">Choisit le jeu a faire tourner. La demo prechargee sert seulement a tester vite une table Putsch.</div>
+        <div class="muted">Choisit le jeu a faire tourner. La demo prechargee sert seulement a tester vite une table Banana Republic.</div>
           <div class="actions">
             <button id="create">Creer session vide</button>
-            <button id="seed" class="success">Demo Putsch prechargee</button>
+            <button id="seed" class="success">Demo Banana Republic</button>
             <button id="refresh" class="secondary">Rafraichir</button>
           </div>
         <label for="code">Code session</label>
@@ -3405,7 +3429,7 @@ function renderIndex(): string {
           <label for="phaseDuration">Duree phase (secondes)</label>
           <input id="phaseDuration" type="number" min="1" value="300" />
           <button id="setTimer" class="secondary">Regler minuteur</button>
-          <label for="coupCommitmentDuration">Duree engagements putsch (secondes)</label>
+          <label for="coupCommitmentDuration">Duree engagements coup d'Etat (secondes)</label>
           <input id="coupCommitmentDuration" type="number" min="1" value="120" />
           <button id="setCoupCommitmentDuration" class="secondary">Regler engagements</button>
           <button id="advance" class="secondary">Phase suivante</button>
@@ -3492,7 +3516,27 @@ function renderIndex(): string {
     function dashboardResourceLabel(session, resourceId) {
       return session.module.resources.find((resource) => resource.id === resourceId)?.name || resourceId;
     }
-    function dashboardResourceIcon(resourceId) {
+    function assetUrl(reference, kind) {
+      if (!reference) return "";
+      const folder = kind === "icon" ? "icons" : "sounds";
+      const extension = kind === "icon" ? ".svg" : ".wav";
+      if (reference.startsWith("/assets/" + folder + "/")) return reference;
+      if (reference.startsWith(kind + ":")) {
+        const name = reference.slice(kind.length + 1).replace(/[^a-z0-9-]/gi, "");
+        return name ? "/assets/" + folder + "/" + name + extension : "";
+      }
+      return "";
+    }
+    function iconMarkup(value) {
+      const url = assetUrl(value, "icon");
+      return url ? '<img src="' + url + '" alt="" loading="lazy" />' : value;
+    }
+    function soundUrl(cue) {
+      return assetUrl(cue?.url || "", "sound");
+    }
+    function dashboardResourceIcon(session, resourceId) {
+      const themed = themeIcon(session, resourceId);
+      if (themed) return iconMarkup(themed);
       const icons = {
         money: "$",
         copperShares: "Cu",
@@ -3518,20 +3562,22 @@ function renderIndex(): string {
         torpedoes: "Tor",
         intel: "Int"
       };
-      return icons[resourceId] || resourceId.slice(0, 2).toUpperCase();
+      return iconMarkup(icons[resourceId] || resourceId.slice(0, 2).toUpperCase());
     }
     function dashboardComponentLabel(session, componentId) {
       return (session.module.components || []).find((component) => component.id === componentId)?.name || componentId;
     }
     function applyTheme(theme) {
       const colors = theme?.colors || {};
+      const fonts = theme?.fonts || {};
       const root = document.documentElement;
       const map = { background: "--bg", panel: "--panel", ink: "--ink", muted: "--muted", accent: "--accent", secondary: "--blue", success: "--green", warning: "--warning" };
       Object.entries(map).forEach(([key, cssVar]) => { if (colors[key]) root.style.setProperty(cssVar, colors[key]); });
+      const fontMap = { body: "--font-body", display: "--font-display", numeric: "--font-numeric" };
+      Object.entries(fontMap).forEach(([key, cssVar]) => { if (fonts[key]) root.style.setProperty(cssVar, fonts[key]); });
     }
     function themeIcon(session, key) {
-      const icon = (session.module.uiTheme?.icons || {})[key] || "";
-      return /^[\x20-\x7E]{1,4}$/.test(icon) ? icon : "";
+      return (session.module.uiTheme?.icons || {})[key] || "";
     }
     function actionIcon(session, action) {
       const key = action.mechanicFamily || action.id;
@@ -3547,7 +3593,7 @@ function renderIndex(): string {
         "resource-action": "SYS"
       };
       const themed = themeIcon(session, key);
-      return /^[\x20-\x7E]{1,4}$/.test(themed) ? themed : fallback[key] || fallback[action.gesture] || "ACT";
+      return iconMarkup(themed || fallback[key] || fallback[action.gesture] || "ACT");
     }
     function gestureMeta(gesture) {
       const gestures = {
@@ -3583,8 +3629,11 @@ function renderIndex(): string {
     }
     function renderThemePanel(session) {
       const theme = session.module.uiTheme || {};
-      const cues = (session.module.soundboard || []).map((cue) => '<div class="muted">' + cue.name + ' - ' + cue.channel + (cue.phase ? ' / phase ' + cue.phase : '') + (cue.event ? ' / ' + cue.event : '') + '</div>').join("");
-      return '<div class="item themeBanner"><strong><span class="actionIcon">' + (themeIcon(session, "game") || "LV") + '</span> Template ' + (theme.template || "tabletop") + '</strong><div>' + (theme.tone || "Style de table") + '</div><div class="muted">Couleurs, icones et libelles viennent du module importe.</div>' + cues + '</div>';
+      const cues = (session.module.soundboard || []).map((cue) => {
+        const play = soundUrl(cue) ? '<button type="button" class="secondary soundCueButton" data-sound-url="' + soundUrl(cue) + '">Ecouter</button>' : "";
+        return '<div class="muted">' + cue.name + ' - ' + cue.channel + (cue.phase ? ' / phase ' + cue.phase : '') + (cue.event ? ' / ' + cue.event : '') + '</div>' + play;
+      }).join("");
+      return '<div class="item themeBanner"><strong><span class="actionIcon">' + iconMarkup(themeIcon(session, "game") || "LV") + '</span> Template ' + (theme.template || "tabletop") + '</strong><div>' + (theme.tone || "Style de table") + '</div><div class="muted">Couleurs, icones, sons et polices viennent du module importe.</div>' + cues + '</div>';
     }
     function formatTurnPhase(turnPhase, fallbackClock) {
       if (!turnPhase) return formatClock(fallbackClock);
@@ -3757,7 +3806,7 @@ function renderIndex(): string {
       }).join("") || '<div class="muted">Aucun score declare pour ce module</div>';
     }
     function dashboardResourceChip(session, resourceId, value) {
-      return '<div class="resourceChip"><span class="resourceIcon">' + dashboardResourceIcon(resourceId) + '</span><div><div class="resourceValue">' + value + '</div><div class="resourceName">' + dashboardResourceLabel(session, resourceId) + '</div></div></div>';
+      return '<div class="resourceChip"><span class="resourceIcon">' + dashboardResourceIcon(session, resourceId) + '</span><div><div class="resourceValue">' + value + '</div><div class="resourceName">' + dashboardResourceLabel(session, resourceId) + '</div></div></div>';
     }
     function renderDashboardResourceWallet(session, resources) {
       const entries = Object.entries(resources || {}).filter(([, value]) => Number(value) !== 0);
@@ -3833,7 +3882,7 @@ function renderIndex(): string {
       }
       if (input.type === "resource-bundle") {
         const resources = input.allowed || session.module.resources.map((resource) => resource.id);
-        return '<div class="fallbackCue">Secours dashboard: a la table, le joueur pousse les jetons depuis son telephone.</div><div class="resourcePushGrid">' + resources.map((resourceId) => '<div class="resourcePushTile"><strong><span class="resourceIcon">' + dashboardResourceIcon(resourceId) + '</span>' + dashboardResourceLabel(session, resourceId) + '</strong><label>Quantite</label><input type="number" min="0" value="0" data-live-input="' + input.id + '" data-resource-id="' + resourceId + '" /></div>').join("") + '</div>';
+        return '<div class="fallbackCue">Secours dashboard: a la table, le joueur pousse les jetons depuis son telephone.</div><div class="resourcePushGrid">' + resources.map((resourceId) => '<div class="resourcePushTile"><strong><span class="resourceIcon">' + dashboardResourceIcon(session, resourceId) + '</span>' + dashboardResourceLabel(session, resourceId) + '</strong><label>Quantite</label><input type="number" min="0" value="0" data-live-input="' + input.id + '" data-resource-id="' + resourceId + '" /></div>').join("") + '</div>';
       }
       return '<label>' + label + '</label><input data-live-input="' + input.id + '" placeholder="' + label + '" />';
     }
@@ -3986,6 +4035,10 @@ function renderIndex(): string {
       byId("state").textContent = JSON.stringify(session, null, 2);
       syncSelectors(session);
       updateInjectionControls(session);
+    }
+    async function playSoundCue(url) {
+      const audio = new Audio(url);
+      await audio.play();
     }
     function syncSelectors(session) {
       const participantOptions = session.participants.map((participant) => option(participant.id, participant.name)).join("");
@@ -4156,6 +4209,11 @@ function renderIndex(): string {
       await api("/sessions/" + code + "/phases/advance", { method: "POST", body: JSON.stringify({}) });
       await refresh();
     }));
+    byId("themePanel").addEventListener("click", (event) => run(async () => {
+      const button = event.target.closest("[data-sound-url]");
+      if (!button) return;
+      await playSoundCue(button.dataset.soundUrl);
+    }));
     byId("refresh").addEventListener("click", () => run(refresh));
     byId("copyParticipantLink").addEventListener("click", () => run(async () => {
       const link = participantUrl();
@@ -4185,16 +4243,16 @@ function renderParticipantApp(): string {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ludovive Participant</title>
   <style>
-    :root { color-scheme: dark; --bg: #101214; --panel: #181b1f; --surface: #111417; --field: #0d0f11; --line: #343a42; --ink: #f2f4f5; --muted: #aab2bb; --accent: #b94b42; --green: #3f6b4d; --blue: #315875; --warning: #b88a3b; --radius: 8px; --shadow: 0 16px 42px rgba(0,0,0,.32); }
+    :root { color-scheme: dark; --bg: #101214; --panel: #181b1f; --surface: #111417; --field: #0d0f11; --line: #343a42; --ink: #f2f4f5; --muted: #aab2bb; --accent: #b94b42; --green: #3f6b4d; --blue: #315875; --warning: #b88a3b; --radius: 8px; --shadow: 0 16px 42px rgba(0,0,0,.32); --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; --font-display: var(--font-body); --font-numeric: ui-monospace, "SFMono-Regular", Consolas, monospace; }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; background:
+    body { margin: 0; font-family: var(--font-body); background:
       radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 19rem),
       radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--blue) 16%, transparent), transparent 20rem),
       var(--bg); color: var(--ink); }
     body:before { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .16; background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 26px 26px; mask-image: linear-gradient(to bottom, black, transparent 70%); }
     main { position: relative; width: min(560px, 100%); margin: 0 auto; padding: 14px; }
-    h1 { margin: 0 0 4px; font-size: 27px; font-weight: 850; letter-spacing: 0; }
-    h2 { margin: 0 0 12px; font-size: 14px; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; color: color-mix(in srgb, var(--ink) 78%, var(--muted)); }
+    h1 { margin: 0 0 4px; font-family: var(--font-display); font-size: 27px; font-weight: 850; letter-spacing: 0; }
+    h2 { margin: 0 0 12px; font-family: var(--font-display); font-size: 14px; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; color: color-mix(in srgb, var(--ink) 78%, var(--muted)); }
     h3 { margin: 16px 0 8px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
     section { border: 1px solid color-mix(in srgb, var(--line) 82%, white); border-radius: var(--radius); padding: 14px; background: linear-gradient(180deg, color-mix(in srgb, var(--panel) 94%, white), color-mix(in srgb, var(--panel) 92%, black)); margin: 14px 0; box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, var(--shadow); }
     label { display: block; margin: 10px 0 5px; color: var(--muted); font-size: 13px; }
@@ -4221,7 +4279,7 @@ function renderParticipantApp(): string {
     .actionMeta { flex: 0 0 auto; color: var(--muted); font-size: 11px; border: 1px solid #59616b; border-radius: 999px; padding: 4px 7px; text-transform: uppercase; letter-spacing: .04em; }
     .resourceWallet { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
     .resourceChip { display: grid; grid-template-columns: 38px 1fr; align-items: center; gap: 8px; border: 1px solid color-mix(in srgb, var(--line) 78%, white); border-radius: var(--radius); padding: 9px; min-width: 0; background: linear-gradient(180deg, color-mix(in srgb, var(--field) 92%, white), var(--field)); }
-    .resourceChip .resourceValue { font-size: 22px; font-weight: 700; line-height: 1; }
+    .resourceChip .resourceValue { font-family: var(--font-numeric); font-size: 22px; font-weight: 700; line-height: 1; }
     .resourceChip .resourceName { color: var(--muted); font-size: 12px; line-height: 1.2; overflow-wrap: anywhere; }
     .resolutionFocus { border-color: color-mix(in srgb, var(--warning) 55%, var(--line)); }
     .themeStrip { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 16%, var(--panel)), var(--panel)); }
@@ -4251,7 +4309,9 @@ function renderParticipantApp(): string {
     .resourcePushGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 9px; }
     .resourcePushTile { border: 1px solid #3c454f; border-radius: 8px; padding: 9px; background: #111417; min-width: 0; }
     .resourcePushTile strong { display: flex; align-items: center; gap: 7px; min-height: 36px; font-size: 13px; line-height: 1.2; }
-    .resourceIcon, .actionIcon { flex: 0 0 auto; display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 7px; background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 34%, #0d0f11), color-mix(in srgb, var(--field) 92%, black)); color: var(--ink); font-weight: 900; font-size: 10px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); box-shadow: 0 1px 0 rgba(255,255,255,.06) inset; }
+    .resourceIcon, .actionIcon { flex: 0 0 auto; display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 7px; background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 34%, #0d0f11), color-mix(in srgb, var(--field) 92%, black)); color: var(--ink); font-weight: 900; font-size: 10px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); box-shadow: 0 1px 0 rgba(255,255,255,.06) inset; overflow: hidden; }
+    .resourceIcon img, .actionIcon img { width: 23px; height: 23px; display: block; object-fit: contain; }
+    .soundCueButton { width: auto; min-height: 30px; margin: 5px 5px 0 0; padding: 5px 8px; font-size: 12px; }
     .resourceAmount { font-size: 22px; font-weight: 700; margin-top: 4px; }
     .resourcePushControls { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
     .resourcePushControls button { min-height: 38px; margin: 0; padding: 7px; }
@@ -4384,7 +4444,27 @@ function renderParticipantApp(): string {
     function resourceLabel(model, resourceId) {
       return model.module.resources.find((resource) => resource.id === resourceId)?.name || resourceId;
     }
-    function resourceIcon(resourceId) {
+    function assetUrl(reference, kind) {
+      if (!reference) return "";
+      const folder = kind === "icon" ? "icons" : "sounds";
+      const extension = kind === "icon" ? ".svg" : ".wav";
+      if (reference.startsWith("/assets/" + folder + "/")) return reference;
+      if (reference.startsWith(kind + ":")) {
+        const name = reference.slice(kind.length + 1).replace(/[^a-z0-9-]/gi, "");
+        return name ? "/assets/" + folder + "/" + name + extension : "";
+      }
+      return "";
+    }
+    function iconMarkup(value) {
+      const url = assetUrl(value, "icon");
+      return url ? '<img src="' + url + '" alt="" loading="lazy" />' : value;
+    }
+    function soundUrl(cue) {
+      return assetUrl(cue?.url || "", "sound");
+    }
+    function resourceIcon(model, resourceId) {
+      const themed = themeIcon(model, resourceId);
+      if (themed) return iconMarkup(themed);
       const icons = {
         money: "$",
         copperShares: "Cu",
@@ -4410,17 +4490,19 @@ function renderParticipantApp(): string {
         torpedoes: "Tor",
         intel: "Int"
       };
-      return icons[resourceId] || resourceId.slice(0, 2).toUpperCase();
+      return iconMarkup(icons[resourceId] || resourceId.slice(0, 2).toUpperCase());
     }
     function applyTheme(theme) {
       const colors = theme?.colors || {};
+      const fonts = theme?.fonts || {};
       const root = document.documentElement;
       const map = { background: "--bg", panel: "--panel", ink: "--ink", muted: "--muted", accent: "--accent", secondary: "--blue", success: "--green", warning: "--warning" };
       Object.entries(map).forEach(([key, cssVar]) => { if (colors[key]) root.style.setProperty(cssVar, colors[key]); });
+      const fontMap = { body: "--font-body", display: "--font-display", numeric: "--font-numeric" };
+      Object.entries(fontMap).forEach(([key, cssVar]) => { if (fonts[key]) root.style.setProperty(cssVar, fonts[key]); });
     }
     function themeIcon(model, key) {
-      const icon = (model.module.uiTheme?.icons || {})[key] || "";
-      return /^[\x20-\x7E]{1,4}$/.test(icon) ? icon : "";
+      return (model.module.uiTheme?.icons || {})[key] || "";
     }
     function actionIcon(model, action) {
       const key = action.mechanicFamily || action.id;
@@ -4436,7 +4518,7 @@ function renderParticipantApp(): string {
         "resource-action": "SYS"
       };
       const themed = themeIcon(model, key);
-      return /^[\x20-\x7E]{1,4}$/.test(themed) ? themed : fallback[key] || "ACT";
+      return iconMarkup(themed || fallback[key] || "ACT");
     }
     function gestureMeta(gesture) {
       const gestures = {
@@ -4468,7 +4550,11 @@ function renderParticipantApp(): string {
     }
     function renderThemeStrip(model) {
       const theme = model.module.uiTheme || {};
-      return '<div class="item themeStrip"><strong><span class="actionIcon">' + (themeIcon(model, "game") || "LV") + '</span> ' + model.module.name + '</strong><div class="muted">' + (theme.tone || "Partie en cours") + '</div></div>';
+      const cues = (model.module.soundboard || []).slice(0, 3).map((cue) => {
+        const play = soundUrl(cue) ? '<button type="button" class="secondary soundCueButton" data-sound-url="' + soundUrl(cue) + '">Ecouter</button>' : "";
+        return '<div class="muted">' + cue.name + '</div>' + play;
+      }).join("");
+      return '<div class="item themeStrip"><strong><span class="actionIcon">' + iconMarkup(themeIcon(model, "game") || "LV") + '</span> ' + model.module.name + '</strong><div class="muted">' + (theme.tone || "Partie en cours") + '</div>' + cues + '</div>';
     }
     function formatStatusValue(value) {
       if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return String(value);
@@ -4542,7 +4628,7 @@ function renderParticipantApp(): string {
     }
     function renderResourceWallet(model, resources) {
       const entries = Object.entries(resources || {}).filter(([, value]) => Number(value) !== 0);
-      return entries.length ? '<div class="resourceWallet">' + entries.map(([key, value]) => '<div class="resourceChip"><span class="resourceIcon">' + resourceIcon(key) + '</span><div><div class="resourceValue">' + value + '</div><div class="resourceName">' + resourceLabel(model, key) + '</div></div></div>').join("") + '</div>' : '<div class="muted">Aucune ressource</div>';
+      return entries.length ? '<div class="resourceWallet">' + entries.map(([key, value]) => '<div class="resourceChip"><span class="resourceIcon">' + resourceIcon(model, key) + '</span><div><div class="resourceValue">' + value + '</div><div class="resourceName">' + resourceLabel(model, key) + '</div></div></div>').join("") + '</div>' : '<div class="muted">Aucune ressource</div>';
     }
     function formatDeadline(deadline) {
       if (!deadline?.endsAt) return "temps libre";
@@ -4601,7 +4687,7 @@ function renderParticipantApp(): string {
         const resources = input.allowed || Object.keys(model.participant.resources || {});
         return '<div class="fallbackCue">Pousse les jetons au pouce vers le joueur en contact. Le bouton final reste le secours tactile.</div><div class="resourcePushGrid">' + resources.map((resourceId) => {
           const available = (model.participant.resources || {})[resourceId] ?? 0;
-          return '<div class="resourcePushTile" data-resource-tile="' + resourceId + '"><strong><span class="resourceIcon">' + resourceIcon(resourceId) + '</span>' + resourceLabel(model, resourceId) + '</strong><div class="muted">dispo ' + available + '</div><div class="resourceAmount" data-resource-amount="' + resourceId + '">0</div><input type="number" min="0" max="' + available + '" value="0" data-action-input="' + input.id + '" data-resource-id="' + resourceId + '" /><div class="resourcePushControls"><button type="button" class="secondary pushResource" data-resource-push="' + resourceId + '" data-step="1">+1</button><button type="button" class="secondary pushResource" data-resource-push="' + resourceId + '" data-step="5">+5</button><button type="button" class="neutral pushResource" data-resource-push="' + resourceId + '" data-step="-1">-1</button><button type="button" class="neutral pushResource" data-resource-push="' + resourceId + '" data-step="0">0</button></div></div>';
+          return '<div class="resourcePushTile" data-resource-tile="' + resourceId + '"><strong><span class="resourceIcon">' + resourceIcon(model, resourceId) + '</span>' + resourceLabel(model, resourceId) + '</strong><div class="muted">dispo ' + available + '</div><div class="resourceAmount" data-resource-amount="' + resourceId + '">0</div><input type="number" min="0" max="' + available + '" value="0" data-action-input="' + input.id + '" data-resource-id="' + resourceId + '" /><div class="resourcePushControls"><button type="button" class="secondary pushResource" data-resource-push="' + resourceId + '" data-step="1">+1</button><button type="button" class="secondary pushResource" data-resource-push="' + resourceId + '" data-step="5">+5</button><button type="button" class="neutral pushResource" data-resource-push="' + resourceId + '" data-step="-1">-1</button><button type="button" class="neutral pushResource" data-resource-push="' + resourceId + '" data-step="0">0</button></div></div>';
         }).join("") + '</div>';
       }
       return '<label>' + label + '</label><input data-action-input="' + input.id + '" placeholder="' + label + '" />';
@@ -4704,6 +4790,10 @@ function renderParticipantApp(): string {
       byId("pendingResolutions").innerHTML = (model.pendingResolutions || []).map((resolution) => renderPendingResolution(model, resolution)).join("") || '<div class="muted">Rien a traiter</div>';
       byId("actions").innerHTML = (model.availableActions || []).filter((action) => action.available).map((action) => renderActionCard(model, action)).join("") || '<div class="muted">Aucune action disponible dans cette phase</div>';
     }
+    async function playSoundCue(url) {
+      const audio = new Audio(url);
+      await audio.play();
+    }
     byId("loadSession").addEventListener("click", () => run(loadSession));
     byId("join").addEventListener("click", () => run(async () => {
       const selectedRoleId = byId("roleId").value;
@@ -4736,6 +4826,11 @@ function renderParticipantApp(): string {
       }) });
       await refreshDevice();
     }));
+    byId("themeStrip").addEventListener("click", (event) => run(async () => {
+      const button = event.target.closest("[data-sound-url]");
+      if (!button) return;
+      await playSoundCue(button.dataset.soundUrl);
+    }));
     byId("leave").addEventListener("click", () => {
       forgetDevice();
       location.reload();
@@ -4763,6 +4858,24 @@ function renderParticipantApp(): string {
 
 await loadModules();
 await loadPersistedSessions();
+
+app.get("/assets/*", async (request, reply) => {
+  const params = request.params as { "*": string };
+  const relativePath = (params["*"] || "").replace(/\\/g, "/");
+  const root = assetsDir();
+  const resolved = path.resolve(root, relativePath);
+  if (!resolved.startsWith(root + path.sep)) {
+    return reply.code(404).send({ error: "Asset not found" });
+  }
+  try {
+    const content = await readFile(resolved);
+    const extension = path.extname(resolved).toLowerCase();
+    const contentType = extension === ".svg" ? "image/svg+xml" : extension === ".wav" ? "audio/wav" : "application/octet-stream";
+    return reply.type(contentType).send(content);
+  } catch {
+    return reply.code(404).send({ error: "Asset not found" });
+  }
+});
 
 app.get("/", async (_request, reply) => reply.type("text/html").send(renderIndex()));
 app.get("/play", async (_request, reply) => reply.type("text/html").send(renderParticipantApp()));

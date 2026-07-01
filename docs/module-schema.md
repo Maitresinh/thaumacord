@@ -176,10 +176,11 @@ This is the first conceptual schema for importable Ludovive modules.
 
 It can declare:
 
-- `template`: broad visual family, such as `political-pulp`, `court-intrigue`, `submarine-stations`, or `economic-simulation`;
+- `template`: broad visual family, such as `banana-republic`, `court-intrigue`, `submarine-stations`, or `economic-simulation`;
 - `tone`: short flavour text displayed by the UI;
+- `fonts`: optional CSS font stacks for `display`, `body`, and `numeric` text;
 - `colors`: background, panel, ink, muted, accent, secondary, success, warning;
-- `icons`: small action/family markers for exchange, contest, vote, live-administration, phases, or game-specific concepts;
+- `icons`: small action/family/resource markers; values may be short text or local asset references such as `icon:banana`, resolved under `assets/icons`;
 - `interactionLabels`: wording for primary gestures and fallback controls.
 
 Buttons remain available as fallback, but player-facing controls should first present the physical gesture declared by the action whenever possible.
@@ -194,6 +195,8 @@ Buttons remain available as fallback, but player-facing controls should first pr
 - `tone`: audio direction for generated or curated sounds;
 - `url`: optional asset URL when a real sound file exists;
 - `visibility`: `dashboard`, `participants`, or `all`.
+
+Local sound references such as `sound:coup-declared` are served from `assets/sounds/coup-declared.wav` and shown as preview buttons in the dashboard/player theme panels.
 
 Dashboard read models expose the full list. Participant read models receive cues marked `participants` or `all`.
 

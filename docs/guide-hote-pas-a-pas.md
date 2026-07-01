@@ -61,7 +61,7 @@ Verifier:
 
 Depuis le dashboard, choisir ou creer une session avec un module:
 
-- `putsch-lite` pour Putsch au Panador;
+- `putsch-lite` pour Banana Republic;
 - `long-live-the-king-lite` pour Long Live the King;
 - `origins-ww1-lite` pour Origins of WWI Live;
 - `wolfpack-lite` pour le prototype equipage de sous-marin.
@@ -420,4 +420,3 @@ Anormal:
 - l'hote ne voit pas une resolution en attente;
 - une correction ne laisse aucune trace dans l'audit;
 - les joueurs doivent fouiller longtemps pour trouver l'action de phase.
-

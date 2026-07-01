@@ -7,7 +7,11 @@
     "turnCount": 7,
     "durationPolicy": "facilitator-controlled",
     "setupPhaseId": "setup",
-    "turnPhases": ["audience", "diplomacy", "council"],
+    "turnPhases": [
+      "audience",
+      "diplomacy",
+      "council"
+    ],
     "convergencePhaseId": "council",
     "decisionPhaseId": "council",
     "notes": "Chaque tour suit Audience, Diplomatie, Conseil. L'Audience distribue revenus et cartes d'intrigue; le Conseil tranche les petitions. Le dernier conseil ne peut pas etre manque par le roi."
@@ -26,24 +30,68 @@
       "warning": "#b78b35"
     },
     "icons": {
-      "game": "LLK",
-      "petition": "!",
-      "timed-income": "$",
-      "exchange": "<>",
-      "track": "T",
-      "audience": "A",
-      "council": "C"
+      "game": "icon:crown",
+      "petition": "icon:scroll",
+      "timed-income": "icon:coin",
+      "exchange": "icon:exchange",
+      "track": "icon:hourglass",
+      "audience": "icon:crown",
+      "council": "icon:gavel",
+      "gold": "icon:coin",
+      "income": "icon:coin",
+      "favor": "icon:favor",
+      "status": "icon:scroll"
     },
     "interactionLabels": {
       "primary": "Geste de cour",
       "fallback": "Validation tactile"
+    },
+    "fonts": {
+      "display": "Georgia, 'Times New Roman', serif",
+      "body": "Georgia, 'Times New Roman', serif",
+      "numeric": "'Palatino Linotype', Georgia, serif"
     }
   },
   "soundboard": [
-    { "id": "audience-bell", "name": "Cloche d'audience", "channel": "stinger", "phase": "audience", "tone": "cloche claire et murmure de cour", "visibility": "all" },
-    { "id": "petition-read", "name": "Petition lue", "channel": "event", "event": "openVote", "phase": "council", "tone": "parchemin deployee et silence de salle", "visibility": "all" },
-    { "id": "favor-cast", "name": "Faveur engagee", "channel": "event", "event": "castPetitionVote", "phase": "council", "tone": "jeton pose sur bois", "visibility": "participants" },
-    { "id": "royal-decision", "name": "Decision royale", "channel": "alert", "event": "resolvePetition", "phase": "council", "tone": "marteau et annonce solennelle", "visibility": "all" }
+    {
+      "id": "audience-bell",
+      "name": "Cloche d'audience",
+      "channel": "stinger",
+      "phase": "audience",
+      "tone": "cloche claire et murmure de cour",
+      "visibility": "all",
+      "url": "sound:audience-bell"
+    },
+    {
+      "id": "petition-read",
+      "name": "Petition lue",
+      "channel": "event",
+      "event": "openVote",
+      "phase": "council",
+      "tone": "parchemin deployee et silence de salle",
+      "visibility": "all",
+      "url": "sound:petition-read"
+    },
+    {
+      "id": "favor-cast",
+      "name": "Faveur engagee",
+      "channel": "event",
+      "event": "castPetitionVote",
+      "phase": "council",
+      "tone": "jeton pose sur bois",
+      "visibility": "participants",
+      "url": "sound:favor-cast"
+    },
+    {
+      "id": "royal-decision",
+      "name": "Decision royale",
+      "channel": "alert",
+      "event": "resolvePetition",
+      "phase": "council",
+      "tone": "marteau et annonce solennelle",
+      "visibility": "all",
+      "url": "sound:royal-decision"
+    }
   ],
   "state": {
     "currentTurn": 1,
@@ -59,34 +107,85 @@
     "max": 8
   },
   "resources": [
-    { "id": "gold", "name": "Ducats d'or", "visibility": "private", "min": 0 },
-    { "id": "income", "name": "Revenus", "visibility": "private", "min": 0 },
-    { "id": "favor", "name": "Faveur", "visibility": "private", "min": 0 },
-    { "id": "status", "name": "Statut", "visibility": "public", "min": 0 }
+    {
+      "id": "gold",
+      "name": "Ducats d'or",
+      "visibility": "private",
+      "min": 0
+    },
+    {
+      "id": "income",
+      "name": "Revenus",
+      "visibility": "private",
+      "min": 0
+    },
+    {
+      "id": "favor",
+      "name": "Faveur",
+      "visibility": "private",
+      "min": 0
+    },
+    {
+      "id": "status",
+      "name": "Statut",
+      "visibility": "public",
+      "min": 0
+    }
   ],
   "phases": [
-    { "id": "setup", "name": "Mise en place", "durationSeconds": 300 },
-    { "id": "audience", "name": "Audience", "durationSeconds": 180 },
-    { "id": "diplomacy", "name": "Diplomatie", "durationSeconds": 900 },
-    { "id": "council", "name": "Conseil", "durationSeconds": 420 }
+    {
+      "id": "setup",
+      "name": "Mise en place",
+      "durationSeconds": 300
+    },
+    {
+      "id": "audience",
+      "name": "Audience",
+      "durationSeconds": 180
+    },
+    {
+      "id": "diplomacy",
+      "name": "Diplomatie",
+      "durationSeconds": 900
+    },
+    {
+      "id": "council",
+      "name": "Conseil",
+      "durationSeconds": 420
+    }
   ],
   "sessionRoles": [
     {
       "id": "host",
       "name": "Hote de cour",
       "description": "Ouvre la session, assigne les roles et garde le rythme des sept tours.",
-      "capabilities": ["session.host", "participants.manage", "roles.assign", "phase.control"],
+      "capabilities": [
+        "session.host",
+        "participants.manage",
+        "roles.assign",
+        "phase.control"
+      ],
       "canInjectGameElements": false,
-      "assignableToRoles": ["king"],
+      "assignableToRoles": [
+        "king"
+      ],
       "defaultRoleId": "king"
     },
     {
       "id": "game-authority",
       "name": "Roi ou conseiller",
       "description": "Controle les audiences, le tresor, les paquets de cartes, les decisions de conseil et les arbitrages.",
-      "capabilities": ["resources.adjust", "components.draw", "messages.send", "resolutions.override", "phase.control"],
+      "capabilities": [
+        "resources.adjust",
+        "components.draw",
+        "messages.send",
+        "resolutions.override",
+        "phase.control"
+      ],
       "canInjectGameElements": true,
-      "assignableToRoles": ["king"],
+      "assignableToRoles": [
+        "king"
+      ],
       "defaultRoleId": "king"
     }
   ],
@@ -95,59 +194,158 @@
       "id": "king",
       "name": "Roi",
       "startingResources": {},
-      "responsibilities": ["Diriger la session", "Tenir les audiences", "Arbitrer les petitions", "Gerer les cartes et le tresor"],
-      "victoryCondition": { "type": "text", "text": "Role d'autorite et de rythme; ne suit pas les objectifs des courtisans principaux." }
+      "responsibilities": [
+        "Diriger la session",
+        "Tenir les audiences",
+        "Arbitrer les petitions",
+        "Gerer les cartes et le tresor"
+      ],
+      "victoryCondition": {
+        "type": "text",
+        "text": "Role d'autorite et de rythme; ne suit pas les objectifs des courtisans principaux."
+      }
     },
     {
       "id": "queen",
       "name": "Reine",
-      "startingResources": { "gold": 5, "favor": 7, "status": 4 },
-      "victoryCondition": { "type": "text", "text": "Gagne si elle termine regente et si un joueur a plus de statut que le Tresorier." }
+      "startingResources": {
+        "gold": 5,
+        "favor": 7,
+        "status": 4
+      },
+      "victoryCondition": {
+        "type": "text",
+        "text": "Gagne si elle termine regente et si un joueur a plus de statut que le Tresorier."
+      }
     },
     {
       "id": "baron",
       "name": "Baron",
-      "startingResources": { "gold": 3, "favor": 6, "status": 3 },
-      "victoryCondition": { "type": "text", "text": "Gagne sans heritier si les 5 cartes de mobilisation sont actives." }
+      "startingResources": {
+        "gold": 3,
+        "favor": 6,
+        "status": 3
+      },
+      "victoryCondition": {
+        "type": "text",
+        "text": "Gagne sans heritier si les 5 cartes de mobilisation sont actives."
+      }
     },
     {
       "id": "treasurer",
       "name": "Tresorier",
-      "startingResources": { "gold": 7, "favor": 7, "status": 1 },
-      "victoryCondition": { "type": "text", "text": "Gagne avec un heritier et plus de statut que tous les autres joueurs." }
+      "startingResources": {
+        "gold": 7,
+        "favor": 7,
+        "status": 1
+      },
+      "victoryCondition": {
+        "type": "text",
+        "text": "Gagne avec un heritier et plus de statut que tous les autres joueurs."
+      }
     },
     {
       "id": "bastard-heir",
       "name": "Batard royal",
       "startingResources": {},
-      "victoryCondition": { "type": "text", "text": "Detail issu du tableur de roles; gagne selon sa position d'heritier." }
+      "victoryCondition": {
+        "type": "text",
+        "text": "Detail issu du tableur de roles; gagne selon sa position d'heritier."
+      }
     },
     {
       "id": "archbishop",
       "name": "Archeveque",
       "startingResources": {},
-      "victoryCondition": { "type": "text", "text": "Detail issu du tableur de roles; manipule la succession et les alliances." }
+      "victoryCondition": {
+        "type": "text",
+        "text": "Detail issu du tableur de roles; manipule la succession et les alliances."
+      }
     },
     {
       "id": "ambassador",
       "name": "Ambassadeur",
       "startingResources": {},
-      "victoryCondition": { "type": "text", "text": "Detail issu du tableur de roles; soutient les troubles et la rebellion." }
+      "victoryCondition": {
+        "type": "text",
+        "text": "Detail issu du tableur de roles; soutient les troubles et la rebellion."
+      }
     },
     {
       "id": "steward",
       "name": "Mayordome majeur",
       "startingResources": {},
-      "victoryCondition": { "type": "text", "text": "Detail issu du tableur de roles; peut profiter d'une regence sans successeur clair." }
+      "victoryCondition": {
+        "type": "text",
+        "text": "Detail issu du tableur de roles; peut profiter d'une regence sans successeur clair."
+      }
     }
   ],
   "components": [
-    { "id": "intrigue-card", "name": "Carte Intrigue", "kind": "card", "count": 80, "visibility": "private", "tags": ["deck", "hand"] },
-    { "id": "status-card", "name": "Carte Statut", "kind": "card", "count": 32, "visibility": "private", "tags": ["status", "character"] },
-    { "id": "decision-card", "name": "Carte Decision", "kind": "card", "count": 22, "visibility": "facilitator", "tags": ["deck", "petition"] },
-    { "id": "health-card", "name": "Carte Sante du roi", "kind": "card", "count": 10, "visibility": "facilitator", "tags": ["deck", "timeline"] },
-    { "id": "mobilization-card", "name": "Carte Mobilisation", "kind": "card", "count": 5, "visibility": "public", "tags": ["track"] },
-    { "id": "rebellion-card", "name": "Carte Rebellion", "kind": "card", "count": 5, "visibility": "public", "tags": ["track"] }
+    {
+      "id": "intrigue-card",
+      "name": "Carte Intrigue",
+      "kind": "card",
+      "count": 80,
+      "visibility": "private",
+      "tags": [
+        "deck",
+        "hand"
+      ]
+    },
+    {
+      "id": "status-card",
+      "name": "Carte Statut",
+      "kind": "card",
+      "count": 32,
+      "visibility": "private",
+      "tags": [
+        "status",
+        "character"
+      ]
+    },
+    {
+      "id": "decision-card",
+      "name": "Carte Decision",
+      "kind": "card",
+      "count": 22,
+      "visibility": "facilitator",
+      "tags": [
+        "deck",
+        "petition"
+      ]
+    },
+    {
+      "id": "health-card",
+      "name": "Carte Sante du roi",
+      "kind": "card",
+      "count": 10,
+      "visibility": "facilitator",
+      "tags": [
+        "deck",
+        "timeline"
+      ]
+    },
+    {
+      "id": "mobilization-card",
+      "name": "Carte Mobilisation",
+      "kind": "card",
+      "count": 5,
+      "visibility": "public",
+      "tags": [
+        "track"
+      ]
+    },
+    {
+      "id": "rebellion-card",
+      "name": "Carte Rebellion",
+      "kind": "card",
+      "count": 5,
+      "visibility": "public",
+      "tags": [
+        "track"
+      ]
+    }
   ],
   "setup": {
     "phaseId": "setup",
@@ -160,8 +358,20 @@
       "Verifier les ressources de depart avant la premiere audience."
     ],
     "distributions": [
-      { "id": "initial-intrigue", "componentId": "intrigue-card", "target": "allParticipants", "count": 2, "visibility": "private" },
-      { "id": "initial-status", "componentId": "status-card", "target": "allParticipants", "countResource": "status", "visibility": "private" }
+      {
+        "id": "initial-intrigue",
+        "componentId": "intrigue-card",
+        "target": "allParticipants",
+        "count": 2,
+        "visibility": "private"
+      },
+      {
+        "id": "initial-status",
+        "componentId": "status-card",
+        "target": "allParticipants",
+        "countResource": "status",
+        "visibility": "private"
+      }
     ]
   },
   "mechanics": [
@@ -170,11 +380,27 @@
       "name": "Petition et vote du conseil",
       "family": "petition",
       "summary": "Un participant depose une demande, les autres votent pour ou contre, puis une autorite ou une table de decision tranche.",
-      "phases": ["council"],
+      "phases": [
+        "council"
+      ],
       "inputs": [
-        { "id": "petitionerId", "type": "participant", "source": "actor-or-bound-device" },
-        { "id": "petitionText", "type": "text" },
-        { "id": "votes", "type": "vote-list", "choices": ["for", "against"] }
+        {
+          "id": "petitionerId",
+          "type": "participant",
+          "source": "actor-or-bound-device"
+        },
+        {
+          "id": "petitionText",
+          "type": "text"
+        },
+        {
+          "id": "votes",
+          "type": "vote-list",
+          "choices": [
+            "for",
+            "against"
+          ]
+        }
       ],
       "resolution": {
         "type": "weightedVoteThenAuthority",
@@ -182,11 +408,27 @@
         "fallback": "democraticVote",
         "authority": "king-or-regent"
       },
-      "visibility": { "petition": "public", "votes": "public-after-cast", "decision": "public" },
+      "visibility": {
+        "petition": "public",
+        "votes": "public-after-cast",
+        "decision": "public"
+      },
       "variants": [
-        { "id": "democratic", "name": "Vote democratique", "weightResource": null },
-        { "id": "authority-only", "name": "Decision de l'autorite", "skipVotes": true },
-        { "id": "delayed", "name": "Petition reportee", "resolveAtPhase": "next-council" }
+        {
+          "id": "democratic",
+          "name": "Vote democratique",
+          "weightResource": null
+        },
+        {
+          "id": "authority-only",
+          "name": "Decision de l'autorite",
+          "skipVotes": true
+        },
+        {
+          "id": "delayed",
+          "name": "Petition reportee",
+          "resolveAtPhase": "next-council"
+        }
       ]
     },
     {
@@ -194,15 +436,28 @@
       "name": "Audience du roi",
       "family": "timed-income",
       "summary": "L'audience se tient en direct; le Roi ou le chambellan enregistre ensuite les revenus, cartes Intrigue, informations de sante et demandes de Faveur.",
-      "phases": ["audience"],
+      "phases": [
+        "audience"
+      ],
       "inputs": [
-        { "id": "turn", "type": "session-state", "state": "currentTurn" },
-        { "id": "kingHealthy", "type": "session-state", "state": "kingHealthy" }
+        {
+          "id": "turn",
+          "type": "session-state",
+          "state": "currentTurn"
+        },
+        {
+          "id": "kingHealthy",
+          "type": "session-state",
+          "state": "kingHealthy"
+        }
       ],
       "resolution": {
         "type": "facilitatorDistribution",
         "mode": "guidedInApp",
-        "modes": ["guidedInApp", "liveThenRecord"],
+        "modes": [
+          "guidedInApp",
+          "liveThenRecord"
+        ],
         "recordedBy": "king-or-chamberlain",
         "incomeResource": "gold",
         "intrigueCardsOddTurns": 1,
@@ -212,9 +467,16 @@
         "lowStatusIncomeMultiplier": 0.5,
         "skipWhenKingSick": true
       },
-      "visibility": { "dashboard": "full", "participants": "own-income-and-cards" },
+      "visibility": {
+        "dashboard": "full",
+        "participants": "own-income-and-cards"
+      },
       "variants": [
-        { "id": "experienced-table", "name": "Sante revelee au tour 1", "revealHealthOnTurnOne": true }
+        {
+          "id": "experienced-table",
+          "name": "Sante revelee au tour 1",
+          "revealHealthOnTurnOne": true
+        }
       ]
     },
     {
@@ -222,11 +484,23 @@
       "name": "Sante, mobilisation et rebellion",
       "family": "track",
       "summary": "Le Roi suit la sante, les cartes de mobilisation du Baron et les cartes de rebellion activees par l'Ambassadeur.",
-      "phases": ["audience", "council"],
+      "phases": [
+        "audience",
+        "council"
+      ],
       "inputs": [
-        { "id": "activeHealthCards", "type": "session-state" },
-        { "id": "activeMobilization", "type": "session-counter" },
-        { "id": "activeRebellion", "type": "session-counter" }
+        {
+          "id": "activeHealthCards",
+          "type": "session-state"
+        },
+        {
+          "id": "activeMobilization",
+          "type": "session-counter"
+        },
+        {
+          "id": "activeRebellion",
+          "type": "session-counter"
+        }
       ],
       "resolution": {
         "type": "publicTracks",
@@ -236,9 +510,16 @@
         "rebellionCards": 5,
         "lastCouncilKingReturns": true
       },
-      "visibility": { "dashboard": "full", "participants": "public-tracks" },
+      "visibility": {
+        "dashboard": "full",
+        "participants": "public-tracks"
+      },
       "variants": [
-        { "id": "baron-suppresses-rebellion", "name": "Mobilisation contre rebellion", "trigger": "accepted-mobilization-petition" }
+        {
+          "id": "baron-suppresses-rebellion",
+          "name": "Mobilisation contre rebellion",
+          "trigger": "accepted-mobilization-petition"
+        }
       ]
     },
     {
@@ -246,17 +527,46 @@
       "name": "Don direct",
       "family": "exchange",
       "summary": "Un participant transfere une ressource a un autre pendant une phase libre.",
-      "phases": ["diplomacy"],
-      "inputs": [
-        { "id": "fromParticipantId", "type": "participant", "source": "actor-or-bound-device" },
-        { "id": "toParticipantId", "type": "participant" },
-        { "id": "resources", "type": "resource-bundle", "allowed": ["gold"] }
+      "phases": [
+        "diplomacy"
       ],
-      "resolution": { "type": "exchange", "mode": "immediate" },
-      "visibility": { "dashboard": "full", "participants": "involved-only" },
+      "inputs": [
+        {
+          "id": "fromParticipantId",
+          "type": "participant",
+          "source": "actor-or-bound-device"
+        },
+        {
+          "id": "toParticipantId",
+          "type": "participant"
+        },
+        {
+          "id": "resources",
+          "type": "resource-bundle",
+          "allowed": [
+            "gold"
+          ]
+        }
+      ],
+      "resolution": {
+        "type": "exchange",
+        "mode": "immediate"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "participants": "involved-only"
+      },
       "variants": [
-        { "id": "bribe", "name": "Pot-de-vin lie a un vote", "linksTo": "petition-vote" },
-        { "id": "forced-payment", "name": "Paiement force", "requiresRuleTrigger": true }
+        {
+          "id": "bribe",
+          "name": "Pot-de-vin lie a un vote",
+          "linksTo": "petition-vote"
+        },
+        {
+          "id": "forced-payment",
+          "name": "Paiement force",
+          "requiresRuleTrigger": true
+        }
       ]
     }
   ],
@@ -267,7 +577,10 @@
       "phase": "council",
       "actor": "any",
       "target": "game",
-      "effect": { "type": "openVote", "weightResource": "favor" },
+      "effect": {
+        "type": "openVote",
+        "weightResource": "favor"
+      },
       "mechanicId": "petition-vote"
     },
     {
@@ -280,7 +593,10 @@
         "type": "castPetitionVote",
         "resource": "favor",
         "resolutionMechanicId": "petition-vote",
-        "choices": ["for", "against"],
+        "choices": [
+          "for",
+          "against"
+        ],
         "voteState": "petitionVotes"
       },
       "mechanicId": "petition-vote",
@@ -296,7 +612,11 @@
       "effect": {
         "type": "resolvePetition",
         "resolutionMechanicId": "petition-vote",
-        "allowedOutcomes": ["accepted", "rejected", "deferred"],
+        "allowedOutcomes": [
+          "accepted",
+          "rejected",
+          "deferred"
+        ],
         "resultState": "lastPetitionResult"
       },
       "mechanicId": "petition-vote",
@@ -315,12 +635,18 @@
         "componentId": "intrigue-card",
         "oddTurnCount": 1,
         "evenTurnCount": 2,
-        "fixedDrawByRole": { "queen": 2 },
-        "bonusDrawByRole": { "archbishop": 1 },
+        "fixedDrawByRole": {
+          "queen": 2
+        },
+        "bonusDrawByRole": {
+          "archbishop": 1
+        },
         "lowStatusResource": "status",
         "lowStatusThreshold": 2,
         "lowStatusIncomeMultiplier": 0.5,
-        "excludeRoles": ["king"]
+        "excludeRoles": [
+          "king"
+        ]
       },
       "mechanicId": "audience-income",
       "fallback": "facilitator-confirmation"
@@ -331,7 +657,10 @@
       "phase": "diplomacy",
       "actor": "any",
       "target": "player",
-      "effect": { "type": "transferResource", "resource": "gold" },
+      "effect": {
+        "type": "transferResource",
+        "resource": "gold"
+      },
       "mechanicId": "direct-gift",
       "gesture": "touch-phones",
       "fallback": "manual-confirmation"
@@ -344,7 +673,10 @@
       "fictionalType": "court",
       "presenceMethod": "manual",
       "effects": [
-        { "type": "unlockAction", "action": "submit-petition" }
+        {
+          "type": "unlockAction",
+          "action": "submit-petition"
+        }
       ]
     }
   ]

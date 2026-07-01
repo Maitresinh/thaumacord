@@ -141,7 +141,7 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /loadNetworkInfo/);
   assert.match(response.body, /\/network/);
   assert.match(response.body, /navigator.clipboard/);
-  assert.match(response.body, /Demo Putsch prechargee/);
+  assert.match(response.body, /Demo Banana Republic/);
   assert.match(response.body, /\/demo\/putsch-lite/);
   assert.match(response.body, /Echanges/);
   assert.match(response.body, /Controles de jeu/);
@@ -172,6 +172,8 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /gestureArt/);
   assert.match(response.body, /renderGestureCard/);
   assert.match(response.body, /resourceWallet/);
+  assert.match(response.body, /soundCueButton/);
+  assert.match(response.body, /font-body/);
   assert.match(response.body, /resourcePushGrid/);
   assert.match(response.body, /Secours dashboard/);
   assert.match(response.body, /Telephones au contact ou joueurs cote a cote/);
@@ -207,7 +209,7 @@ test("serves a one-page Putsch core demo dashboard", async () => {
   assert.match(response.body, /data-resolution-state/);
   assert.match(response.body, /Marquer resolue/);
   assert.match(response.body, /Regler minuteur/);
-  assert.match(response.body, /Duree engagements putsch/);
+  assert.match(response.body, /Duree engagements coup d'Etat/);
   assert.match(response.body, /setCoupCommitmentDuration/);
 });
 
@@ -231,6 +233,21 @@ test("exposes health and PC Wi-Fi network discovery", async () => {
   assert.equal(Array.isArray(body.recommendedUrls), true);
   assert.equal((body.websocket as JsonObject).devicePath, "/sessions/:code/live?deviceId=:deviceId");
   assert.equal(((body.tableReliability as JsonObject).guidance as unknown[]).length > 0, true);
+});
+
+test("serves local visual and sound assets for game themes", async () => {
+  const icon = await app.inject({ method: "GET", url: "/assets/icons/banana.svg" });
+  assert.equal(icon.statusCode, 200);
+  assert.match(icon.headers["content-type"] as string, /image\/svg\+xml/);
+  assert.match(icon.body, /<svg/);
+
+  const sound = await app.inject({ method: "GET", url: "/assets/sounds/market-open.wav" });
+  assert.equal(sound.statusCode, 200);
+  assert.match(sound.headers["content-type"] as string, /audio\/wav/);
+  assert.equal(sound.body.slice(0, 4), "RIFF");
+
+  const blocked = await app.inject({ method: "GET", url: "/assets/../apps/server/package.json" });
+  assert.equal(blocked.statusCode, 404);
 });
 
 test("serves a mobile participant app for session join", async () => {
@@ -485,9 +502,15 @@ test("loads module mechanics and links actions to them", async () => {
   assert.equal(putsch.actions.find((action: JsonObject) => action.id === "record-minister-council").mechanicId, "minister-council-record");
   assert.equal(putsch.actions.find((action: JsonObject) => action.id === "defend-coup").effect.type, "contestResponse");
   assert.equal(putsch.actions.find((action: JsonObject) => action.id === "vote-minister-council").effect.type, "castVote");
-  assert.equal(putsch.uiTheme.template, "political-pulp");
+  assert.equal(putsch.name, "Banana Republic");
+  assert.equal(putsch.uiTheme.template, "banana-republic");
+  assert.equal(putsch.uiTheme.colors.background, "#f5e638");
+  assert.equal(putsch.uiTheme.colors.ink, "#165b28");
+  assert.equal(putsch.uiTheme.fonts.display.includes("Impact"), true);
+  assert.equal(putsch.uiTheme.icons.game, "icon:banana");
   assert.equal(putsch.soundboard.length, 5);
   assert.equal(putsch.soundboard.find((cue: JsonObject) => cue.id === "coup-declared").channel, "alert");
+  assert.equal(putsch.soundboard.find((cue: JsonObject) => cue.id === "coup-declared").url, "sound:coup-declared");
   assert.equal(putsch.actions.find((action: JsonObject) => action.id === "sell-weapons").gesture, "pour-liquid");
   assert.equal(putsch.actions.find((action: JsonObject) => action.id === "sell-drugs").gesture, "palm-cover");
   assert.equal(putsch.components.find((component: JsonObject) => component.id === "vote-ballot").count, 80);
@@ -497,6 +520,7 @@ test("loads module mechanics and links actions to them", async () => {
   assert.equal(wolfpack.sessionRoles.find((role: JsonObject) => role.id === "host").defaultRoleId, "captain");
   assert.equal(wolfpack.sessionRoles.find((role: JsonObject) => role.id === "host").canInjectGameElements, false);
   assert.equal(wolfpack.uiTheme.template, "submarine-stations");
+  assert.equal(wolfpack.uiTheme.icons.game, "icon:submarine");
   assert.equal(wolfpack.soundboard.find((cue: JsonObject) => cue.id === "attack-alarm").channel, "alert");
   assert.equal(wolfpack.state.missionMode, "cooperative-hunt");
   assert.equal(wolfpack.resources.some((resource: JsonObject) => resource.id === "solution"), true);
@@ -508,6 +532,7 @@ test("loads module mechanics and links actions to them", async () => {
   const king = await injectJson("GET", "/modules/long-live-the-king-lite");
   assert.equal(king.state.healthCardsInLine, 6);
   assert.equal(king.uiTheme.template, "court-intrigue");
+  assert.equal(king.uiTheme.icons.game, "icon:crown");
   assert.equal(king.soundboard.find((cue: JsonObject) => cue.id === "royal-decision").channel, "alert");
   assert.equal(king.components.find((component: JsonObject) => component.id === "health-card").count, 10);
   assert.equal(king.roles.find((role: JsonObject) => role.id === "king").name, "Roi");

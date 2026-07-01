@@ -6,10 +6,28 @@
   "inspirationNotes": "Adaptation Ludovive du document Origins of World War I - Revised Edition 2020 V6 et des aides de jeu du module Vassal diceless v2.0. Les anciennes cartes deviennent des slots secrets, permissions numeriques et sequences gerees par l'app.",
   "timeline": {
     "startTurn": "1909",
-    "turns": ["1909", "1910", "1911", "1912", "1913", "Janvier-Juin 1914", "Juillet 1914", "Aout 1914", "Septembre 1914"],
+    "turns": [
+      "1909",
+      "1910",
+      "1911",
+      "1912",
+      "1913",
+      "Janvier-Juin 1914",
+      "Juillet 1914",
+      "Aout 1914",
+      "Septembre 1914"
+    ],
     "randomEndCheckFrom": "Juillet 1914",
-    "scoringTurns": ["1911", "Janvier-Juin 1914", "tour final"],
-    "diplomacyTurns": ["1909", "1912", "Juillet 1914"],
+    "scoringTurns": [
+      "1911",
+      "Janvier-Juin 1914",
+      "tour final"
+    ],
+    "diplomacyTurns": [
+      "1909",
+      "1912",
+      "Juillet 1914"
+    ],
     "defaultDiplomacySeconds": 600
   },
   "uiTheme": {
@@ -26,26 +44,76 @@
       "warning": "#b48a32"
     },
     "icons": {
-      "game": "1914",
-      "information-action": "INT",
-      "programming": "ORD",
-      "diplomatic-action": "DIP",
-      "diplomatic-attack": "ATK",
-      "special-action": "SIG",
-      "treaty-scoring": "PV",
-      "live-administration": "ADM"
+      "game": "icon:map",
+      "information-action": "icon:scroll",
+      "programming": "icon:sealed-order",
+      "diplomatic-action": "icon:handshake",
+      "diplomatic-attack": "icon:telegram",
+      "special-action": "icon:star",
+      "treaty-scoring": "icon:laurel",
+      "live-administration": "icon:gavel",
+      "diplomaticPoints": "icon:laurel",
+      "specialActionCredits": "icon:star",
+      "victoryPoints": "icon:laurel"
     },
     "interactionLabels": {
       "primary": "Geste diplomatique",
       "fallback": "Saisie de table"
+    },
+    "fonts": {
+      "display": "Georgia, 'Times New Roman', serif",
+      "body": "'Segoe UI', Georgia, serif",
+      "numeric": "'Courier New', Consolas, monospace"
     }
   },
   "soundboard": [
-    { "id": "diplomacy-opens", "name": "Ouverture des negociations", "channel": "stinger", "phase": "diplomacy", "tone": "cloche de conference et murmures d'ambassade", "visibility": "all" },
-    { "id": "orders-sealed", "name": "Ordres scelles", "channel": "event", "event": "secretProgramming", "phase": "secret-programming", "tone": "papier plie et cachet de cire", "visibility": "participants" },
-    { "id": "turn-order-drawn", "name": "Ordre de resolution revele", "channel": "event", "phase": "action-resolution", "tone": "tampon sec sur registre", "visibility": "all" },
-    { "id": "diplomatic-attack", "name": "Attaque diplomatique", "channel": "alert", "event": "diplomaticAttack", "phase": "action-resolution", "tone": "telegramme sec et tension de salon", "visibility": "all" },
-    { "id": "scoring", "name": "Comptage des traites", "channel": "stinger", "phase": "scoring", "tone": "plume, registre et tampon", "visibility": "all" }
+    {
+      "id": "diplomacy-opens",
+      "name": "Ouverture des negociations",
+      "channel": "stinger",
+      "phase": "diplomacy",
+      "tone": "cloche de conference et murmures d'ambassade",
+      "visibility": "all",
+      "url": "sound:diplomacy-opens"
+    },
+    {
+      "id": "orders-sealed",
+      "name": "Ordres scelles",
+      "channel": "event",
+      "event": "secretProgramming",
+      "phase": "secret-programming",
+      "tone": "papier plie et cachet de cire",
+      "visibility": "participants",
+      "url": "sound:orders-sealed"
+    },
+    {
+      "id": "turn-order-drawn",
+      "name": "Ordre de resolution revele",
+      "channel": "event",
+      "phase": "action-resolution",
+      "tone": "tampon sec sur registre",
+      "visibility": "all",
+      "url": "sound:turn-order-drawn"
+    },
+    {
+      "id": "diplomatic-attack",
+      "name": "Attaque diplomatique",
+      "channel": "alert",
+      "event": "diplomaticAttack",
+      "phase": "action-resolution",
+      "tone": "telegramme sec et tension de salon",
+      "visibility": "all",
+      "url": "sound:diplomatic-attack"
+    },
+    {
+      "id": "scoring",
+      "name": "Comptage des traites",
+      "channel": "stinger",
+      "phase": "scoring",
+      "tone": "plume, registre et tampon",
+      "visibility": "all",
+      "url": "sound:scoring"
+    }
   ],
   "state": {
     "currentTurnLabel": "1909",
@@ -61,19 +129,88 @@
     "initialSetup": {
       "source": "Vassal Origins of World War One Diceless Version v2.0 - Initial Setup.png",
       "matrix": {
-        "britain-zone": { "france": 2, "germany": 1, "russia": 1, "italy": 1 },
-        "france-zone": { "britain": 1, "russia": 1, "austria-hungary": 1, "italy": 2, "ottoman": 1 },
-        "germany-zone": { "britain": 1, "russia": 1, "austria-hungary": 2, "ottoman": 2 },
-        "austria-hungary-zone": { "germany": 2, "russia": 1, "italy": 1, "ottoman": 2 },
-        "russia-zone": { "britain": 1, "france": 2, "germany": 1, "austria-hungary": 1 },
-        "italy-zone": { "britain": 1, "france": 1, "germany": 1, "austria-hungary": 2, "ottoman": 1 },
-        "serbia": { "france": 1, "russia": 2, "austria-hungary": 2, "italy": 1 },
-        "romania": { "france": 1, "germany": 1, "russia": 2, "austria-hungary": 1, "italy": 1 },
-        "bulgaria": { "germany": 2, "russia": 1, "austria-hungary": 1, "ottoman": 1 },
-        "greece": { "britain": 1, "france": 1, "italy": 2, "ottoman": 2 },
-        "ottoman-zone": { "britain": 2, "germany": 2, "austria-hungary": 1, "italy": 1 },
-        "africa": { "britain": 2, "france": 2, "germany": 1, "italy": 2, "ottoman": 1 },
-        "far-east": { "britain": 2, "france": 1, "russia": 2, "ottoman": 1 }
+        "britain-zone": {
+          "france": 2,
+          "germany": 1,
+          "russia": 1,
+          "italy": 1
+        },
+        "france-zone": {
+          "britain": 1,
+          "russia": 1,
+          "austria-hungary": 1,
+          "italy": 2,
+          "ottoman": 1
+        },
+        "germany-zone": {
+          "britain": 1,
+          "russia": 1,
+          "austria-hungary": 2,
+          "ottoman": 2
+        },
+        "austria-hungary-zone": {
+          "germany": 2,
+          "russia": 1,
+          "italy": 1,
+          "ottoman": 2
+        },
+        "russia-zone": {
+          "britain": 1,
+          "france": 2,
+          "germany": 1,
+          "austria-hungary": 1
+        },
+        "italy-zone": {
+          "britain": 1,
+          "france": 1,
+          "germany": 1,
+          "austria-hungary": 2,
+          "ottoman": 1
+        },
+        "serbia": {
+          "france": 1,
+          "russia": 2,
+          "austria-hungary": 2,
+          "italy": 1
+        },
+        "romania": {
+          "france": 1,
+          "germany": 1,
+          "russia": 2,
+          "austria-hungary": 1,
+          "italy": 1
+        },
+        "bulgaria": {
+          "germany": 2,
+          "russia": 1,
+          "austria-hungary": 1,
+          "ottoman": 1
+        },
+        "greece": {
+          "britain": 1,
+          "france": 1,
+          "italy": 2,
+          "ottoman": 2
+        },
+        "ottoman-zone": {
+          "britain": 2,
+          "germany": 2,
+          "austria-hungary": 1,
+          "italy": 1
+        },
+        "africa": {
+          "britain": 2,
+          "france": 2,
+          "germany": 1,
+          "italy": 2,
+          "ottoman": 1
+        },
+        "far-east": {
+          "britain": 2,
+          "france": 1,
+          "russia": 2,
+          "ottoman": 1
+        }
       }
     },
     "nationalObjectives": {
@@ -81,52 +218,141 @@
       "countries": {
         "britain": {
           "objectives": [
-            { "zoneId": "france-zone", "points": 3 },
-            { "zoneId": "russia-zone", "points": 3 },
-            { "zoneId": "greece", "points": 1 },
-            { "zoneId": "ottoman-zone", "points": 2 },
-            { "zoneId": "africa", "points": 2 },
-            { "zoneId": "far-east", "points": 2, "exclusivePoints": 5 }
+            {
+              "zoneId": "france-zone",
+              "points": 3
+            },
+            {
+              "zoneId": "russia-zone",
+              "points": 3
+            },
+            {
+              "zoneId": "greece",
+              "points": 1
+            },
+            {
+              "zoneId": "ottoman-zone",
+              "points": 2
+            },
+            {
+              "zoneId": "africa",
+              "points": 2
+            },
+            {
+              "zoneId": "far-east",
+              "points": 2,
+              "exclusivePoints": 5
+            }
           ],
-          "specialClause": { "points": 5, "text": "Aucune autre nation n'a plus de 14 points." },
+          "specialClause": {
+            "points": 5,
+            "text": "Aucune autre nation n'a plus de 14 points."
+          },
           "sourceTotalWithoutSpecialClauses": 13,
           "sourceTotal": 21
         },
         "france": {
           "objectives": [
-            { "zoneId": "britain-zone", "points": 3 },
-            { "zoneId": "russia-zone", "points": 3 },
-            { "zoneId": "italy-zone", "points": 2 },
-            { "zoneId": "serbia", "points": 2 },
-            { "zoneId": "romania", "points": 1 },
-            { "zoneId": "africa", "points": 2, "exclusivePoints": 5 }
+            {
+              "zoneId": "britain-zone",
+              "points": 3
+            },
+            {
+              "zoneId": "russia-zone",
+              "points": 3
+            },
+            {
+              "zoneId": "italy-zone",
+              "points": 2
+            },
+            {
+              "zoneId": "serbia",
+              "points": 2
+            },
+            {
+              "zoneId": "romania",
+              "points": 1
+            },
+            {
+              "zoneId": "africa",
+              "points": 2,
+              "exclusivePoints": 5
+            }
           ],
-          "specialClause": { "points": 5, "text": "L'Allemagne n'a pas de droits de traite au Royaume-Uni, en Russie et en Italie." },
+          "specialClause": {
+            "points": 5,
+            "text": "L'Allemagne n'a pas de droits de traite au Royaume-Uni, en Russie et en Italie."
+          },
           "sourceTotalWithoutSpecialClauses": 13,
           "sourceTotal": 21
         },
         "germany": {
           "objectives": [
-            { "zoneId": "britain-zone", "points": 1 },
-            { "zoneId": "austria-hungary-zone", "points": 3, "exclusivePoints": 6 },
-            { "zoneId": "russia-zone", "points": 1 },
-            { "zoneId": "italy-zone", "points": 1 },
-            { "zoneId": "bulgaria", "points": 2 },
-            { "zoneId": "ottoman-zone", "points": 3 },
-            { "zoneId": "africa", "points": 2 }
+            {
+              "zoneId": "britain-zone",
+              "points": 1
+            },
+            {
+              "zoneId": "austria-hungary-zone",
+              "points": 3,
+              "exclusivePoints": 6
+            },
+            {
+              "zoneId": "russia-zone",
+              "points": 1
+            },
+            {
+              "zoneId": "italy-zone",
+              "points": 1
+            },
+            {
+              "zoneId": "bulgaria",
+              "points": 2
+            },
+            {
+              "zoneId": "ottoman-zone",
+              "points": 3
+            },
+            {
+              "zoneId": "africa",
+              "points": 2
+            }
           ],
-          "specialClause": { "points": 5, "text": "Le Royaume-Uni n'a pas de droits de traite en France, en Russie et en Turquie." },
+          "specialClause": {
+            "points": 5,
+            "text": "Le Royaume-Uni n'a pas de droits de traite en France, en Russie et en Turquie."
+          },
           "sourceTotalWithoutSpecialClauses": 13,
           "sourceTotal": 21
         },
         "russia": {
           "objectives": [
-            { "zoneId": "france-zone", "points": 2 },
-            { "zoneId": "serbia", "points": 4 },
-            { "zoneId": "romania", "points": 1, "exclusivePoints": 3 },
-            { "zoneId": "greece", "points": 1 },
-            { "zoneId": "ottoman-zone", "points": 1, "exclusivePoints": 7 },
-            { "zoneId": "far-east", "points": 3 }
+            {
+              "zoneId": "france-zone",
+              "points": 2
+            },
+            {
+              "zoneId": "serbia",
+              "points": 4
+            },
+            {
+              "zoneId": "romania",
+              "points": 1,
+              "exclusivePoints": 3
+            },
+            {
+              "zoneId": "greece",
+              "points": 1
+            },
+            {
+              "zoneId": "ottoman-zone",
+              "points": 1,
+              "exclusivePoints": 7
+            },
+            {
+              "zoneId": "far-east",
+              "points": 3
+            }
           ],
           "specialClause": null,
           "sourceTotalWithoutSpecialClauses": 13,
@@ -135,42 +361,114 @@
         },
         "austria-hungary": {
           "objectives": [
-            { "zoneId": "germany-zone", "points": 4 },
-            { "zoneId": "russia-zone", "points": 2 },
-            { "zoneId": "italy-zone", "points": 2 },
-            { "zoneId": "serbia", "points": 3, "exclusivePoints": 6 },
-            { "zoneId": "romania", "points": 1 },
-            { "zoneId": "bulgaria", "points": 1 }
+            {
+              "zoneId": "germany-zone",
+              "points": 4
+            },
+            {
+              "zoneId": "russia-zone",
+              "points": 2
+            },
+            {
+              "zoneId": "italy-zone",
+              "points": 2
+            },
+            {
+              "zoneId": "serbia",
+              "points": 3,
+              "exclusivePoints": 6
+            },
+            {
+              "zoneId": "romania",
+              "points": 1
+            },
+            {
+              "zoneId": "bulgaria",
+              "points": 1
+            }
           ],
-          "specialClause": { "points": 5, "text": "La Turquie n'a pas de droits de traite en Serbie, Roumanie et Bulgarie." },
+          "specialClause": {
+            "points": 5,
+            "text": "La Turquie n'a pas de droits de traite en Serbie, Roumanie et Bulgarie."
+          },
           "sourceTotalWithoutSpecialClauses": 13,
           "sourceTotal": 21
         },
         "italy": {
           "objectives": [
-            { "zoneId": "britain-zone", "points": 2 },
-            { "zoneId": "france-zone", "points": 2 },
-            { "zoneId": "germany-zone", "points": 2 },
-            { "zoneId": "austria-hungary-zone", "points": 1 },
-            { "zoneId": "serbia", "points": 2 },
-            { "zoneId": "greece", "points": 1, "exclusivePoints": 4 },
-            { "zoneId": "africa", "points": 3 }
+            {
+              "zoneId": "britain-zone",
+              "points": 2
+            },
+            {
+              "zoneId": "france-zone",
+              "points": 2
+            },
+            {
+              "zoneId": "germany-zone",
+              "points": 2
+            },
+            {
+              "zoneId": "austria-hungary-zone",
+              "points": 1
+            },
+            {
+              "zoneId": "serbia",
+              "points": 2
+            },
+            {
+              "zoneId": "greece",
+              "points": 1,
+              "exclusivePoints": 4
+            },
+            {
+              "zoneId": "africa",
+              "points": 3
+            }
           ],
-          "specialClause": { "points": 5, "text": "L'Autriche-Hongrie n'a pas de droits de traite en Serbie, Roumanie et Bulgarie." },
+          "specialClause": {
+            "points": 5,
+            "text": "L'Autriche-Hongrie n'a pas de droits de traite en Serbie, Roumanie et Bulgarie."
+          },
           "sourceTotalWithoutSpecialClauses": 13,
           "sourceTotal": 21
         },
         "ottoman": {
           "objectives": [
-            { "zoneId": "britain-zone", "points": 2 },
-            { "zoneId": "germany-zone", "points": 2 },
-            { "zoneId": "italy-zone", "points": 2 },
-            { "zoneId": "serbia", "points": 2 },
-            { "zoneId": "bulgaria", "points": 1, "exclusivePoints": 4 },
-            { "zoneId": "greece", "points": 2 },
-            { "zoneId": "africa", "points": 2 }
+            {
+              "zoneId": "britain-zone",
+              "points": 2
+            },
+            {
+              "zoneId": "germany-zone",
+              "points": 2
+            },
+            {
+              "zoneId": "italy-zone",
+              "points": 2
+            },
+            {
+              "zoneId": "serbia",
+              "points": 2
+            },
+            {
+              "zoneId": "bulgaria",
+              "points": 1,
+              "exclusivePoints": 4
+            },
+            {
+              "zoneId": "greece",
+              "points": 2
+            },
+            {
+              "zoneId": "africa",
+              "points": 2
+            }
           ],
-          "specialClause": { "points": 5, "text": "La Russie n'a pas de droits de traite en Serbie, Roumanie et Bulgarie." },
+          "specialClause": {
+            "points": 5,
+            "text": "La Russie n'a pas de droits de traite en Serbie, Roumanie et Bulgarie."
+          },
           "sourceTotalWithoutSpecialClauses": 13,
           "sourceTotal": 21
         }
@@ -182,50 +480,240 @@
     "max": 7
   },
   "resources": [
-    { "id": "diplomaticPoints", "name": "Points diplomatiques en reserve", "visibility": "private", "min": 0 },
-    { "id": "specialActionCredits", "name": "Permissions d'action speciale", "visibility": "private", "min": 0, "max": 2 },
-    { "id": "victoryPoints", "name": "Points de victoire", "visibility": "public", "min": 0, "score": { "pointsPerUnit": 1 } }
+    {
+      "id": "diplomaticPoints",
+      "name": "Points diplomatiques en reserve",
+      "visibility": "private",
+      "min": 0
+    },
+    {
+      "id": "specialActionCredits",
+      "name": "Permissions d'action speciale",
+      "visibility": "private",
+      "min": 0,
+      "max": 2
+    },
+    {
+      "id": "victoryPoints",
+      "name": "Points de victoire",
+      "visibility": "public",
+      "min": 0,
+      "score": {
+        "pointsPerUnit": 1
+      }
+    }
   ],
   "phases": [
-    { "id": "end-check", "name": "Verification de fin", "durationSeconds": 90 },
-    { "id": "diplomacy", "name": "Diplomatie libre", "durationSeconds": 600 },
-    { "id": "secret-programming", "name": "Programmation secrete", "durationSeconds": 180 },
-    { "id": "action-resolution", "name": "Actions diplomatiques", "durationSeconds": 900 },
-    { "id": "scoring", "name": "Comptage des PV", "durationSeconds": 300 },
-    { "id": "advance-turn", "name": "Avance du tour", "durationSeconds": 90 }
+    {
+      "id": "end-check",
+      "name": "Verification de fin",
+      "durationSeconds": 90
+    },
+    {
+      "id": "diplomacy",
+      "name": "Diplomatie libre",
+      "durationSeconds": 600
+    },
+    {
+      "id": "secret-programming",
+      "name": "Programmation secrete",
+      "durationSeconds": 180
+    },
+    {
+      "id": "action-resolution",
+      "name": "Actions diplomatiques",
+      "durationSeconds": 900
+    },
+    {
+      "id": "scoring",
+      "name": "Comptage des PV",
+      "durationSeconds": 300
+    },
+    {
+      "id": "advance-turn",
+      "name": "Avance du tour",
+      "durationSeconds": 90
+    }
   ],
   "sessionRoles": [
     {
       "id": "host",
       "name": "Hote de conference",
       "description": "Ouvre la session, assigne les puissances et garde le rythme de la table.",
-      "capabilities": ["session.host", "participants.manage", "roles.assign", "phase.control"],
+      "capabilities": [
+        "session.host",
+        "participants.manage",
+        "roles.assign",
+        "phase.control"
+      ],
       "canInjectGameElements": false
     },
     {
       "id": "game-authority",
       "name": "Secretaire du congres",
       "description": "Peut enregistrer les resultats, corriger les PV et trancher les cas de table.",
-      "capabilities": ["resources.adjust", "state.adjust", "messages.send", "resolutions.override", "phase.control"],
+      "capabilities": [
+        "resources.adjust",
+        "state.adjust",
+        "messages.send",
+        "resolutions.override",
+        "phase.control"
+      ],
       "canInjectGameElements": true,
       "optional": true
     }
   ],
   "roles": [
-    { "id": "britain", "name": "Royaume-Uni", "startingResources": { "diplomaticPoints": 39, "specialActionCredits": 1, "victoryPoints": 0 }, "victoryCondition": { "type": "nationalObjectives", "source": "state.nationalObjectives.countries.britain" } },
-    { "id": "france", "name": "France", "startingResources": { "diplomaticPoints": 39, "specialActionCredits": 1, "victoryPoints": 0 }, "victoryCondition": { "type": "nationalObjectives", "source": "state.nationalObjectives.countries.france" } },
-    { "id": "germany", "name": "Allemagne", "startingResources": { "diplomaticPoints": 39, "specialActionCredits": 1, "victoryPoints": 0 }, "victoryCondition": { "type": "nationalObjectives", "source": "state.nationalObjectives.countries.germany" } },
-    { "id": "austria-hungary", "name": "Autriche-Hongrie", "startingResources": { "diplomaticPoints": 39, "specialActionCredits": 1, "victoryPoints": 0 }, "victoryCondition": { "type": "nationalObjectives", "source": "state.nationalObjectives.countries.austria-hungary" } },
-    { "id": "russia", "name": "Russie", "startingResources": { "diplomaticPoints": 39, "specialActionCredits": 1, "victoryPoints": 0 }, "victoryCondition": { "type": "nationalObjectives", "source": "state.nationalObjectives.countries.russia" } },
-    { "id": "italy", "name": "Italie", "startingResources": { "diplomaticPoints": 39, "specialActionCredits": 1, "victoryPoints": 0 }, "victoryCondition": { "type": "nationalObjectives", "source": "state.nationalObjectives.countries.italy" } },
-    { "id": "ottoman", "name": "Empire ottoman", "startingResources": { "diplomaticPoints": 39, "specialActionCredits": 1, "victoryPoints": 0 }, "victoryCondition": { "type": "nationalObjectives", "source": "state.nationalObjectives.countries.ottoman" } }
+    {
+      "id": "britain",
+      "name": "Royaume-Uni",
+      "startingResources": {
+        "diplomaticPoints": 39,
+        "specialActionCredits": 1,
+        "victoryPoints": 0
+      },
+      "victoryCondition": {
+        "type": "nationalObjectives",
+        "source": "state.nationalObjectives.countries.britain"
+      }
+    },
+    {
+      "id": "france",
+      "name": "France",
+      "startingResources": {
+        "diplomaticPoints": 39,
+        "specialActionCredits": 1,
+        "victoryPoints": 0
+      },
+      "victoryCondition": {
+        "type": "nationalObjectives",
+        "source": "state.nationalObjectives.countries.france"
+      }
+    },
+    {
+      "id": "germany",
+      "name": "Allemagne",
+      "startingResources": {
+        "diplomaticPoints": 39,
+        "specialActionCredits": 1,
+        "victoryPoints": 0
+      },
+      "victoryCondition": {
+        "type": "nationalObjectives",
+        "source": "state.nationalObjectives.countries.germany"
+      }
+    },
+    {
+      "id": "austria-hungary",
+      "name": "Autriche-Hongrie",
+      "startingResources": {
+        "diplomaticPoints": 39,
+        "specialActionCredits": 1,
+        "victoryPoints": 0
+      },
+      "victoryCondition": {
+        "type": "nationalObjectives",
+        "source": "state.nationalObjectives.countries.austria-hungary"
+      }
+    },
+    {
+      "id": "russia",
+      "name": "Russie",
+      "startingResources": {
+        "diplomaticPoints": 39,
+        "specialActionCredits": 1,
+        "victoryPoints": 0
+      },
+      "victoryCondition": {
+        "type": "nationalObjectives",
+        "source": "state.nationalObjectives.countries.russia"
+      }
+    },
+    {
+      "id": "italy",
+      "name": "Italie",
+      "startingResources": {
+        "diplomaticPoints": 39,
+        "specialActionCredits": 1,
+        "victoryPoints": 0
+      },
+      "victoryCondition": {
+        "type": "nationalObjectives",
+        "source": "state.nationalObjectives.countries.italy"
+      }
+    },
+    {
+      "id": "ottoman",
+      "name": "Empire ottoman",
+      "startingResources": {
+        "diplomaticPoints": 39,
+        "specialActionCredits": 1,
+        "victoryPoints": 0
+      },
+      "victoryCondition": {
+        "type": "nationalObjectives",
+        "source": "state.nationalObjectives.countries.ottoman"
+      }
+    }
   ],
   "components": [
-    { "id": "turn-order-sequence", "name": "Sequence de resolution numerique", "kind": "app-sequence", "count": 7, "visibility": "public", "tags": ["order", "country", "digital"] },
-    { "id": "secret-programming-slot", "name": "Slot d'ordre cache", "kind": "digital-slot", "count": 21, "visibility": "private", "tags": ["programming", "country", "digital"] },
-    { "id": "special-action-permission", "name": "Permission d'action speciale", "kind": "digital-permission", "count": 14, "visibility": "private", "tags": ["reaction", "bonus", "digital"] },
-    { "id": "setup-reference", "name": "Reference de mise en place", "kind": "setup-reference", "count": 1, "visibility": "facilitator", "tags": ["setup"] },
-    { "id": "objective-ledger", "name": "Registre des objectifs nationaux", "kind": "score-reference", "count": 7, "visibility": "private", "tags": ["reference", "victory"] }
+    {
+      "id": "turn-order-sequence",
+      "name": "Sequence de resolution numerique",
+      "kind": "app-sequence",
+      "count": 7,
+      "visibility": "public",
+      "tags": [
+        "order",
+        "country",
+        "digital"
+      ]
+    },
+    {
+      "id": "secret-programming-slot",
+      "name": "Slot d'ordre cache",
+      "kind": "digital-slot",
+      "count": 21,
+      "visibility": "private",
+      "tags": [
+        "programming",
+        "country",
+        "digital"
+      ]
+    },
+    {
+      "id": "special-action-permission",
+      "name": "Permission d'action speciale",
+      "kind": "digital-permission",
+      "count": 14,
+      "visibility": "private",
+      "tags": [
+        "reaction",
+        "bonus",
+        "digital"
+      ]
+    },
+    {
+      "id": "setup-reference",
+      "name": "Reference de mise en place",
+      "kind": "setup-reference",
+      "count": 1,
+      "visibility": "facilitator",
+      "tags": [
+        "setup"
+      ]
+    },
+    {
+      "id": "objective-ledger",
+      "name": "Registre des objectifs nationaux",
+      "kind": "score-reference",
+      "count": 7,
+      "visibility": "private",
+      "tags": [
+        "reference",
+        "victory"
+      ]
+    }
   ],
   "setup": {
     "phaseId": "end-check",
@@ -238,9 +726,27 @@
       "Pendant la diplomatie, les accords se font en live autour de la table; l'app ne note que ce que les joueurs choisissent de consigner."
     ],
     "distributions": [
-      { "id": "initial-objective-ledger", "componentId": "objective-ledger", "target": "allParticipants", "count": 1, "visibility": "private" },
-      { "id": "initial-secret-slots", "componentId": "secret-programming-slot", "target": "allParticipants", "count": 3, "visibility": "private" },
-      { "id": "initial-special-permission", "componentId": "special-action-permission", "target": "allParticipants", "count": 1, "visibility": "private" }
+      {
+        "id": "initial-objective-ledger",
+        "componentId": "objective-ledger",
+        "target": "allParticipants",
+        "count": 1,
+        "visibility": "private"
+      },
+      {
+        "id": "initial-secret-slots",
+        "componentId": "secret-programming-slot",
+        "target": "allParticipants",
+        "count": 3,
+        "visibility": "private"
+      },
+      {
+        "id": "initial-special-permission",
+        "componentId": "special-action-permission",
+        "target": "allParticipants",
+        "count": 1,
+        "visibility": "private"
+      }
     ]
   },
   "mechanics": [
@@ -249,101 +755,354 @@
       "name": "Verification de fin de partie",
       "family": "live-administration",
       "summary": "A partir de juillet 1914, le secretaire enregistre si le tour sera le dernier.",
-      "phases": ["end-check"],
-      "inputs": [
-        { "id": "currentTurn", "type": "enum", "choices": ["1909", "1910", "1911", "1912", "1913", "Janvier-Juin 1914", "Juillet 1914", "Aout 1914", "Septembre 1914"] },
-        { "id": "dieResult", "type": "number" },
-        { "id": "isFinalTurn", "type": "enum", "choices": ["yes", "no", "automatic"] }
+      "phases": [
+        "end-check"
       ],
-      "resolution": { "type": "recordLiveResults", "mode": "liveThenRecord" },
-      "visibility": { "dashboard": "full", "participants": "summary" }
+      "inputs": [
+        {
+          "id": "currentTurn",
+          "type": "enum",
+          "choices": [
+            "1909",
+            "1910",
+            "1911",
+            "1912",
+            "1913",
+            "Janvier-Juin 1914",
+            "Juillet 1914",
+            "Aout 1914",
+            "Septembre 1914"
+          ]
+        },
+        {
+          "id": "dieResult",
+          "type": "number"
+        },
+        {
+          "id": "isFinalTurn",
+          "type": "enum",
+          "choices": [
+            "yes",
+            "no",
+            "automatic"
+          ]
+        }
+      ],
+      "resolution": {
+        "type": "recordLiveResults",
+        "mode": "liveThenRecord"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "participants": "summary"
+      }
     },
     {
       "id": "free-diplomacy",
       "name": "Diplomatie libre",
       "family": "information-action",
       "summary": "Un joueur consigne un accord, une promesse ou une information non contraignante.",
-      "phases": ["diplomacy"],
-      "inputs": [
-        { "id": "note", "type": "text" },
-        { "id": "visibility", "type": "enum", "choices": ["private", "dashboard", "table"] }
+      "phases": [
+        "diplomacy"
       ],
-      "resolution": { "type": "recordNote", "mode": "manual" },
-      "visibility": { "dashboard": "full", "actor": "full" }
+      "inputs": [
+        {
+          "id": "note",
+          "type": "text"
+        },
+        {
+          "id": "visibility",
+          "type": "enum",
+          "choices": [
+            "private",
+            "dashboard",
+            "table"
+          ]
+        }
+      ],
+      "resolution": {
+        "type": "recordNote",
+        "mode": "manual"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "actor": "full"
+      }
     },
     {
       "id": "secret-country-programming",
       "name": "Choix secret de 3 zones",
       "family": "information-action",
       "summary": "Chaque puissance choisit secretement trois zones ou effectuer des actions ce tour; l'ecran peut etre retourne face cachee jusqu'a revelation.",
-      "phases": ["secret-programming"],
-      "inputs": [
-        { "id": "zone1", "type": "enum", "choices": ["britain-zone", "france-zone", "germany-zone", "austria-hungary-zone", "italy-zone", "russia-zone", "ottoman-zone", "serbia", "romania", "bulgaria", "greece", "africa", "far-east"] },
-        { "id": "zone2", "type": "enum", "choices": ["britain-zone", "france-zone", "germany-zone", "austria-hungary-zone", "italy-zone", "russia-zone", "ottoman-zone", "serbia", "romania", "bulgaria", "greece", "africa", "far-east"] },
-        { "id": "zone3", "type": "enum", "choices": ["britain-zone", "france-zone", "germany-zone", "austria-hungary-zone", "italy-zone", "russia-zone", "ottoman-zone", "serbia", "romania", "bulgaria", "greece", "africa", "far-east"] }
+      "phases": [
+        "secret-programming"
       ],
-      "resolution": { "type": "secretProgramming", "mode": "hiddenUntilPhaseResolution" },
-      "visibility": { "dashboard": "full", "actor": "full", "participants": "hidden" }
+      "inputs": [
+        {
+          "id": "zone1",
+          "type": "enum",
+          "choices": [
+            "britain-zone",
+            "france-zone",
+            "germany-zone",
+            "austria-hungary-zone",
+            "italy-zone",
+            "russia-zone",
+            "ottoman-zone",
+            "serbia",
+            "romania",
+            "bulgaria",
+            "greece",
+            "africa",
+            "far-east"
+          ]
+        },
+        {
+          "id": "zone2",
+          "type": "enum",
+          "choices": [
+            "britain-zone",
+            "france-zone",
+            "germany-zone",
+            "austria-hungary-zone",
+            "italy-zone",
+            "russia-zone",
+            "ottoman-zone",
+            "serbia",
+            "romania",
+            "bulgaria",
+            "greece",
+            "africa",
+            "far-east"
+          ]
+        },
+        {
+          "id": "zone3",
+          "type": "enum",
+          "choices": [
+            "britain-zone",
+            "france-zone",
+            "germany-zone",
+            "austria-hungary-zone",
+            "italy-zone",
+            "russia-zone",
+            "ottoman-zone",
+            "serbia",
+            "romania",
+            "bulgaria",
+            "greece",
+            "africa",
+            "far-east"
+          ]
+        }
+      ],
+      "resolution": {
+        "type": "secretProgramming",
+        "mode": "hiddenUntilPhaseResolution"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "actor": "full",
+        "participants": "hidden"
+      }
     },
     {
       "id": "diplomatic-action-record",
       "name": "Action diplomatique",
       "family": "live-administration",
       "summary": "Enregistrer ajout de PD, gain d'une permission speciale ou absence d'action.",
-      "phases": ["action-resolution"],
-      "inputs": [
-        { "id": "activeCountry", "type": "participant", "source": "actor-or-bound-device" },
-        { "id": "zone", "type": "enum", "choices": ["britain-zone", "france-zone", "germany-zone", "austria-hungary-zone", "italy-zone", "russia-zone", "ottoman-zone", "serbia", "romania", "bulgaria", "greece", "africa", "far-east"] },
-        { "id": "actionKind", "type": "enum", "choices": ["add-diplomatic-point", "gain-special-action", "no-action"] },
-        { "id": "amount", "type": "number" }
+      "phases": [
+        "action-resolution"
       ],
-      "resolution": { "type": "recordLiveResults", "mode": "liveThenRecord" },
-      "visibility": { "dashboard": "full", "participants": "summary" }
+      "inputs": [
+        {
+          "id": "activeCountry",
+          "type": "participant",
+          "source": "actor-or-bound-device"
+        },
+        {
+          "id": "zone",
+          "type": "enum",
+          "choices": [
+            "britain-zone",
+            "france-zone",
+            "germany-zone",
+            "austria-hungary-zone",
+            "italy-zone",
+            "russia-zone",
+            "ottoman-zone",
+            "serbia",
+            "romania",
+            "bulgaria",
+            "greece",
+            "africa",
+            "far-east"
+          ]
+        },
+        {
+          "id": "actionKind",
+          "type": "enum",
+          "choices": [
+            "add-diplomatic-point",
+            "gain-special-action",
+            "no-action"
+          ]
+        },
+        {
+          "id": "amount",
+          "type": "number"
+        }
+      ],
+      "resolution": {
+        "type": "recordLiveResults",
+        "mode": "liveThenRecord"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "participants": "summary"
+      }
     },
     {
       "id": "diplomatic-attack-record",
       "name": "Attaque diplomatique",
       "family": "live-administration",
       "summary": "Enregistrer l'attaque diplomatique et les retraits de PD sur la carte physique.",
-      "phases": ["action-resolution"],
-      "inputs": [
-        { "id": "targetCountry", "type": "participant" },
-        { "id": "zone", "type": "enum", "choices": ["britain-zone", "france-zone", "germany-zone", "austria-hungary-zone", "italy-zone", "russia-zone", "ottoman-zone", "serbia", "romania", "bulgaria", "greece", "africa", "far-east"] },
-        { "id": "ownPointsRemoved", "type": "number" },
-        { "id": "enemyPointsRemoved", "type": "number" },
-        { "id": "note", "type": "text" }
+      "phases": [
+        "action-resolution"
       ],
-      "resolution": { "type": "recordLiveResults", "mode": "liveThenRecord" },
-      "visibility": { "dashboard": "full", "participants": "summary" }
+      "inputs": [
+        {
+          "id": "targetCountry",
+          "type": "participant"
+        },
+        {
+          "id": "zone",
+          "type": "enum",
+          "choices": [
+            "britain-zone",
+            "france-zone",
+            "germany-zone",
+            "austria-hungary-zone",
+            "italy-zone",
+            "russia-zone",
+            "ottoman-zone",
+            "serbia",
+            "romania",
+            "bulgaria",
+            "greece",
+            "africa",
+            "far-east"
+          ]
+        },
+        {
+          "id": "ownPointsRemoved",
+          "type": "number"
+        },
+        {
+          "id": "enemyPointsRemoved",
+          "type": "number"
+        },
+        {
+          "id": "note",
+          "type": "text"
+        }
+      ],
+      "resolution": {
+        "type": "recordLiveResults",
+        "mode": "liveThenRecord"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "participants": "summary"
+      }
     },
     {
       "id": "special-diplomatic-action",
       "name": "Action diplomatique speciale",
       "family": "triggered-ability",
       "summary": "Depenser une permission numerique: budget, attaque supplementaire, assassinat ou reorganisation du Foreign Office.",
-      "phases": ["action-resolution"],
-      "inputs": [
-        { "id": "specialAction", "type": "enum", "choices": ["budget-increase", "extra-attack", "assassination", "foreign-office-reorg"] },
-        { "id": "zone", "type": "enum", "choices": ["britain-zone", "france-zone", "germany-zone", "austria-hungary-zone", "italy-zone", "russia-zone", "ottoman-zone", "serbia", "romania", "bulgaria", "greece", "africa", "far-east"] },
-        { "id": "note", "type": "text" }
+      "phases": [
+        "action-resolution"
       ],
-      "resolution": { "type": "spendSpecialAction", "mode": "pendingFacilitator" },
-      "visibility": { "dashboard": "full", "participants": "summary" }
+      "inputs": [
+        {
+          "id": "specialAction",
+          "type": "enum",
+          "choices": [
+            "budget-increase",
+            "extra-attack",
+            "assassination",
+            "foreign-office-reorg"
+          ]
+        },
+        {
+          "id": "zone",
+          "type": "enum",
+          "choices": [
+            "britain-zone",
+            "france-zone",
+            "germany-zone",
+            "austria-hungary-zone",
+            "italy-zone",
+            "russia-zone",
+            "ottoman-zone",
+            "serbia",
+            "romania",
+            "bulgaria",
+            "greece",
+            "africa",
+            "far-east"
+          ]
+        },
+        {
+          "id": "note",
+          "type": "text"
+        }
+      ],
+      "resolution": {
+        "type": "spendSpecialAction",
+        "mode": "pendingFacilitator"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "participants": "summary"
+      }
     },
     {
       "id": "treaty-scoring-record",
       "name": "Comptage des droits de traite",
       "family": "live-administration",
       "summary": "Enregistrer les PV d'une puissance apres lecture du plateau, des objectifs nationaux et des clauses d'exclusivite.",
-      "phases": ["scoring"],
-      "inputs": [
-        { "id": "country", "type": "participant", "source": "actor-or-bound-device" },
-        { "id": "points", "type": "number" },
-        { "id": "exclusiveTreaties", "type": "text" },
-        { "id": "note", "type": "text" }
+      "phases": [
+        "scoring"
       ],
-      "resolution": { "type": "recordLiveResults", "mode": "liveThenRecord" },
-      "visibility": { "dashboard": "full", "participants": "summary" }
+      "inputs": [
+        {
+          "id": "country",
+          "type": "participant",
+          "source": "actor-or-bound-device"
+        },
+        {
+          "id": "points",
+          "type": "number"
+        },
+        {
+          "id": "exclusiveTreaties",
+          "type": "text"
+        },
+        {
+          "id": "note",
+          "type": "text"
+        }
+      ],
+      "resolution": {
+        "type": "recordLiveResults",
+        "mode": "liveThenRecord"
+      },
+      "visibility": {
+        "dashboard": "full",
+        "participants": "summary"
+      }
     }
   ],
   "actions": [
@@ -353,7 +1112,9 @@
       "phase": "end-check",
       "actor": "any",
       "target": "game",
-      "effect": { "type": "recordLiveResults" },
+      "effect": {
+        "type": "recordLiveResults"
+      },
       "mechanicId": "end-check-roll",
       "fallback": "facilitator-confirmation"
     },
@@ -363,7 +1124,9 @@
       "phase": "diplomacy",
       "actor": "any",
       "target": "game",
-      "effect": { "type": "recordDiplomaticNote" },
+      "effect": {
+        "type": "recordDiplomaticNote"
+      },
       "mechanicId": "free-diplomacy",
       "gesture": "palm-cover",
       "fallback": "manual-confirmation"
@@ -374,7 +1137,9 @@
       "phase": "secret-programming",
       "actor": "any",
       "target": "game",
-      "effect": { "type": "secretProgramming" },
+      "effect": {
+        "type": "secretProgramming"
+      },
       "mechanicId": "secret-country-programming",
       "gesture": "phone-face-down",
       "fallback": "manual-confirmation"
@@ -385,7 +1150,9 @@
       "phase": "action-resolution",
       "actor": "any",
       "target": "zone",
-      "effect": { "type": "recordLiveResults" },
+      "effect": {
+        "type": "recordLiveResults"
+      },
       "mechanicId": "diplomatic-action-record",
       "fallback": "facilitator-confirmation"
     },
@@ -395,7 +1162,9 @@
       "phase": "action-resolution",
       "actor": "any",
       "target": "zone",
-      "effect": { "type": "recordLiveResults" },
+      "effect": {
+        "type": "recordLiveResults"
+      },
       "mechanicId": "diplomatic-attack-record",
       "gesture": "strike-phone",
       "fallback": "facilitator-confirmation"
@@ -406,8 +1175,12 @@
       "phase": "action-resolution",
       "actor": "any",
       "target": "game",
-      "cost": { "specialActionCredits": 1 },
-      "effect": { "type": "specialDiplomaticAction" },
+      "cost": {
+        "specialActionCredits": 1
+      },
+      "effect": {
+        "type": "specialDiplomaticAction"
+      },
       "mechanicId": "special-diplomatic-action",
       "gesture": "slide-resource-to-edge",
       "fallback": "manual-confirmation"
@@ -418,30 +1191,126 @@
       "phase": "scoring",
       "actor": "any",
       "target": "game",
-      "effect": { "type": "recordLiveResults" },
+      "effect": {
+        "type": "recordLiveResults"
+      },
       "mechanicId": "treaty-scoring-record",
       "fallback": "facilitator-confirmation"
     }
   ],
   "zones": [
-    { "id": "britain-zone", "name": "Royaume-Uni", "fictionalType": "great-power", "presenceMethod": "board-zone", "effects": [] },
-    { "id": "france-zone", "name": "France", "fictionalType": "great-power", "presenceMethod": "board-zone", "effects": [] },
-    { "id": "germany-zone", "name": "Allemagne", "fictionalType": "great-power", "presenceMethod": "board-zone", "effects": [] },
-    { "id": "austria-hungary-zone", "name": "Autriche-Hongrie", "fictionalType": "great-power", "presenceMethod": "board-zone", "effects": [] },
-    { "id": "italy-zone", "name": "Italie", "fictionalType": "great-power", "presenceMethod": "board-zone", "effects": [] },
-    { "id": "russia-zone", "name": "Russie", "fictionalType": "great-power", "presenceMethod": "board-zone", "effects": [] },
-    { "id": "ottoman-zone", "name": "Empire ottoman", "fictionalType": "great-power", "presenceMethod": "board-zone", "effects": [] },
-    { "id": "serbia", "name": "Serbie", "fictionalType": "balkan-zone", "presenceMethod": "board-zone", "effects": [] },
-    { "id": "romania", "name": "Roumanie", "fictionalType": "balkan-zone", "presenceMethod": "board-zone", "effects": [] },
-    { "id": "bulgaria", "name": "Bulgarie", "fictionalType": "balkan-zone", "presenceMethod": "board-zone", "effects": [] },
-    { "id": "greece", "name": "Grece", "fictionalType": "balkan-zone", "presenceMethod": "board-zone", "effects": [] },
-    { "id": "africa", "name": "Afrique", "fictionalType": "colonial-zone", "presenceMethod": "board-zone", "effects": [] },
-    { "id": "far-east", "name": "Extreme-Orient", "fictionalType": "colonial-zone", "presenceMethod": "board-zone", "effects": [] }
+    {
+      "id": "britain-zone",
+      "name": "Royaume-Uni",
+      "fictionalType": "great-power",
+      "presenceMethod": "board-zone",
+      "effects": []
+    },
+    {
+      "id": "france-zone",
+      "name": "France",
+      "fictionalType": "great-power",
+      "presenceMethod": "board-zone",
+      "effects": []
+    },
+    {
+      "id": "germany-zone",
+      "name": "Allemagne",
+      "fictionalType": "great-power",
+      "presenceMethod": "board-zone",
+      "effects": []
+    },
+    {
+      "id": "austria-hungary-zone",
+      "name": "Autriche-Hongrie",
+      "fictionalType": "great-power",
+      "presenceMethod": "board-zone",
+      "effects": []
+    },
+    {
+      "id": "italy-zone",
+      "name": "Italie",
+      "fictionalType": "great-power",
+      "presenceMethod": "board-zone",
+      "effects": []
+    },
+    {
+      "id": "russia-zone",
+      "name": "Russie",
+      "fictionalType": "great-power",
+      "presenceMethod": "board-zone",
+      "effects": []
+    },
+    {
+      "id": "ottoman-zone",
+      "name": "Empire ottoman",
+      "fictionalType": "great-power",
+      "presenceMethod": "board-zone",
+      "effects": []
+    },
+    {
+      "id": "serbia",
+      "name": "Serbie",
+      "fictionalType": "balkan-zone",
+      "presenceMethod": "board-zone",
+      "effects": []
+    },
+    {
+      "id": "romania",
+      "name": "Roumanie",
+      "fictionalType": "balkan-zone",
+      "presenceMethod": "board-zone",
+      "effects": []
+    },
+    {
+      "id": "bulgaria",
+      "name": "Bulgarie",
+      "fictionalType": "balkan-zone",
+      "presenceMethod": "board-zone",
+      "effects": []
+    },
+    {
+      "id": "greece",
+      "name": "Grece",
+      "fictionalType": "balkan-zone",
+      "presenceMethod": "board-zone",
+      "effects": []
+    },
+    {
+      "id": "africa",
+      "name": "Afrique",
+      "fictionalType": "colonial-zone",
+      "presenceMethod": "board-zone",
+      "effects": []
+    },
+    {
+      "id": "far-east",
+      "name": "Extreme-Orient",
+      "fictionalType": "colonial-zone",
+      "presenceMethod": "board-zone",
+      "effects": []
+    }
   ],
   "victoryConditions": [
-    { "id": "treaty-rights", "name": "Droits de traite", "rule": "Une puissance a des droits de traite sur une zone avec au moins 2 PD." },
-    { "id": "exclusive-rights", "name": "Droits exclusifs", "rule": "Si aucune autre puissance n'a de droits de traite sur cette zone, utiliser la valeur exclusive indiquee dans state.nationalObjectives." },
-    { "id": "national-objectives", "name": "Objectifs nationaux", "rule": "Chaque puissance marque les objectifs listes dans state.nationalObjectives; le MVP enregistre le resultat, l'automatisation complete viendra avec la carte numerique." },
-    { "id": "final-war-consequence", "name": "Consequence historique", "rule": "En option, comparer les blocs Allies et Empires centraux pour determiner si la guerre est evitee ou transformee." }
+    {
+      "id": "treaty-rights",
+      "name": "Droits de traite",
+      "rule": "Une puissance a des droits de traite sur une zone avec au moins 2 PD."
+    },
+    {
+      "id": "exclusive-rights",
+      "name": "Droits exclusifs",
+      "rule": "Si aucune autre puissance n'a de droits de traite sur cette zone, utiliser la valeur exclusive indiquee dans state.nationalObjectives."
+    },
+    {
+      "id": "national-objectives",
+      "name": "Objectifs nationaux",
+      "rule": "Chaque puissance marque les objectifs listes dans state.nationalObjectives; le MVP enregistre le resultat, l'automatisation complete viendra avec la carte numerique."
+    },
+    {
+      "id": "final-war-consequence",
+      "name": "Consequence historique",
+      "rule": "En option, comparer les blocs Allies et Empires centraux pour determiner si la guerre est evitee ou transformee."
+    }
   ]
 }

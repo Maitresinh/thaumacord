@@ -55,7 +55,7 @@ Stories:
 
 - Player read model exposes only playable current actions.
 - Participant reconnect uses heartbeat and safe fallback to join screen.
-- Putsch au Panador supports core market actions.
+- Banana Republic supports core market actions.
 - Facilitator dashboard shows an MVP control panel.
 - Ready-to-play Putsch demo session can be created.
 - Sessions persist to local JSON storage.

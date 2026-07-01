@@ -27,6 +27,23 @@ The foundation is a generic live-game data layer:
 
 Game master and player views are projections of this data layer. They should not define the architecture.
 
+## Reference Projections
+
+Rules summaries and character sheets are also projections of the module data layer.
+
+They must not be hard-coded per screen. A module exposes phases, resources, mechanics, setup, victory conditions, role text, and optionally an editorial `rules` block. The server then builds:
+
+- `rulesReference`: a compact rules digest for the current module;
+- `characterReference`: the role/character sheet visible to the current audience.
+
+Visibility matters:
+
+- the dashboard receives the full rules reference and all role sheets, including secret fields when the module allows the facilitator to see them;
+- a bound participant receives the rules reference plus only their own complete role sheet;
+- an unbound device can receive public role names and public rules needed to join, but no private character data.
+
+The UI may display these projections as tabs, but the tab UI is not the architecture. The architectural boundary is the filtered read model.
+
 ## Android
 
 Android native is preferred because the project depends on device capabilities:

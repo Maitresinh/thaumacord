@@ -197,6 +197,51 @@ Buttons remain available as fallback, but player-facing controls should first pr
 
 Dashboard read models expose the full list. Participant read models receive cues marked `participants` or `all`.
 
+## Rules And Character References
+
+Modules can declare an optional `rules` block for editorial summaries:
+
+```json
+{
+  "rules": {
+    "summary": "Short table-facing summary.",
+    "sections": [
+      {
+        "id": "core-loop",
+        "title": "Core Loop",
+        "body": "What happens at the table.",
+        "bullets": ["Step one", "Step two"],
+        "audience": "all"
+      }
+    ]
+  }
+}
+```
+
+If `rules` is absent, Ludovive still generates a rules reference from setup instructions, phases, resources, mechanics, and victory conditions.
+
+Role objects are the source for character references:
+
+- `officialRole`;
+- `secretRole`;
+- `responsibilities`;
+- `actions`;
+- `victoryCondition`;
+- `startingResources`.
+
+Dashboard read models receive:
+
+- `rulesReference`: full module rules digest;
+- `characterReference.roles`: all role sheets.
+
+Participant read models receive:
+
+- `rulesReference`: participant-safe rules digest;
+- `characterReference.ownRole`: only the participant's complete role sheet;
+- no `characterReference.roles` list.
+
+This keeps the "Rules" and "Character" tabs as generic UI surfaces driven by module data rather than custom pages per game.
+
 ## Module Validation
 
 When the server loads modules, it validates common references before any session can use the kit:

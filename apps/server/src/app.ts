@@ -166,12 +166,26 @@ const soundCueSchema = z.object({
   visibility: z.enum(["dashboard", "participants", "all"]).default("all")
 });
 
+const rulesSectionSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  body: z.string().optional(),
+  bullets: z.array(z.string()).default([]),
+  audience: z.enum(["all", "dashboard", "participants"]).default("all")
+});
+
+const rulesReferenceSchema = z.object({
+  summary: z.string().optional(),
+  sections: z.array(rulesSectionSchema).default([])
+}).default({ sections: [] });
+
 const moduleSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   version: z.string().min(1),
   pitch: z.string().optional(),
   inspirationNotes: z.string().optional(),
+  rules: rulesReferenceSchema,
   timeline: z.unknown().optional(),
   uiTheme: uiThemeSchema,
   soundboard: z.array(soundCueSchema).default([]),
@@ -2480,6 +2494,8 @@ function minimalReadModel(session: Session): Record<string, unknown> {
         officialRole: role.officialRole
       }))
     },
+    rulesReference: rulesReference(module, "participants"),
+    characterReference: characterReference(module),
     phase: currentPhase(session),
     phaseClock: session.phaseClock,
     turnPhase: turnPhaseView(session),
@@ -2723,6 +2739,89 @@ function visibleSession(session: Session): Session & { module: GameModule; phase
   };
 }
 
+function roleReference(module: GameModule, role: GameModule["roles"][number] | undefined, includeSecret: boolean): Record<string, unknown> | undefined {
+  if (!role) {
+    return undefined;
+  }
+  return {
+    id: role.id,
+    name: role.name,
+    officialRole: role.officialRole,
+    secretRole: includeSecret ? role.secretRole : undefined,
+    responsibilities: role.responsibilities ?? [],
+    actions: role.actions ?? [],
+    victoryCondition: role.victoryCondition,
+    startingResources: role.startingResources
+  };
+}
+
+function rulesReference(module: GameModule, audience: "dashboard" | "participants"): Record<string, unknown> {
+  const explicitSections = (module.rules.sections || [])
+    .filter((section) => section.audience === "all" || section.audience === audience)
+    .map((section) => ({
+      id: section.id,
+      title: section.title,
+      body: section.body,
+      bullets: section.bullets
+    }));
+  const generatedSections = [
+    module.setup
+      ? {
+          id: "setup",
+          title: "Mise en place",
+          bullets: module.setup.instructions
+        }
+      : undefined,
+    {
+      id: "phases",
+      title: "Phases",
+      bullets: module.phases.map((phase) => phase.name + (phase.durationSeconds ? ` (${phase.durationSeconds}s)` : ""))
+    },
+    {
+      id: "resources",
+      title: "Ressources",
+      bullets: module.resources.map((resource) => resource.name)
+    },
+    {
+      id: "mechanics",
+      title: "Mecaniques",
+      bullets: module.mechanics.map((mechanic) => mechanic.name + (mechanic.summary ? `: ${mechanic.summary}` : ""))
+    },
+    module.victoryConditions?.length
+      ? {
+          id: "victory",
+          title: "Conditions de victoire",
+          bullets: module.victoryConditions.map((condition) => {
+            const record = objectRecord(condition);
+            return String(record?.text ?? record?.rule ?? record?.name ?? JSON.stringify(condition));
+          })
+        }
+      : undefined
+  ].filter((section): section is { id: string; title: string; bullets: string[] } => Boolean(section && section.bullets.length > 0));
+  return {
+    summary: module.rules.summary ?? module.pitch ?? module.inspirationNotes ?? "",
+    sections: [...explicitSections, ...generatedSections]
+  };
+}
+
+function characterReference(module: GameModule, participant?: Participant, includeAllRoles = false): Record<string, unknown> {
+  const ownRole = participant?.roleId ? module.roles.find((role) => role.id === participant.roleId) : undefined;
+  return {
+    participant: participant
+      ? {
+          id: participant.id,
+          name: participant.name,
+          roleId: participant.roleId,
+          resources: participant.resources,
+          statuses: participant.statuses,
+          inventory: participant.inventory
+        }
+      : undefined,
+    ownRole: roleReference(module, ownRole, true),
+    roles: includeAllRoles ? module.roles.map((role) => roleReference(module, role, true)) : undefined
+  };
+}
+
 function participantName(session: Session, participantId?: string): string | undefined {
   return participantId ? session.participants.find((participant) => participant.id === participantId)?.name : undefined;
 }
@@ -2923,13 +3022,22 @@ function participantResolutionView(session: Session, resolution: PendingResoluti
   };
 }
 
-function dashboardReadModel(session: Session): ReturnType<typeof visibleSession> & { readModel: "dashboard"; aggregates: Record<string, unknown>; scores: Record<string, unknown>[] } {
+function dashboardReadModel(session: Session): ReturnType<typeof visibleSession> & {
+  readModel: "dashboard";
+  aggregates: Record<string, unknown>;
+  scores: Record<string, unknown>[];
+  rulesReference: Record<string, unknown>;
+  characterReference: Record<string, unknown>;
+} {
+  const module = getModuleOrThrow(session.moduleId);
   return {
     ...visibleSession(session),
     aggregates: aggregateSession(session),
     scores: scoreParticipants(session),
     messages: session.messages,
     pendingResolutions: session.pendingResolutions.map((resolution) => enrichResolution(session, resolution)),
+    rulesReference: rulesReference(module, "dashboard"),
+    characterReference: characterReference(module, undefined, true),
     readModel: "dashboard"
   };
 }
@@ -2967,6 +3075,8 @@ function participantReadModel(session: Session, participantId: string): Record<s
         officialRole: role.officialRole
       }))
     },
+    rulesReference: rulesReference(module, "participants"),
+    characterReference: characterReference(module, participant),
     phase: currentPhase(session),
     phaseClock: session.phaseClock,
     turnPhase: turnPhaseView(session),
@@ -3116,6 +3226,10 @@ function renderIndex(): string {
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .tabButton { width: auto; min-height: 34px; margin: 0; padding: 7px 10px; background: linear-gradient(180deg, #3a414a, #272c32); border-color: #565f69; }
+    .tabButton.active { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 86%, white), color-mix(in srgb, var(--accent) 86%, black)); border-color: color-mix(in srgb, var(--accent) 70%, white); }
+    .tabPanel.hidden { display: none; }
     .brandLine { display: flex; align-items: center; gap: 10px; }
     .brandMark { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 8px; background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 82%, white), color-mix(in srgb, var(--accent) 76%, black)); color: white; font-weight: 900; letter-spacing: .05em; box-shadow: 0 12px 24px rgba(0,0,0,.24); }
     .pill { display: inline-block; padding: 5px 9px; border: 1px solid color-mix(in srgb, var(--line) 80%, white); border-radius: 999px; margin: 2px; font-size: 12px; color: color-mix(in srgb, var(--ink) 90%, var(--muted)); background: color-mix(in srgb, var(--surface) 78%, transparent); }
@@ -3298,6 +3412,20 @@ function renderIndex(): string {
       </div>
 
       <div class="stack">
+        <section>
+          <h2>Reference</h2>
+          <div class="tabs">
+            <button class="tabButton active" data-dashboard-tab="table">Table</button>
+            <button class="tabButton" data-dashboard-tab="rules">Regles</button>
+            <button class="tabButton" data-dashboard-tab="characters">Personnages</button>
+          </div>
+          <div id="dashboardTabTable" class="tabPanel">
+            <div class="muted">Vue operationnelle ci-dessous.</div>
+          </div>
+          <div id="dashboardTabRules" class="tabPanel hidden"></div>
+          <div id="dashboardTabCharacters" class="tabPanel hidden"></div>
+        </section>
+
         <section>
           <h2>Table</h2>
           <div class="grid">
@@ -3491,6 +3619,34 @@ function renderIndex(): string {
     function renderStatusList(statuses) {
       const entries = Object.entries(statuses || {});
       return entries.map(([key, value]) => '<span class="pill">' + key + ': ' + formatStatusValue(value) + '</span>').join("") || '<span class="muted">Aucun statut</span>';
+    }
+    function renderRulesReference(reference) {
+      if (!reference) return '<div class="muted">Aucune regle resumee</div>';
+      const summary = reference.summary ? '<div class="item"><strong>Resume</strong><div>' + reference.summary + '</div></div>' : "";
+      const sections = (reference.sections || []).map((section) => {
+        const body = section.body ? '<div>' + section.body + '</div>' : "";
+        const bullets = (section.bullets || []).length ? '<ul>' + section.bullets.map((bullet) => '<li>' + bullet + '</li>').join("") + '</ul>' : "";
+        return '<div class="item"><strong>' + section.title + '</strong>' + body + bullets + '</div>';
+      }).join("");
+      return '<div class="list">' + summary + sections + '</div>';
+    }
+    function renderCharacterCard(session, role) {
+      if (!role) return "";
+      const responsibilities = (role.responsibilities || []).length ? '<h3>Responsabilites</h3><ul>' + role.responsibilities.map((item) => '<li>' + item + '</li>').join("") + '</ul>' : "";
+      const actions = (role.actions || []).length ? '<h3>Actions</h3><div>' + role.actions.map((item) => '<span class="pill">' + item + '</span>').join("") + '</div>' : "";
+      const resources = role.startingResources && Object.keys(role.startingResources).length ? '<h3>Depart</h3><div>' + Object.entries(role.startingResources).map(([key, value]) => '<span class="pill">' + dashboardResourceLabel(session, key) + ': ' + value + '</span>').join("") + '</div>' : "";
+      const victory = role.victoryCondition?.text ? '<h3>Victoire</h3><div class="muted">' + role.victoryCondition.text + '</div>' : "";
+      return '<div class="item"><strong>' + role.name + '</strong>' + (role.officialRole ? '<div>' + role.officialRole + '</div>' : '') + (role.secretRole ? '<div class="muted">Secret: ' + role.secretRole + '</div>' : '') + responsibilities + actions + resources + victory + '</div>';
+    }
+    function renderDashboardCharacters(session) {
+      const roles = session.characterReference?.roles || [];
+      return '<div class="list">' + (roles.map((role) => renderCharacterCard(session, role)).join("") || '<div class="muted">Aucun personnage</div>') + '</div>';
+    }
+    function setDashboardTab(name) {
+      ["table", "rules", "characters"].forEach((tab) => {
+        document.querySelector('[data-dashboard-tab="' + tab + '"]')?.classList.toggle("active", tab === name);
+        byId("dashboardTab" + tab.charAt(0).toUpperCase() + tab.slice(1))?.classList.toggle("hidden", tab !== name);
+      });
     }
     function dashboardParticipantOptions(session) {
       return option("", "Cible liee") + session.participants.map((participant) => option(participant.id, participant.name)).join("");
@@ -3798,6 +3954,8 @@ function renderIndex(): string {
       if (byId("coupCommitmentDuration")) byId("coupCommitmentDuration").value = session.statuses.coupCommitmentSeconds || 120;
       byId("themePanel").innerHTML = renderThemePanel(session);
       byId("mvpPanel").innerHTML = renderMvpPanel(session);
+      byId("dashboardTabRules").innerHTML = renderRulesReference(session.rulesReference);
+      byId("dashboardTabCharacters").innerHTML = renderDashboardCharacters(session);
       byId("participants").innerHTML = renderDashboardParticipants(session);
       byId("devices").innerHTML = session.devices.map((device) => {
         const participant = session.participants.find((candidate) => candidate.id === device.participantId);
@@ -4008,6 +4166,9 @@ function renderIndex(): string {
       byId("code").value = link;
       setError("Lien place dans le champ code.");
     }));
+    document.querySelectorAll("[data-dashboard-tab]").forEach((button) => {
+      button.addEventListener("click", () => setDashboardTab(button.dataset.dashboardTab));
+    });
     loadNetworkInfo();
     loadModules();
   </script>
@@ -4047,6 +4208,10 @@ function renderParticipantApp(): string {
     .muted { color: var(--muted); }
     .pill { display: inline-block; padding: 4px 8px; border: 1px solid #59616b; border-radius: 999px; margin: 2px; font-size: 12px; color: #dce1e6; }
     .stack { display: grid; gap: 10px; }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .tabButton { width: auto; min-height: 36px; margin: 0; padding: 8px 10px; background: linear-gradient(180deg, #3a414a, #272c32); border-color: #565f69; }
+    .tabButton.active { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 86%, white), color-mix(in srgb, var(--accent) 86%, black)); border-color: color-mix(in srgb, var(--accent) 70%, white); }
+    .tabPanel.hidden { display: none; }
     .brandLine { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding: 12px; border: 1px solid color-mix(in srgb, var(--line) 75%, white); border-radius: var(--radius); background: linear-gradient(135deg, color-mix(in srgb, var(--panel) 84%, var(--accent)), color-mix(in srgb, var(--panel) 92%, black)); box-shadow: var(--shadow); }
     .brandMark { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 8px; background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 82%, white), color-mix(in srgb, var(--accent) 76%, black)); color: white; font-weight: 900; letter-spacing: .05em; box-shadow: 0 12px 24px rgba(0,0,0,.24); }
     .item { border: 1px solid color-mix(in srgb, var(--line) 76%, white); border-radius: var(--radius); padding: 11px; background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 93%, white), color-mix(in srgb, var(--surface) 94%, black)); box-shadow: 0 1px 0 rgba(255,255,255,.04) inset; }
@@ -4123,23 +4288,32 @@ function renderParticipantApp(): string {
 
     <section id="tablePanel" class="hidden">
       <h2 id="participantTitle">Participant</h2>
-      <div id="themeStrip" class="stack"></div>
-      <div id="summary"></div>
-      <div id="phaseClock" class="stack"></div>
-      <h3>Role</h3>
-      <div id="roleDetails" class="stack"></div>
-      <h3>Ressources</h3>
-      <div id="resources" class="stack"></div>
-      <h3>Statuts</h3>
-      <div id="statuses" class="stack"></div>
-      <h3>Historique des echanges</h3>
-      <div id="exchanges" class="stack"></div>
-      <h3>Messages</h3>
-      <div id="messages" class="stack"></div>
-      <h3>A traiter</h3>
-      <div id="pendingResolutions" class="stack"></div>
-      <h3>Actions de cette phase</h3>
-      <div id="actions" class="stack"></div>
+      <div class="tabs">
+        <button class="tabButton active" data-player-tab="table">Table</button>
+        <button class="tabButton" data-player-tab="rules">Regles</button>
+        <button class="tabButton" data-player-tab="character">Personnage</button>
+      </div>
+      <div id="playerTabTable" class="tabPanel">
+        <div id="themeStrip" class="stack"></div>
+        <div id="summary"></div>
+        <div id="phaseClock" class="stack"></div>
+        <h3>Ressources</h3>
+        <div id="resources" class="stack"></div>
+        <h3>Statuts</h3>
+        <div id="statuses" class="stack"></div>
+        <h3>Historique des echanges</h3>
+        <div id="exchanges" class="stack"></div>
+        <h3>Messages</h3>
+        <div id="messages" class="stack"></div>
+        <h3>A traiter</h3>
+        <div id="pendingResolutions" class="stack"></div>
+        <h3>Actions de cette phase</h3>
+        <div id="actions" class="stack"></div>
+      </div>
+      <div id="playerTabRules" class="tabPanel hidden"></div>
+      <div id="playerTabCharacter" class="tabPanel hidden">
+        <div id="roleDetails" class="stack"></div>
+      </div>
       <button id="leave" class="secondary">Oublier cet appareil</button>
     </section>
   </main>
@@ -4302,6 +4476,22 @@ function renderParticipantApp(): string {
     function renderStatuses(statuses) {
       return Object.entries(statuses || {}).map(([key, value]) => '<div class="item"><strong>' + key + '</strong><div>' + formatStatusValue(value) + '</div></div>').join("") || '<div class="muted">Aucun statut</div>';
     }
+    function renderRulesReference(reference) {
+      if (!reference) return '<div class="muted">Aucune regle resumee</div>';
+      const summary = reference.summary ? '<div class="item"><strong>Resume</strong><div>' + reference.summary + '</div></div>' : "";
+      const sections = (reference.sections || []).map((section) => {
+        const body = section.body ? '<div>' + section.body + '</div>' : "";
+        const bullets = (section.bullets || []).length ? '<ul>' + section.bullets.map((bullet) => '<li>' + bullet + '</li>').join("") + '</ul>' : "";
+        return '<div class="item"><strong>' + section.title + '</strong>' + body + bullets + '</div>';
+      }).join("");
+      return '<div class="stack">' + summary + sections + '</div>';
+    }
+    function setPlayerTab(name) {
+      ["table", "rules", "character"].forEach((tab) => {
+        document.querySelector('[data-player-tab="' + tab + '"]')?.classList.toggle("active", tab === name);
+        byId("playerTab" + tab.charAt(0).toUpperCase() + tab.slice(1))?.classList.toggle("hidden", tab !== name);
+      });
+    }
     function renderStatusPills(statuses) {
       return Object.entries(statuses || {}).map(([key, value]) => '<span class="pill">' + key + ': ' + formatStatusValue(value) + '</span>').join("");
     }
@@ -4309,12 +4499,16 @@ function renderParticipantApp(): string {
       return model.module.roles.find((role) => role.id === roleId)?.name || roleId || "role a attribuer";
     }
     function renderRoleDetails(model) {
-      const role = model.ownRole;
+      const role = model.characterReference?.ownRole || model.ownRole;
       if (!role) return '<div class="muted">Role a attribuer par le meneur</div>';
+      const responsibilities = (role.responsibilities || []).length ? '<h3>Responsabilites</h3><ul>' + role.responsibilities.map((item) => '<li>' + item + '</li>').join("") + '</ul>' : "";
+      const actions = (role.actions || []).length ? '<h3>Actions</h3><div>' + role.actions.map((item) => '<span class="pill">' + item + '</span>').join("") + '</div>' : "";
+      const resources = role.startingResources && Object.keys(role.startingResources).length ? '<h3>Depart</h3><div>' + Object.entries(role.startingResources).map(([key, value]) => '<span class="pill">' + resourceLabel(model, key) + ': ' + value + '</span>').join("") + '</div>' : "";
+      const victory = role.victoryCondition?.text ? '<h3>Victoire</h3><div class="muted">' + role.victoryCondition.text + '</div>' : "";
       return '<div class="item"><strong>' + role.name + '</strong>'
         + (role.officialRole ? '<div>' + role.officialRole + '</div>' : '')
         + (role.secretRole ? '<div class="muted">Secret: ' + role.secretRole + '</div>' : '')
-        + (role.victoryCondition?.text ? '<div class="muted">' + role.victoryCondition.text + '</div>' : '')
+        + responsibilities + actions + resources + victory
         + '</div>';
     }
     function formatClock(clock) {
@@ -4497,6 +4691,7 @@ function renderParticipantApp(): string {
       byId("phaseClock").innerHTML = renderTurnPhase(model);
       byId("phaseClock").innerHTML += renderPhasePlanSummary(model);
       byId("roleDetails").innerHTML = renderRoleDetails(model);
+      byId("playerTabRules").innerHTML = renderRulesReference(model.rulesReference);
       byId("resources").innerHTML = renderResourceWallet(model, model.participant.resources);
       byId("statuses").innerHTML = renderStatuses(model.participant.statuses);
       byId("exchanges").innerHTML = (model.exchanges || []).slice(-5).map((exchange) => {
@@ -4543,6 +4738,9 @@ function renderParticipantApp(): string {
     byId("leave").addEventListener("click", () => {
       forgetDevice();
       location.reload();
+    });
+    document.querySelectorAll("[data-player-tab]").forEach((button) => {
+      button.addEventListener("click", () => setPlayerTab(button.dataset.playerTab));
     });
     if (switchingSession) {
       forgetDevice();

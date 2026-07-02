@@ -331,7 +331,37 @@
         "issue-order",
         "authorize-fire",
         "emergency-dive"
-      ]
+      ],
+      "roleSheet": {
+        "universe": "Un equipage de sous-marin pendant la Seconde Guerre mondiale coordonne navigation, machines, sonar, armement et commandement pour traquer ou fuir un ennemi.",
+        "identity": "Vous incarnez Capitaine.",
+        "publicFace": "Figure publique: Capitaine.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Faire progresser votre position pendant la partie.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
+      }
     },
     {
       "id": "helmsman",
@@ -346,7 +376,37 @@
         "change-depth",
         "change-heading",
         "evade"
-      ]
+      ],
+      "roleSheet": {
+        "universe": "Un equipage de sous-marin pendant la Seconde Guerre mondiale coordonne navigation, machines, sonar, armement et commandement pour traquer ou fuir un ennemi.",
+        "identity": "Vous incarnez Pilote.",
+        "publicFace": "Figure publique: Pilote.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Faire progresser votre position pendant la partie.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
+      }
     },
     {
       "id": "engineer",
@@ -361,7 +421,37 @@
         "repair-system",
         "reroute-power",
         "quiet-engines"
-      ]
+      ],
+      "roleSheet": {
+        "universe": "Un equipage de sous-marin pendant la Seconde Guerre mondiale coordonne navigation, machines, sonar, armement et commandement pour traquer ou fuir un ennemi.",
+        "identity": "Vous incarnez Machiniste.",
+        "publicFace": "Figure publique: Machiniste.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Faire progresser votre position pendant la partie.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
+      }
     },
     {
       "id": "sonar",
@@ -378,7 +468,37 @@
         "sonar-sweep",
         "classify-contact",
         "listen-silently"
-      ]
+      ],
+      "roleSheet": {
+        "universe": "Un equipage de sous-marin pendant la Seconde Guerre mondiale coordonne navigation, machines, sonar, armement et commandement pour traquer ou fuir un ennemi.",
+        "identity": "Vous incarnez Operateur sonar.",
+        "publicFace": "Figure publique: Operateur sonar.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Faire progresser votre position pendant la partie.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
+      }
     },
     {
       "id": "weapons",
@@ -395,7 +515,37 @@
         "load-torpedo",
         "compute-solution",
         "fire-torpedo"
-      ]
+      ],
+      "roleSheet": {
+        "universe": "Un equipage de sous-marin pendant la Seconde Guerre mondiale coordonne navigation, machines, sonar, armement et commandement pour traquer ou fuir un ennemi.",
+        "identity": "Vous incarnez Officier torpilles.",
+        "publicFace": "Figure publique: Officier torpilles.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Faire progresser votre position pendant la partie.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
+      }
     },
     {
       "id": "radio",
@@ -412,7 +562,37 @@
         "decode-message",
         "send-burst",
         "intercept"
-      ]
+      ],
+      "roleSheet": {
+        "universe": "Un equipage de sous-marin pendant la Seconde Guerre mondiale coordonne navigation, machines, sonar, armement et commandement pour traquer ou fuir un ennemi.",
+        "identity": "Vous incarnez Radio.",
+        "publicFace": "Figure publique: Radio.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Faire progresser votre position pendant la partie.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
+      }
     }
   ],
   "mechanics": [
@@ -944,68 +1124,43 @@
     }
   ],
   "rules": {
-    "summary": "Wolfpack est un jeu d equipage coordonne. Chaque telephone represente un poste du sous-marin; le capitaine donne les priorites et les postes executent des actions synchronisees.",
+    "summary": "Wolfpack est un jeu d equipage coordonne. Chaque telephone represente un poste du sous-marin; la victoire depend de la discipline, du partage partiel d informations et du respect du commandement en temps limite.",
     "sections": [
+      {
+        "id": "universe",
+        "title": "Univers",
+        "body": "Pendant la Seconde Guerre mondiale, un sous-marin opere en silence. Chaque ordre consomme du temps, du bruit, de l energie ou de la confiance.",
+        "bullets": [
+          "Le Capitaine donne l intention generale.",
+          "Chaque poste voit une partie du probleme.",
+          "Le sous-marin gagne en coordonnant navigation, machines, sonar, radio et torpilles."
+        ],
+        "audience": "all"
+      },
       {
         "id": "goal",
         "title": "But de mission",
-        "audience": "all",
-        "body": "L equipage doit detecter, poursuivre, attaquer ou eviter l ennemi en gardant le sous-marin operationnel.",
+        "body": "Selon le mode, l equipage doit identifier, approcher et neutraliser une cible, ou survivre a une chasse ennemie.",
         "bullets": [
-          "La coque, l oxygene, les batteries, le bruit, les torpilles et la solution de tir sont des ressources communes.",
-          "Le mode cooperatif utilise un ennemi gere par l hote.",
-          "Le mode duel peut opposer deux equipages avec des informations filtrees."
-        ]
+          "Cooperatif: l hote ou le module gere l ennemi.",
+          "Duel: deux equipages jouent en miroir avec informations filtrees.",
+          "Une mission est perdue si la coque, l oxygene ou le temps critique tombent a zero selon le scenario."
+        ],
+        "audience": "all"
       },
       {
         "id": "stations",
         "title": "Postes",
-        "audience": "all",
-        "body": "Chaque joueur incarne un poste avec des responsabilites distinctes.",
+        "body": "Chaque personnage est un poste fonctionnel. Il ne doit pas tout savoir, mais doit transmettre vite ce qui compte.",
         "bullets": [
-          "Capitaine: ordres, autorisation de tir, priorites.",
-          "Pilote: cap, profondeur, manoeuvres evasives.",
-          "Machiniste: batteries, silence machine, reparations.",
-          "Sonar: detection, classification, ecoute.",
+          "Capitaine: priorite, autorisation, arbitrage.",
+          "Pilote: cap, profondeur, evasion.",
+          "Machiniste: batteries, bruit, reparations.",
+          "Sonar: detection et classification.",
           "Torpilles: chargement, solution, tir.",
-          "Radio: messages, interception, transmissions courtes."
-        ]
-      },
-      {
-        "id": "phases",
-        "title": "Phases",
-        "audience": "all",
-        "body": "La mission avance par phases chronometrees ou declenchees.",
-        "bullets": [
-          "Briefing: affectation des postes et ordre de mission.",
-          "Navigation silencieuse: approche et gestion du bruit.",
-          "Contact sonar: recherche et classification.",
-          "Passe d attaque: calcul de solution et tir.",
-          "Avaries: reparations et survie."
-        ]
-      },
-      {
-        "id": "actions",
-        "title": "Actions et gestes",
-        "audience": "participants",
-        "body": "Les actions de poste sont saisies par telephone et peuvent etre accompagnees d un geste physique.",
-        "bullets": [
-          "Retourner le telephone peut valider une action discrete.",
-          "Un arc lent peut representer le balayage sonar.",
-          "Pousser une ressource au bord represente un transfert d energie ou un chargement.",
-          "Les boutons restent disponibles comme secours."
-        ]
-      },
-      {
-        "id": "resolution",
-        "title": "Resolution",
-        "audience": "dashboard",
-        "body": "Le dashboard suit l etat commun et les resolutions en attente.",
-        "bullets": [
-          "Le capitaine n est pas automatiquement une autorite d injection.",
-          "L hote peut corriger les ressources si la table le decide.",
-          "Les attaques contestee utilisent preparation, cible et defense/evasion."
-        ]
+          "Radio: messages, interceptions, ordres cryptes."
+        ],
+        "audience": "all"
       }
     ]
   }

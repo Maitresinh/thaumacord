@@ -337,6 +337,49 @@
       "victoryCondition": {
         "type": "text",
         "text": "Gagne par richesse et controle politique en fin de partie."
+      },
+      "roleSheet": {
+        "universe": "Vous etes un militaire dans un pays ou les alliances se vendent au poids des munitions.",
+        "identity": "Vous etes une force armee supplementaire, utile pour agrandir la table ou remplacer un role manquant.",
+        "publicFace": "Officier influent et respectable.",
+        "secretBriefing": "Votre valeur vient de votre capacite a vendre votre soutien au bon moment.",
+        "objective": "Finir riche et politiquement incontournable.",
+        "howToWin": "Accumulez argent, armes et influence; placez-vous au conseil si possible.",
+        "howToPlay": "Negociez cher votre appui, evitez de bruler vos ressources trop tot, et surveillez le cours du cuivre.",
+        "firstMoves": [
+          "Identifier qui controle le pouvoir.",
+          "Vendre votre neutralite avant de vendre vos armes.",
+          "Chercher un acces au conseil."
+        ],
+        "keyRules": [
+          "Vos armes ne servent dans un coup que si les munitions suivent.",
+          "Le conseil double le score final."
+        ],
+        "phaseFocus": [
+          {
+            "title": "Marche",
+            "bullets": [
+              "Acheter bas si le cours semble devoir monter."
+            ]
+          },
+          {
+            "title": "Coup d Etat",
+            "bullets": [
+              "Attendre que les deux camps soient prets a payer votre soutien."
+            ]
+          }
+        ],
+        "negotiationHooks": [
+          "Promettre une neutralite armee.",
+          "Offrir une protection au Roi ou a l opposition."
+        ],
+        "risks": [
+          "Engager trop tot vos armes.",
+          "Rester hors du conseil en fin de partie."
+        ],
+        "reminders": [
+          "Vous gagnez aux points, pas a la morale."
+        ]
       }
     },
     {
@@ -351,6 +394,49 @@
       "victoryCondition": {
         "type": "text",
         "text": "Gagne par accumulation de richesse et ventes strategiques."
+      },
+      "roleSheet": {
+        "universe": "Vous etes marchand dans un pays ou chaque crise cree un marche.",
+        "identity": "Vous etes un marchand additionnel pour tables larges.",
+        "publicFace": "Commercant pragmatique.",
+        "secretBriefing": "Votre vraie arme est la liquidite: vous devez faire circuler les ressources.",
+        "objective": "Transformer chaque crise en profit.",
+        "howToWin": "Achetez ce qui est sous-evalue, revendez quand la peur monte, gardez assez de cash pour la fin.",
+        "howToPlay": "Servez d intermediaire. Si deux joueurs ne peuvent pas se parler, faites payer votre discret passage.",
+        "firstMoves": [
+          "Connaitre les besoins de chaque camp.",
+          "Acheter une petite position en cuivre.",
+          "Garder du cash pour saisir les urgences."
+        ],
+        "keyRules": [
+          "Les transactions validees par l app sont les seules garanties.",
+          "Les actions entre joueurs ne sont pas forcees au cours officiel."
+        ],
+        "phaseFocus": [
+          {
+            "title": "Marche",
+            "bullets": [
+              "Arbitrer cuivre contre cash."
+            ]
+          },
+          {
+            "title": "Intrigue",
+            "bullets": [
+              "Acheter des informations et les revendre."
+            ]
+          }
+        ],
+        "negotiationHooks": [
+          "Proposer un prix maintenant contre faveur plus tard.",
+          "Servir de banque temporaire."
+        ],
+        "risks": [
+          "Trop stocker sans revendre.",
+          "Etre identifie comme indispensable puis taxe par tous."
+        ],
+        "reminders": [
+          "Un petit profit repete bat souvent une grande promesse."
+        ]
       }
     },
     {
@@ -373,6 +459,62 @@
       "victoryCondition": {
         "type": "text",
         "text": "Gagne en terminant avec le plus d'escudos; les actions restantes valent la moitie du cours."
+      },
+      "roleSheet": {
+        "universe": "Vous recevez les notables du Panador dans une soiree faussement amicale. Tout le monde sourit; tout le monde veut vos mines.",
+        "identity": "Vous etes le Roi de Banana Republic, proprietaire politique des mines de cuivre, hote de la session et joueur a part entiere.",
+        "publicFace": "Roi mondain, arbitre apparent, vendeur officiel des actions de cuivre.",
+        "secretBriefing": "Vous n avez pas de role secret: votre avantage est institutionnel. Vous pouvez introduire et corriger des elements de jeu selon le mode choisi.",
+        "objective": "Avoir le plus d escudos possible a la fin, tout en maintenant assez d ordre pour que le jeu avance.",
+        "howToWin": "Vendez les actions au bon rythme, entretenez la tension entre FUN et GAG, profitez des conseils, rachetez ou retenez les actions selon le cours.",
+        "howToPlay": "Vous animez sans vous sacrifier: vous gerez les mines, les timers, les votes et les coups, mais vous negociez aussi pour votre fortune.",
+        "tableBehavior": "Parlez comme l arbitre quand vous reglez une procedure; parlez comme le Roi quand vous marchandez.",
+        "firstMoves": [
+          "Lancer la salle d attente et assigner les roles.",
+          "Verifier que chaque joueur lit sa fiche.",
+          "Annoncer l heure de fin ou le nombre de tours.",
+          "Vendre peu au debut pour laisser monter le cours."
+        ],
+        "keyRules": [
+          "Vos actions restantes valent la moitie du cours final.",
+          "Vous pouvez refuser plus de 5 actions au meme joueur par heure.",
+          "Vous pouvez limiter la vente totale a 20 actions par heure.",
+          "Un coup reussi divise le cours par deux; un coup rate augmente chaque action de 1000."
+        ],
+        "phaseFocus": [
+          {
+            "title": "Marche",
+            "bullets": [
+              "Vendre jusqu a 6 actions par heure si cela sert votre prix.",
+              "Racheter seulement au cours officiel si vous acceptez."
+            ]
+          },
+          {
+            "title": "Coup d Etat",
+            "bullets": [
+              "Declencher le compte a rebours, collecter les engagements, annoncer le resultat."
+            ]
+          },
+          {
+            "title": "Conseil",
+            "bullets": [
+              "Convoquer les conseillers, enregistrer les detournements, garder le rythme."
+            ]
+          }
+        ],
+        "negotiationHooks": [
+          "Vendre une action contre cash plus promesse politique.",
+          "Soutenir discretement le camp qui protege le cours.",
+          "Menacer de fermer le marche."
+        ],
+        "risks": [
+          "Arbitrer trop genereusement contre vos interets.",
+          "Vendre trop vite les actions.",
+          "Oublier que vous etes aussi joueur."
+        ],
+        "reminders": [
+          "Hote technique et autorite de jeu peuvent etre separes si la table le veut."
+        ]
       }
     },
     {
@@ -392,6 +534,50 @@
       "victoryCondition": {
         "type": "text",
         "text": "Accumuler des escudos par le commerce et l'influence politique."
+      },
+      "roleSheet": {
+        "universe": "Le Panador est une vitrine parfaite: sous couvert de cuivre, vous alimentez toutes les guerres utiles.",
+        "identity": "Vous etes James Stones, negociant anglais en matieres premieres.",
+        "publicFace": "Negociant en cuivre et importateur respectable.",
+        "secretBriefing": "Vous etes agent du KGB. Vous devez vendre des armes aux deux forces armees et tirer profit du desordre.",
+        "objective": "Gagner beaucoup d argent en alimentant les camps sans vous faire enfermer dans un seul camp.",
+        "howToWin": "Vendez CF et CM au meilleur prix, gardez assez de cartes pour peser sur un coup, utilisez vos bulletins pour entrer ou placer un allie au conseil.",
+        "howToPlay": "Ne donnez jamais tout a un camp. Faites monter les encheres en laissant croire que l autre camp est deja arme.",
+        "firstMoves": [
+          "Identifier FUN et GAG.",
+          "Sonder le Roi sur le cours du cuivre.",
+          "Vendre une petite quantite pour creer la dependance."
+        ],
+        "keyRules": [
+          "Les CF ne valent en coup que si les CM suivent.",
+          "Vos cartes restantes scorent aussi en fin de partie.",
+          "Les votes peuvent doubler votre score via le conseil."
+        ],
+        "phaseFocus": [
+          {
+            "title": "Intrigue",
+            "bullets": [
+              "Organiser des ventes separees et contradictoires."
+            ]
+          },
+          {
+            "title": "Coup d Etat",
+            "bullets": [
+              "Vendre la derniere munition au prix fort avant la deadline."
+            ]
+          }
+        ],
+        "negotiationHooks": [
+          "Je peux equilibrer les forces pour eviter une victoire trop facile.",
+          "Je peux livrer maintenant, mais le prix double apres l alarme."
+        ],
+        "risks": [
+          "Etre revele comme fournisseur double.",
+          "Garder trop de stock invendu."
+        ],
+        "reminders": [
+          "Votre meilleure position est souvent entre deux ennemis."
+        ]
       }
     },
     {
@@ -410,6 +596,50 @@
       "victoryCondition": {
         "type": "text",
         "text": "Accumuler des escudos par le commerce et l'influence politique."
+      },
+      "roleSheet": {
+        "universe": "Au Panador, les bananes ne sont que la couverture. La vraie cargaison arrive en caisses.",
+        "identity": "Vous etes Giani Forlano, marchand italien de bananes.",
+        "publicFace": "Marchand de bananes bruyant et sympathique.",
+        "secretBriefing": "Vous etes agent de la CIA. Vous vendez des armes aux deux forces armees et orientez le regime qui protege vos affaires.",
+        "objective": "Convertir vos caisses en argent et influence, sans laisser un camp devenir autonome.",
+        "howToWin": "Vendez vite assez pour creer la confiance, gardez une reserve pour le coup decisif, investissez dans le conseil si l occasion apparait.",
+        "howToPlay": "Soyez visible, bavard, utile. Plus les autres pensent que vous etes un simple vendeur, plus vos prix montent.",
+        "firstMoves": [
+          "Approcher le FUN au pouvoir et le GAG dans l opposition.",
+          "Verifier qui manque de munitions.",
+          "Acheter ou echanger de l influence politique."
+        ],
+        "keyRules": [
+          "Les CF ne valent en coup que si les CM suivent.",
+          "Vos cartes restantes scorent aussi en fin de partie.",
+          "Les votes peuvent doubler votre score via le conseil."
+        ],
+        "phaseFocus": [
+          {
+            "title": "Marche",
+            "bullets": [
+              "Transformer cash en actions si le cours monte."
+            ]
+          },
+          {
+            "title": "Coup d Etat",
+            "bullets": [
+              "Vendre votre derniere carte au camp le plus pressant."
+            ]
+          }
+        ],
+        "negotiationHooks": [
+          "Je ne vends pas des armes, je vends de la stabilite.",
+          "Si vous n achetez pas, votre adversaire achetera."
+        ],
+        "risks": [
+          "Trop promettre aux deux camps en meme temps.",
+          "Finir avec des cartes fortes mais pas assez d argent."
+        ],
+        "reminders": [
+          "Votre role public vous autorise a parler a tout le monde."
+        ]
       }
     },
     {
@@ -426,6 +656,49 @@
       "victoryCondition": {
         "type": "text",
         "text": "Transformer la drogue et les arrangements en escudos."
+      },
+      "roleSheet": {
+        "universe": "Quand le pouvoir tremble, les marchandises illegales circulent mieux que les discours.",
+        "identity": "Vous etes Vladimir Doukorof, marchand russe de fusils de chasse.",
+        "publicFace": "Marchand d armes civiles et homme d affaires douteux.",
+        "secretBriefing": "Vous etes trafiquant de drogue. Votre cargaison doit devenir argent, protection ou votes.",
+        "objective": "Ecouler le plus de sacs possible tout en gardant assez de valeur pour le score final.",
+        "howToWin": "Vendez la drogue a ceux qui ont besoin de cash discret, de faveurs ou de moyens de pression; transformez le produit en cuivre ou en conseil.",
+        "howToPlay": "Ne vous comportez pas comme un simple vendeur. Utilisez la drogue comme monnaie d alliance, chantage ou entree dans une coalition.",
+        "firstMoves": [
+          "Trouver les joueurs qui manquent de ressources souples.",
+          "Ne pas vendre tout le stock au premier prix.",
+          "Chercher une protection politique."
+        ],
+        "keyRules": [
+          "Un sac vaut 5000 points s il reste en main.",
+          "Une vente enregistree donne du cash mais revele au moins une partie de votre reseau."
+        ],
+        "phaseFocus": [
+          {
+            "title": "Intrigue",
+            "bullets": [
+              "Negocier discretement les sacs et faveurs."
+            ]
+          },
+          {
+            "title": "Conseil",
+            "bullets": [
+              "Acheter une decision ou une protection."
+            ]
+          }
+        ],
+        "negotiationHooks": [
+          "Je peux regler votre probleme sans passer par les armes.",
+          "Cette cargaison vaut plus avant un vote qu apres."
+        ],
+        "risks": [
+          "Rester avec une marchandise invendue.",
+          "Etre force a vendre trop bas sous pression."
+        ],
+        "reminders": [
+          "Votre meilleure vente inclut souvent un service politique."
+        ]
       }
     },
     {
@@ -445,6 +718,56 @@
       "victoryCondition": {
         "type": "text",
         "text": "Conserver ou reprendre le pouvoir; le camp au pouvoir en fin de partie double son total."
+      },
+      "roleSheet": {
+        "universe": "Le FUN a pris le pouvoir, mais un regime tient seulement si ses amis restent armes et payes.",
+        "identity": "Vous etes Raul Belgrano, capitaine et specialiste des reserves de chasse.",
+        "publicFace": "Specialiste des reserves de chasse, proche du pouvoir.",
+        "secretBriefing": "Vous representez le FUN, au pouvoir au debut. Vous devez conserver le pouvoir ou le reprendre si vous le perdez.",
+        "objective": "Finir avec le FUN au pouvoir et assez de points personnels pour gagner.",
+        "howToWin": "Achetez assez d armes pour dissuader le GAG, placez-vous au conseil, exploitez les revenus du pouvoir sans ruiner votre score.",
+        "howToPlay": "Au debut, vous n avez pas besoin de renverser la table: vous devez la verrouiller. Faites payer la stabilite.",
+        "firstMoves": [
+          "Identifier qui vend armes et munitions.",
+          "Conclure un pacte temporaire avec le Roi.",
+          "Surveiller le GAG sans vous isoler."
+        ],
+        "keyRules": [
+          "Si le FUN controle le pouvoir en fin de partie, votre total est double.",
+          "Un coup rate fait monter le cuivre.",
+          "Un coup reussi divise le cours."
+        ],
+        "phaseFocus": [
+          {
+            "title": "Marche",
+            "bullets": [
+              "Acheter ou empecher l opposition d acheter trop d actions."
+            ]
+          },
+          {
+            "title": "Coup d Etat",
+            "bullets": [
+              "Defendre avec assez de CF/CM et faire payer les soutiens."
+            ]
+          },
+          {
+            "title": "Conseil",
+            "bullets": [
+              "Garder ou gagner une place pour doubler votre score."
+            ]
+          }
+        ],
+        "negotiationHooks": [
+          "La stabilite vaut plus que vos promesses de revolution.",
+          "Aidez le pouvoir et vous serez protege au conseil."
+        ],
+        "risks": [
+          "Sous-estimer un GAG bien arme.",
+          "Defendre le pouvoir en sacrifiant tout votre score."
+        ],
+        "reminders": [
+          "Conserver le pouvoir final compte plus que gagner chaque escarmouche."
+        ]
       }
     },
     {
@@ -463,6 +786,56 @@
       "victoryCondition": {
         "type": "text",
         "text": "Prendre puis conserver le pouvoir; le camp au pouvoir en fin de partie double son total."
+      },
+      "roleSheet": {
+        "universe": "L opposition attend son heure dans les collines. Elle n a besoin que d une ouverture et de munitions.",
+        "identity": "Vous etes Miltos Agripnakis, proprietaire terrien grec.",
+        "publicFace": "Proprietaire terrien conservateur et mondain.",
+        "secretBriefing": "Vous etes agent des forces armees du GAG, dans l opposition au debut.",
+        "objective": "Prendre le pouvoir et le conserver jusqu a la fin.",
+        "howToWin": "Armez votre camp, choisissez le bon moment pour le putsch, puis transformez le pouvoir en multiplicateur final.",
+        "howToPlay": "Vous etes faible tant que vous etes seul. Construisez une coalition, achetez les vendeurs, cachez votre timing.",
+        "firstMoves": [
+          "Identifier les vendeurs d armes et munitions.",
+          "Approcher les mecontents du Roi ou du FUN.",
+          "Ne pas declarer le putsch avant d avoir un plan de soutien."
+        ],
+        "keyRules": [
+          "Le putschiste doit engager plus de force que le pouvoir.",
+          "Les cartes engagees sont perdues.",
+          "Si le GAG controle le pouvoir en fin de partie, votre total est double."
+        ],
+        "phaseFocus": [
+          {
+            "title": "Intrigue",
+            "bullets": [
+              "Recruter sans annoncer votre date."
+            ]
+          },
+          {
+            "title": "Coup d Etat",
+            "bullets": [
+              "Utiliser le compte a rebours pour obtenir les derniers soutiens."
+            ]
+          },
+          {
+            "title": "Conseil",
+            "bullets": [
+              "Eliminer les conseillers hostiles et placer vos allies."
+            ]
+          }
+        ],
+        "negotiationHooks": [
+          "Le regime tombera; choisissez votre camp avant la hausse des prix.",
+          "Je paie maintenant, mais je recompenserai apres le pouvoir."
+        ],
+        "risks": [
+          "Lancer un coup trop tot.",
+          "Etre piege par de fausses promesses de munitions."
+        ],
+        "reminders": [
+          "Votre victoire est politique avant d etre comptable."
+        ]
       }
     }
   ],
@@ -1190,134 +1563,156 @@
     }
   ],
   "rules": {
-    "summary": "Banana Republic est un jeu de negocociation, commerce et coups d Etat. Chaque joueur cherche a finir avec le plus de points, surtout en escudos et en actions de cuivre. Le Roi est aussi joueur par defaut: il gere la table, les mines de cuivre et peut gagner comme les autres.",
+    "summary": "Banana Republic est un jeu de negociation, trahison et economie politique. Les joueurs incarnent des notables et agents secrets au Panador: on achete, vend, cache des armes, tente des coups d Etat, vote le conseil et cherche a finir avec le plus de points.",
     "sections": [
+      {
+        "id": "universe",
+        "title": "Univers",
+        "body": "Le Panador est une republique bananiere d Amerique centrale. Les mines de cuivre valent une fortune, le regime FUN vient de prendre le pouvoir, l opposition GAG prepare sa revanche, et les services etrangers vendent armes, munitions et arrangements.",
+        "bullets": [
+          "Tout le monde a une facade publique: marchand, proprietaire, negociant, specialiste ou roi des mines.",
+          "Presque tout le monde a aussi un role secret: CIA, KGB, trafiquant, FUN, GAG ou autorite miniere.",
+          "Les discussions se jouent en vrai autour de la table; Ludovive enregistre les ressources, votes, coups d Etat, conseils et scores."
+        ],
+        "audience": "all"
+      },
       {
         "id": "goal",
         "title": "But du jeu",
-        "audience": "all",
-        "body": "La partie se joue en temps limite. A la fin, le joueur qui totalise le plus de points gagne.",
+        "body": "A la fin de la partie, le joueur avec le plus de points gagne. Les points viennent surtout des escudos, des cartes armes/munitions/drogue, des actions de cuivre et des multiplicateurs politiques.",
         "bullets": [
           "1 escudo vaut 1 point.",
-          "Les actions des mines de cuivre valent leur cours courant en points.",
-          "Pour Le Roi, les actions de cuivre restantes valent la moitie de leur cours.",
-          "Les joueurs FUN ou GAG au pouvoir doublent leur score final selon les regles du scenario.",
-          "Les autres ressources servent surtout a negocier, voter, soutenir ou contrer un coup d Etat."
-        ]
-      },
-      {
-        "id": "roles",
-        "title": "Roles et informations secretes",
-        "audience": "all",
-        "body": "Chaque participant recoit un role public et, sauf Le Roi, une appartenance ou mission secrete.",
-        "bullets": [
-          "Le Roi n a pas de role secret et commence avec la reserve d actions de cuivre.",
-          "Les agents et trafiquants ont des objectifs differents: vendre, acheter, prendre le pouvoir, garder le pouvoir ou accumuler de l argent.",
-          "Un joueur ne voit sur son telephone que ses ressources, ses actions disponibles et les messages qui le concernent.",
-          "Le dashboard de l hote voit l ensemble de la table et sert a arbitrer les points litigieux."
-        ]
+          "Les cartes CF et CM valent leur valeur en points multipliee par 100: 25 vaut 2500, 50 vaut 5000, 100 vaut 10000.",
+          "Un sac de drogue vaut 5000 points s il reste en main, mais il peut surtout servir a faire de l argent pendant la partie.",
+          "Chaque action de cuivre vaut le cours courant. Les actions du Roi encore en main valent la moitie du cours.",
+          "Les membres du conseil des ministres doublent leur total final.",
+          "Le camp FUN ou GAG qui controle le pouvoir en fin de partie double son total final."
+        ],
+        "audience": "all"
       },
       {
         "id": "setup",
         "title": "Mise en place",
-        "audience": "dashboard",
-        "body": "L hote cree la session Banana Republic, laisse les telephones entrer en salle d attente, puis affecte les roles.",
+        "body": "L hote cree la session, les joueurs rejoignent la salle d attente, puis l hote assigne les personnages et lance la distribution initiale.",
         "bullets": [
-          "Les telephones rejoignent la session avec un nom; ils ne choisissent pas eux-memes leur role.",
-          "L hote affecte les roles et peut associer chaque telephone a son joueur.",
-          "L action de mise en place distribue les ressources et composants de depart.",
-          "Verifie que Le Roi porte aussi l autorite royale si l hote doit arbitrer et corriger les elements de jeu.",
-          "Le code de session est donne aux participants; le meme Wi-Fi est recommande."
-        ]
+          "Chaque telephone doit etre lie a un participant reel avant la distribution.",
+          "Les ressources initiales numeriques remplacent les billets, cartes et bulletins physiques du jeu source.",
+          "Chaque joueur verifie son onglet Personnage: facade, secret, objectif, ressources de depart et premiere strategie.",
+          "Le Roi garde le suivi des actions de cuivre disponibles et du cours courant.",
+          "L hote fixe une heure ou un nombre de tours de fin de partie avant de commencer."
+        ],
+        "audience": "all"
+      },
+      {
+        "id": "roles",
+        "title": "Roles et secret",
+        "body": "Le plaisir vient du decalage entre votre facade publique et votre mission reelle. Ne montrez jamais votre fiche de personnage.",
+        "bullets": [
+          "Le Roi est aussi hote par defaut: il gere les mines de cuivre, peut vendre des actions, arbitre les procedures et joue pour gagner.",
+          "Le KGB et la CIA vendent armes et munitions aux deux camps: ils gagnent par commerce, information et opportunisme.",
+          "Le trafiquant cherche a ecouler ses sacs de drogue et a convertir le risque en argent.",
+          "Le FUN commence au pouvoir; le GAG commence dans l opposition. Ces deux camps cherchent le pouvoir final.",
+          "Les personnages generiques General et Marchand servent de roles additionnels si la table depasse les personnages historiques."
+        ],
+        "audience": "all"
       },
       {
         "id": "phases",
-        "title": "Phases de jeu",
-        "audience": "all",
-        "body": "La partie avance par phases. Le minuteur peut etre fixe par l hote selon la table.",
+        "title": "Tours et phases",
+        "body": "La partie alterne phases de marche/negociation, intrigues libres, coups d Etat possibles, resolutions et conseil. Le MJ peut regler la duree de chaque phase.",
         "bullets": [
-          "Marche: achats, ventes et negociations de ressources.",
-          "Intrigue: discussions libres, alliances, preparation des votes ou coups d Etat.",
-          "Coup d Etat: un joueur peut declarer une tentative; les soutiens et defenses sont engages sous compte a rebours.",
-          "Resolution: l app et l hote revelent/comparent les engagements et appliquent les effets.",
-          "Premier conseil: le conseil se tient en direct; l hote enregistre presents, detournements et decisions."
-        ]
+          "Marche: achat/vente des actions de cuivre et tractations economiques.",
+          "Intrigue: discussions libres, alliances, promesses, menaces et echanges directs.",
+          "Coup d Etat: si un opposant declare un putsch, la table passe en compte a rebours d engagements caches.",
+          "Resolution: Ludovive compare ou aide a comparer les soutiens, applique hausse ou baisse du cours et ouvre le conseil si besoin.",
+          "Conseil: les conseillers votent, detournent des fonds et prennent les decisions politiques enregistrees par le Roi."
+        ],
+        "audience": "all"
       },
       {
         "id": "market",
         "title": "Mines de cuivre et marche",
-        "audience": "all",
-        "body": "Les actions de cuivre sont la ressource economique centrale. Le Roi gere leur vente depuis les mines.",
+        "body": "Les actions de cuivre sont le coeur economique du jeu. Leur valeur monte avec le temps et les coups rates, mais s effondre apres un coup reussi.",
         "bullets": [
-          "Au depart, Le Roi possede la reserve d actions de cuivre des mines.",
-          "Les joueurs peuvent acheter des actions au cours courant si les limites de phase le permettent.",
-          "Le Roi peut refuser certaines ventes selon les contraintes de la regle et de la phase.",
-          "Un coup d Etat rate fait monter le cours des actions.",
-          "Un coup d Etat reussi fait baisser le cours des actions."
-        ]
+          "Au depart, le Roi dispose de 50 actions des mines de cuivre a 1000 escudos chacune.",
+          "Le Roi peut vendre 6 actions par heure et l app suit aussi le stock total disponible.",
+          "Le Roi peut refuser de vendre plus de 5 actions au meme joueur par heure.",
+          "Le Roi peut refuser de mettre plus de 20 actions en vente dans une heure.",
+          "Le cours augmente normalement de 1000 escudos par heure.",
+          "Les joueurs peuvent se vendre ou echanger leurs actions librement, sans respecter le cours officiel.",
+          "Si le Roi rachete une action, il doit respecter le cours courant."
+        ],
+        "audience": "all"
       },
       {
         "id": "exchanges",
         "title": "Echanges entre joueurs",
-        "audience": "all",
-        "body": "Les joueurs negocient librement, mais les transferts doivent etre saisis ou confirmes dans l app.",
+        "body": "Les echanges sont libres mais doivent etre incarnes: on negocie face a face et le telephone sert de preuve de contact.",
         "bullets": [
-          "Les echanges exigent une confirmation de proximite: telephones au contact ou joueurs cote a cote.",
-          "On peut transferer argent, actions, armes, munitions, drogue ou bulletins selon l action disponible.",
-          "Le joueur ne voit que ses propres transferts; le dashboard conserve l historique complet.",
-          "Les gestes proposes par l interface indiquent comment jouer physiquement l echange, avec bouton de secours si besoin."
-        ]
+          "Une transaction entre joueurs doit se faire telephones proches ou au contact.",
+          "L app enregistre ce qui change de main: escudos, actions, armes, munitions, drogue, bulletins ou promesses si le module les formalise.",
+          "Une promesse orale n est pas une ressource garantie tant qu elle n est pas enregistree.",
+          "Un joueur peut mentir sur son intention, mais pas sur une transaction deja validee par l app.",
+          "Les echanges a distance ne sont pas valides sauf action de module explicitement distante."
+        ],
+        "audience": "all"
       },
       {
         "id": "coup",
         "title": "Coup d Etat",
-        "audience": "all",
-        "body": "Un coup d Etat est une contestation entre un attaquant et une defense. Les engagements sont secrets pendant un court delai.",
+        "body": "Un joueur de l opposition peut prevenir le Roi qu il tente un coup d Etat. Le putsch a priorite sur les autres procedures.",
         "bullets": [
-          "L attaquant declare la tentative pendant la phase Coup d Etat.",
-          "L app declenche un compte a rebours pour les engagements de soutien ou de defense.",
-          "Les ressources engagees peuvent inclure armes, munitions et influence selon l action.",
-          "A la resolution, les engagements sont compares.",
-          "Si le coup reussit, le pouvoir change et le cours du cuivre baisse; s il echoue, le pouvoir reste en place et le cours monte."
-        ]
-      },
-      {
-        "id": "council",
-        "title": "Conseil et detournement",
-        "audience": "all",
-        "body": "Le conseil est une scene live. L app sert a enregistrer les resultats et a appliquer les effets.",
-        "bullets": [
-          "Le conseil peut avoir lieu regulierement ou apres un coup d Etat selon l etat de la partie.",
-          "Le Roi ou l autorite royale saisit les participants presents.",
-          "Le detournement de fonds est enregistre comme gain ou ajustement de ressources.",
-          "Les decisions du conseil peuvent etre notees dans le journal pour garder trace de la table.",
-          "Les resolutions restent visibles dans le dashboard jusqu a validation."
-        ]
+          "Le Roi declenche un compte a rebours parametre pour les engagements caches.",
+          "Le putschiste engage des cartes armes et munitions. Le defenseur du pouvoir engage aussi armes et munitions.",
+          "Les armes ne comptent que dans la limite des munitions disponibles, et inversement.",
+          "Exemple: 75 CF et 100 CM ne donnent que 75 points de force engagee.",
+          "Si le putschiste engage plus de force que le pouvoir, le coup reussit et le pouvoir change.",
+          "Si le coup reussit, les actions de cuivre chutent de moitie.",
+          "Si le coup echoue, chaque action de cuivre augmente de 1000 escudos.",
+          "Le Roi rend publique la tentative et son resultat; les cartes engagees sont perdues."
+        ],
+        "audience": "all"
       },
       {
         "id": "election",
         "title": "Election du conseil",
-        "audience": "all",
-        "body": "Les bulletins de vote servent a faire entrer ou sortir des conseillers.",
+        "body": "A intervalles reguliers, les joueurs votent pour composer ou modifier le conseil des ministres.",
         "bullets": [
-          "Chaque vote indique un candidat a promouvoir et un candidat a eliminer.",
-          "Le nombre de bulletins depenses est retire des ressources du votant.",
-          "Le dashboard cumule les suffrages.",
-          "A la cloture, l app marque les entrees et sorties du conseil selon le resultat.",
-          "En cas de cas limite, l hote tranche et note la decision."
-        ]
+          "Chaque joueur utilise ses bulletins de vote pour designer un nom a promouvoir et un nom a eliminer.",
+          "Un joueur ne peut pas voter pour lui-meme.",
+          "Le nom qui recoit le plus de votes d elimination quitte le conseil.",
+          "En cas d egalite a l elimination, les ex-aequo sont elimines.",
+          "Les places libres sont remplies par les noms ayant le plus de votes de promotion.",
+          "En cas d egalite a la promotion, le Roi ou l app tranche selon le mode choisi.",
+          "Etre au conseil est dangereux politiquement, mais double le score final."
+        ],
+        "audience": "all"
+      },
+      {
+        "id": "council",
+        "title": "Conseil et detournement",
+        "body": "Le conseil se tient apres une election reguliere ou apres un coup d Etat selon la configuration. C est une phase courte, visible et decisive.",
+        "bullets": [
+          "Le Roi convoque les conseillers et enregistre la reunion dans l app.",
+          "Le Roi peut verser 5000 escudos representant une aide internationale detournee.",
+          "Les conseillers negocient pendant quelques minutes, se vendent des cartes, se soutiennent ou se trahissent.",
+          "Les non-conseillers ne participent pas a la reunion, mais peuvent rester disponibles pour arrangements exterieurs.",
+          "Les decisions du Roi ou de l autorite de jeu sont souveraines pour l arbitrage de table."
+        ],
+        "audience": "all"
       },
       {
         "id": "end",
         "title": "Fin de partie et score",
-        "audience": "all",
-        "body": "La fin est declenchee par le temps fixe par l hote ou par l objectif de scenario choisi.",
+        "body": "La partie finit a l heure annoncee ou apres la derniere election definie par l hote.",
         "bullets": [
-          "On additionne escudos, valeur des actions et bonus/multiplicateurs de role.",
-          "Les ressources non scorees peuvent departager si l hote l annonce au debut.",
-          "L historique du dashboard sert de reference pour resoudre les contestations.",
-          "La victoire ne retire pas le role de l hote: Le Roi peut gagner comme joueur."
-        ]
+          "On compte les escudos, la valeur des actions de cuivre, les cartes CF/CM, la drogue et les bonus de role.",
+          "Le conseil double le score final des conseillers.",
+          "Le camp FUN ou GAG au pouvoir double le score de ses agents.",
+          "Le Roi score comme les autres, mais ses actions restantes valent la moitie du cours.",
+          "Le dashboard sert de reference de calcul, mais l hote peut corriger une anomalie avant la proclamation."
+        ],
+        "audience": "all"
       }
     ]
   }

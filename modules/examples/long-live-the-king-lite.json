@@ -220,6 +220,36 @@
       "victoryCondition": {
         "type": "text",
         "text": "Role d'autorite et de rythme; ne suit pas les objectifs des courtisans principaux."
+      },
+      "roleSheet": {
+        "universe": "Long Live the King est un jeu de cour centre sur l audience royale. Les personnages negocient faveurs, petitions, statuts et decisions; le Roi ou le Chambellan dirige la sequence et Ludovive enregistre les effets.",
+        "identity": "Vous incarnez Roi.",
+        "publicFace": "Figure publique: Roi.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Role d'autorite et de rythme; ne suit pas les objectifs des courtisans principaux.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     },
     {
@@ -233,6 +263,36 @@
       "victoryCondition": {
         "type": "text",
         "text": "Gagne si elle termine regente et si un joueur a plus de statut que le Tresorier."
+      },
+      "roleSheet": {
+        "universe": "Long Live the King est un jeu de cour centre sur l audience royale. Les personnages negocient faveurs, petitions, statuts et decisions; le Roi ou le Chambellan dirige la sequence et Ludovive enregistre les effets.",
+        "identity": "Vous incarnez Reine.",
+        "publicFace": "Figure publique: Reine.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Gagne si elle termine regente et si un joueur a plus de statut que le Tresorier.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     },
     {
@@ -246,6 +306,36 @@
       "victoryCondition": {
         "type": "text",
         "text": "Gagne sans heritier si les 5 cartes de mobilisation sont actives."
+      },
+      "roleSheet": {
+        "universe": "Long Live the King est un jeu de cour centre sur l audience royale. Les personnages negocient faveurs, petitions, statuts et decisions; le Roi ou le Chambellan dirige la sequence et Ludovive enregistre les effets.",
+        "identity": "Vous incarnez Baron.",
+        "publicFace": "Figure publique: Baron.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Gagne sans heritier si les 5 cartes de mobilisation sont actives.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     },
     {
@@ -259,6 +349,36 @@
       "victoryCondition": {
         "type": "text",
         "text": "Gagne avec un heritier et plus de statut que tous les autres joueurs."
+      },
+      "roleSheet": {
+        "universe": "Long Live the King est un jeu de cour centre sur l audience royale. Les personnages negocient faveurs, petitions, statuts et decisions; le Roi ou le Chambellan dirige la sequence et Ludovive enregistre les effets.",
+        "identity": "Vous incarnez Tresorier.",
+        "publicFace": "Figure publique: Tresorier.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Gagne avec un heritier et plus de statut que tous les autres joueurs.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     },
     {
@@ -268,6 +388,36 @@
       "victoryCondition": {
         "type": "text",
         "text": "Detail issu du tableur de roles; gagne selon sa position d'heritier."
+      },
+      "roleSheet": {
+        "universe": "Long Live the King est un jeu de cour centre sur l audience royale. Les personnages negocient faveurs, petitions, statuts et decisions; le Roi ou le Chambellan dirige la sequence et Ludovive enregistre les effets.",
+        "identity": "Vous incarnez Batard royal.",
+        "publicFace": "Figure publique: Batard royal.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Detail issu du tableur de roles; gagne selon sa position d'heritier.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     },
     {
@@ -277,6 +427,36 @@
       "victoryCondition": {
         "type": "text",
         "text": "Detail issu du tableur de roles; manipule la succession et les alliances."
+      },
+      "roleSheet": {
+        "universe": "Long Live the King est un jeu de cour centre sur l audience royale. Les personnages negocient faveurs, petitions, statuts et decisions; le Roi ou le Chambellan dirige la sequence et Ludovive enregistre les effets.",
+        "identity": "Vous incarnez Archeveque.",
+        "publicFace": "Figure publique: Archeveque.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Detail issu du tableur de roles; manipule la succession et les alliances.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     },
     {
@@ -286,6 +466,36 @@
       "victoryCondition": {
         "type": "text",
         "text": "Detail issu du tableur de roles; soutient les troubles et la rebellion."
+      },
+      "roleSheet": {
+        "universe": "Long Live the King est un jeu de cour centre sur l audience royale. Les personnages negocient faveurs, petitions, statuts et decisions; le Roi ou le Chambellan dirige la sequence et Ludovive enregistre les effets.",
+        "identity": "Vous incarnez Ambassadeur.",
+        "publicFace": "Figure publique: Ambassadeur.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Detail issu du tableur de roles; soutient les troubles et la rebellion.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     },
     {
@@ -295,6 +505,36 @@
       "victoryCondition": {
         "type": "text",
         "text": "Detail issu du tableur de roles; peut profiter d'une regence sans successeur clair."
+      },
+      "roleSheet": {
+        "universe": "Long Live the King est un jeu de cour centre sur l audience royale. Les personnages negocient faveurs, petitions, statuts et decisions; le Roi ou le Chambellan dirige la sequence et Ludovive enregistre les effets.",
+        "identity": "Vous incarnez Mayordome majeur.",
+        "publicFace": "Figure publique: Mayordome majeur.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Detail issu du tableur de roles; peut profiter d'une regence sans successeur clair.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     }
   ],
@@ -698,65 +938,50 @@
     }
   ],
   "rules": {
-    "summary": "Long Live the King est un jeu de cour en tours. Tout converge vers les audiences et conseils ou le Roi, le chambellan ou l autorite de table enregistrent les revenus, petitions, votes de faveur et decisions royales.",
+    "summary": "Long Live the King est un jeu de cour centre sur l audience royale. Les personnages negocient faveurs, petitions, statuts et decisions; le Roi ou le Chambellan dirige la sequence et Ludovive enregistre les effets.",
     "sections": [
+      {
+        "id": "universe",
+        "title": "Univers",
+        "body": "La cour est un espace de pouvoir: chaque faveur obtenue, chaque petition acceptee et chaque humiliation publique peut changer l ordre politique.",
+        "bullets": [
+          "Le Roi dirige l audience ou delegue au Chambellan.",
+          "Les courtisans cherchent argent, faveur, statut, secrets ou legitimite.",
+          "La phase d audience peut etre jouee oralement puis saisie, ou directement orchestree dans l app."
+        ],
+        "audience": "all"
+      },
       {
         "id": "goal",
         "title": "But du jeu",
-        "audience": "all",
-        "body": "Chaque personnage cherche a accumuler influence, or, statut ou avantages politiques selon son role.",
+        "body": "Chaque personnage poursuit ses propres objectifs. La victoire depend du scenario importe et des objectifs de personnage.",
         "bullets": [
-          "Le Roi dirige la table mais reste soumis aux intrigues.",
-          "Les autres personnages negocient, demandent des faveurs et influencent les petitions.",
-          "La victoire depend du scenario et des objectifs de personnage importes."
-        ]
-      },
-      {
-        "id": "turns",
-        "title": "Tour et phases",
-        "audience": "all",
-        "body": "Un tour type suit Audience, Diplomatie, Conseil.",
-        "bullets": [
-          "Audience: revenus et cartes/informations sont distribues.",
-          "Diplomatie: les joueurs negocient librement et transferent des ducats.",
-          "Conseil: petitions, votes de faveur et decisions sont resolus.",
-          "Le dernier conseil ne doit pas etre saute."
-        ]
+          "Accumulez les ressources qui comptent pour votre role.",
+          "Transformez les audiences en decisions favorables.",
+          "Les objectifs secrets priment souvent sur l avantage public."
+        ],
+        "audience": "all"
       },
       {
         "id": "audience",
         "title": "Audience",
-        "audience": "all",
-        "body": "L audience peut se tenir oralement a table ou etre guidee par l app.",
+        "body": "Pendant l audience, les personnages demandent, soutiennent, accusent ou marchandent devant l autorite royale.",
         "bullets": [
-          "Le Roi ou le chambellan lance l audience.",
-          "L app applique les revenus et tirages prevus.",
-          "Les informations de sante, mobilisation ou rebellion sont enregistrees selon le module.",
-          "Les demandes non resolues peuvent etre portees au conseil."
-        ]
-      },
-      {
-        "id": "petitions",
-        "title": "Petitions et faveur",
-        "audience": "all",
-        "body": "Une petition ouvre une decision collective ou royale.",
-        "bullets": [
-          "Un joueur depose une petition pendant la phase autorisee.",
-          "Les joueurs engagent de la faveur pour soutenir ou s opposer.",
-          "Le Roi ou l autorite tranche: acceptee, rejetee ou reportee.",
-          "Les pots-de-vin et transferts restent des echanges entre joueurs."
-        ]
+          "Une petition doit avoir un demandeur et un effet attendu.",
+          "Les faveurs peuvent etre attribuees, retirees ou converties selon le module.",
+          "Les decisions royales peuvent etre publiques, privees ou differees."
+        ],
+        "audience": "all"
       },
       {
         "id": "player-info",
         "title": "Ce que voit un joueur",
-        "audience": "participants",
-        "body": "Le telephone affiche son personnage, ses ressources, les actions disponibles et les messages qui le concernent.",
+        "body": "Le telephone affiche votre personnage, vos ressources, vos actions disponibles et les messages qui vous concernent.",
         "bullets": [
           "Les informations cachees des autres personnages ne sont pas visibles.",
-          "Les votes et transferts n apparaissent que selon leur visibilite.",
-          "L onglet Personnage resume le role courant."
-        ]
+          "Votre fiche Personnage explique quoi demander, quoi cacher et quoi surveiller."
+        ],
+        "audience": "participants"
       }
     ]
   }

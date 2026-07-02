@@ -595,6 +595,36 @@
       "victoryCondition": {
         "type": "nationalObjectives",
         "source": "state.nationalObjectives.countries.britain"
+      },
+      "roleSheet": {
+        "universe": "Assistant de table live pour un jeu diplomatique pre-1914: grandes puissances, ordres caches numeriques, actions diplomatiques, attaques sans combat militaire et comptage assiste des droits de traite.",
+        "identity": "Vous incarnez Royaume-Uni.",
+        "publicFace": "Figure publique: Royaume-Uni.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Faire progresser votre position pendant la partie.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     },
     {
@@ -608,6 +638,36 @@
       "victoryCondition": {
         "type": "nationalObjectives",
         "source": "state.nationalObjectives.countries.france"
+      },
+      "roleSheet": {
+        "universe": "Assistant de table live pour un jeu diplomatique pre-1914: grandes puissances, ordres caches numeriques, actions diplomatiques, attaques sans combat militaire et comptage assiste des droits de traite.",
+        "identity": "Vous incarnez France.",
+        "publicFace": "Figure publique: France.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Faire progresser votre position pendant la partie.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     },
     {
@@ -621,6 +681,36 @@
       "victoryCondition": {
         "type": "nationalObjectives",
         "source": "state.nationalObjectives.countries.germany"
+      },
+      "roleSheet": {
+        "universe": "Assistant de table live pour un jeu diplomatique pre-1914: grandes puissances, ordres caches numeriques, actions diplomatiques, attaques sans combat militaire et comptage assiste des droits de traite.",
+        "identity": "Vous incarnez Allemagne.",
+        "publicFace": "Figure publique: Allemagne.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Faire progresser votre position pendant la partie.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     },
     {
@@ -634,6 +724,36 @@
       "victoryCondition": {
         "type": "nationalObjectives",
         "source": "state.nationalObjectives.countries.austria-hungary"
+      },
+      "roleSheet": {
+        "universe": "Assistant de table live pour un jeu diplomatique pre-1914: grandes puissances, ordres caches numeriques, actions diplomatiques, attaques sans combat militaire et comptage assiste des droits de traite.",
+        "identity": "Vous incarnez Autriche-Hongrie.",
+        "publicFace": "Figure publique: Autriche-Hongrie.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Faire progresser votre position pendant la partie.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     },
     {
@@ -647,6 +767,36 @@
       "victoryCondition": {
         "type": "nationalObjectives",
         "source": "state.nationalObjectives.countries.russia"
+      },
+      "roleSheet": {
+        "universe": "Assistant de table live pour un jeu diplomatique pre-1914: grandes puissances, ordres caches numeriques, actions diplomatiques, attaques sans combat militaire et comptage assiste des droits de traite.",
+        "identity": "Vous incarnez Russie.",
+        "publicFace": "Figure publique: Russie.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Faire progresser votre position pendant la partie.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     },
     {
@@ -660,6 +810,36 @@
       "victoryCondition": {
         "type": "nationalObjectives",
         "source": "state.nationalObjectives.countries.italy"
+      },
+      "roleSheet": {
+        "universe": "Assistant de table live pour un jeu diplomatique pre-1914: grandes puissances, ordres caches numeriques, actions diplomatiques, attaques sans combat militaire et comptage assiste des droits de traite.",
+        "identity": "Vous incarnez Italie.",
+        "publicFace": "Figure publique: Italie.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Faire progresser votre position pendant la partie.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     },
     {
@@ -673,6 +853,36 @@
       "victoryCondition": {
         "type": "nationalObjectives",
         "source": "state.nationalObjectives.countries.ottoman"
+      },
+      "roleSheet": {
+        "universe": "Assistant de table live pour un jeu diplomatique pre-1914: grandes puissances, ordres caches numeriques, actions diplomatiques, attaques sans combat militaire et comptage assiste des droits de traite.",
+        "identity": "Vous incarnez Empire ottoman.",
+        "publicFace": "Figure publique: Empire ottoman.",
+        "secretBriefing": "Vos priorites exactes viennent de votre objectif et des informations que vous seul voyez.",
+        "objective": "Faire progresser votre position pendant la partie.",
+        "howToWin": "Utilisez vos ressources, vos actions disponibles et vos alliances pour transformer la phase courante en avantage mesurable.",
+        "howToPlay": "Lisez l onglet Table pour agir maintenant, puis revenez a cette fiche pour choisir quoi demander, cacher ou negocier.",
+        "firstMoves": [
+          "Lire votre objectif.",
+          "Identifier qui peut vous aider.",
+          "Preparer une premiere demande claire."
+        ],
+        "keyRules": [
+          "Les actions visibles dependent de la phase courante.",
+          "Une promesse orale n est garantie que si le module l enregistre.",
+          "Votre telephone ne revele pas les secrets des autres."
+        ],
+        "negotiationHooks": [
+          "Echanger un soutien maintenant contre une faveur plus tard.",
+          "Demander une preuve enregistree dans l app."
+        ],
+        "risks": [
+          "Depenser vos ressources sur une action secondaire.",
+          "Oublier votre objectif personnel pendant une crise publique."
+        ],
+        "reminders": [
+          "Votre fiche est privee: ne montrez pas cet onglet."
+        ]
       }
     }
   ],
@@ -1334,65 +1544,41 @@
     }
   ],
   "rules": {
-    "summary": "Origins of WWI Live adapte un jeu diplomatique pre-1914 au format live: les cartes deviennent des ordres caches, permissions numeriques et registres suivis par Ludovive.",
+    "summary": "Origins of WWI Live est une adaptation diplomatique live: les anciennes cartes deviennent des ordres caches, permissions numeriques et resolutions gerees par Ludovive.",
     "sections": [
+      {
+        "id": "universe",
+        "title": "Univers",
+        "body": "Chaque puissance cherche securite, prestige, alliances et avantages avant l embrasement europeen.",
+        "bullets": [
+          "Les zones et crises representent des tensions politiques, pas seulement des territoires.",
+          "Les ordres caches remplacent les cartes physiques.",
+          "Le secretaire de conference maintient le tempo et l audit."
+        ],
+        "audience": "all"
+      },
       {
         "id": "goal",
         "title": "But du jeu",
-        "audience": "all",
-        "body": "Chaque puissance cherche a maximiser ses points de victoire selon ses objectifs nationaux et la situation diplomatique.",
+        "body": "Chaque nation poursuit des objectifs nationaux et diplomatiques. La victoire vient de l influence atteinte, des crises gerees et des objectifs remplis.",
         "bullets": [
-          "Les points diplomatiques servent a agir et influencer les zones.",
-          "Les objectifs nationaux indiquent ou marquer.",
-          "Certaines zones peuvent etre exclusives ou sensibles selon la puissance."
-        ]
+          "Les objectifs nationaux orientent vos priorites.",
+          "Une alliance utile vaut parfois plus qu un gain immediat.",
+          "Les informations cachees et les ordres scelles creent le jeu."
+        ],
+        "audience": "all"
       },
       {
         "id": "turns",
         "title": "Tours",
-        "audience": "all",
-        "body": "La partie suit les annees ou periodes de 1909 a 1914, avec checks de fin a partir de juillet 1914.",
+        "body": "Chaque tour alterne negociation, programmation secrete, revelation et resolution.",
         "bullets": [
-          "Diplomatie libre lors des tours prevus.",
-          "Programmation secrete des zones d action.",
-          "Resolution des actions diplomatiques.",
-          "Comptage des PV aux tours de scoring.",
-          "Avance du tour apres verification."
-        ]
-      },
-      {
-        "id": "live-adaptation",
-        "title": "Adaptation live",
-        "audience": "all",
-        "body": "Ludovive remplace les cartes physiques par des slots et permissions numeriques.",
-        "bullets": [
-          "Chaque puissance choisit trois zones cachees.",
-          "L app garde trace des permissions d action speciale.",
-          "Les attaques diplomatiques et notes sont enregistrees comme resultats live.",
-          "La table peut continuer a utiliser une carte physique pour la negociation."
-        ]
-      },
-      {
-        "id": "host",
-        "title": "Role du secretaire",
-        "audience": "dashboard",
-        "body": "Le secretaire du congres gere la cadence et verifie les resolutions.",
-        "bullets": [
-          "Il peut enregistrer les checks de fin.",
-          "Il controle les notes de resolution et scoring.",
-          "Il corrige les cas ambigus avec audit dans le dashboard."
-        ]
-      },
-      {
-        "id": "players",
-        "title": "Ce que voit une puissance",
-        "audience": "participants",
-        "body": "Chaque puissance voit ses points, permissions, objectifs et actions disponibles.",
-        "bullets": [
-          "Les choix secrets restent prives jusqu a resolution.",
-          "Les objectifs nationaux servent de reference de scoring.",
-          "Les messages publics de table restent visibles a tous."
-        ]
+          "Negociation: accords et menaces.",
+          "Ordres scelles: choix simultanes dans l app.",
+          "Resolution: le secretaire ou le module applique les effets.",
+          "Score: objectifs, influence et crise sont mis a jour."
+        ],
+        "audience": "all"
       }
     ]
   }

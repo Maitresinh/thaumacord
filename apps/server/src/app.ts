@@ -50,6 +50,27 @@ const phaseSchema = z.object({
   durationSeconds: z.number().int().positive().optional()
 });
 
+const roleSheetSchema = z.object({
+  universe: z.string().optional(),
+  identity: z.string().optional(),
+  publicFace: z.string().optional(),
+  secretBriefing: z.string().optional(),
+  objective: z.string().optional(),
+  howToWin: z.string().optional(),
+  howToPlay: z.string().optional(),
+  tableBehavior: z.string().optional(),
+  firstMoves: z.array(z.string()).default([]),
+  keyRules: z.array(z.string()).default([]),
+  phaseFocus: z.array(z.object({
+    phase: z.string().optional(),
+    title: z.string().optional(),
+    bullets: z.array(z.string()).default([])
+  })).default([]),
+  negotiationHooks: z.array(z.string()).default([]),
+  risks: z.array(z.string()).default([]),
+  reminders: z.array(z.string()).default([])
+});
+
 const roleSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
@@ -58,6 +79,7 @@ const roleSchema = z.object({
   startingResources: z.record(z.number()).default({}),
   responsibilities: z.array(z.string()).optional(),
   actions: z.array(z.string()).optional(),
+  roleSheet: roleSheetSchema.optional(),
   victoryCondition: z.unknown().optional()
 });
 
@@ -2772,12 +2794,40 @@ function roleReference(module: GameModule, role: GameModule["roles"][number] | u
     secretRole: includeSecret ? role.secretRole : undefined,
     responsibilities: role.responsibilities ?? [],
     actions: role.actions ?? [],
+    roleSheet: role.roleSheet,
     victoryCondition: role.victoryCondition,
     startingResources: role.startingResources
   };
 }
 
-function rulesReference(module: GameModule, audience: "dashboard" | "participants"): Record<string, unknown> {
+function roleFocusSections(module: GameModule, participant?: Participant): { id: string; title: string; body?: string; bullets: string[] }[] {
+  const role = participant?.roleId ? module.roles.find((candidate) => candidate.id === participant.roleId) : undefined;
+  if (!role) {
+    return [];
+  }
+  const sheet = role.roleSheet;
+  const bullets = [
+    role.officialRole ? `Identite publique: ${role.officialRole}` : undefined,
+    role.secretRole ? `Information secrete: ${role.secretRole}` : undefined,
+    sheet?.objective ? `Votre objectif: ${sheet.objective}` : undefined,
+    sheet?.howToWin ? `Comment gagner: ${sheet.howToWin}` : undefined,
+    sheet?.howToPlay ? `Comment jouer: ${sheet.howToPlay}` : undefined,
+    ...(sheet?.firstMoves ?? []).map((item) => `Depart: ${item}`),
+    ...(sheet?.keyRules ?? []).map((item) => `Regle clef: ${item}`),
+    ...(sheet?.reminders ?? []).map((item) => `Rappel: ${item}`)
+  ].filter((item): item is string => Boolean(item));
+  if (bullets.length === 0) {
+    return [];
+  }
+  return [{
+    id: "your-role-focus",
+    title: "Pour vous",
+    body: sheet?.identity ?? `Vous jouez ${role.name}.`,
+    bullets
+  }];
+}
+
+function rulesReference(module: GameModule, audience: "dashboard" | "participants", participant?: Participant): Record<string, unknown> {
   const explicitSections = (module.rules.sections || [])
     .filter((section) => section.audience === "all" || section.audience === audience)
     .map((section) => ({
@@ -2822,7 +2872,7 @@ function rulesReference(module: GameModule, audience: "dashboard" | "participant
   ].filter((section): section is { id: string; title: string; bullets: string[] } => Boolean(section && section.bullets.length > 0));
   return {
     summary: module.rules.summary ?? module.pitch ?? module.inspirationNotes ?? "",
-    sections: [...explicitSections, ...generatedSections]
+    sections: [...roleFocusSections(module, participant), ...explicitSections, ...generatedSections]
   };
 }
 
@@ -3097,7 +3147,7 @@ function participantReadModel(session: Session, participantId: string): Record<s
         officialRole: role.officialRole
       }))
     },
-    rulesReference: rulesReference(module, "participants"),
+    rulesReference: rulesReference(module, "participants", participant),
     characterReference: characterReference(module, participant),
     phase: currentPhase(session),
     phaseClock: session.phaseClock,
@@ -3687,13 +3737,38 @@ function renderIndex(): string {
       }).join("");
       return '<div class="list">' + summary + sections + '</div>';
     }
+    function renderRoleSheetBlock(title, value) {
+      return value ? '<h3>' + title + '</h3><div>' + value + '</div>' : "";
+    }
+    function renderRoleSheetList(title, values) {
+      return (values || []).length ? '<h3>' + title + '</h3><ul>' + values.map((item) => '<li>' + item + '</li>').join("") + '</ul>' : "";
+    }
+    function renderRoleSheet(role) {
+      const sheet = role.roleSheet || {};
+      const phaseFocus = (sheet.phaseFocus || []).length
+        ? '<h3>Par phase</h3>' + sheet.phaseFocus.map((focus) => '<div class="item"><strong>' + (focus.title || focus.phase || "Phase") + '</strong><ul>' + (focus.bullets || []).map((item) => '<li>' + item + '</li>').join("") + '</ul></div>').join("")
+        : "";
+      return renderRoleSheetBlock("Univers", sheet.universe)
+        + renderRoleSheetBlock("Qui vous etes", sheet.identity)
+        + renderRoleSheetBlock("Facade publique", sheet.publicFace)
+        + renderRoleSheetBlock("Brief secret", sheet.secretBriefing)
+        + renderRoleSheetBlock("Objectif", sheet.objective)
+        + renderRoleSheetBlock("Comment gagner", sheet.howToWin)
+        + renderRoleSheetBlock("Comment jouer", sheet.howToPlay)
+        + renderRoleSheetList("Premiers gestes", sheet.firstMoves)
+        + renderRoleSheetList("Regles clefs", sheet.keyRules)
+        + phaseFocus
+        + renderRoleSheetList("Accroches de negociation", sheet.negotiationHooks)
+        + renderRoleSheetList("Risques", sheet.risks)
+        + renderRoleSheetList("Rappels", sheet.reminders);
+    }
     function renderCharacterCard(session, role) {
       if (!role) return "";
       const responsibilities = (role.responsibilities || []).length ? '<h3>Responsabilites</h3><ul>' + role.responsibilities.map((item) => '<li>' + item + '</li>').join("") + '</ul>' : "";
       const actions = (role.actions || []).length ? '<h3>Actions</h3><div>' + role.actions.map((item) => '<span class="pill">' + item + '</span>').join("") + '</div>' : "";
       const resources = role.startingResources && Object.keys(role.startingResources).length ? '<h3>Depart</h3><div>' + Object.entries(role.startingResources).map(([key, value]) => '<span class="pill">' + dashboardResourceLabel(session, key) + ': ' + value + '</span>').join("") + '</div>' : "";
       const victory = role.victoryCondition?.text ? '<h3>Victoire</h3><div class="muted">' + role.victoryCondition.text + '</div>' : "";
-      return '<div class="item"><strong class="roleTitle"><span class="actionIcon">' + roleIcon(session, role) + '</span> ' + role.name + '</strong>' + (role.officialRole ? '<div>' + role.officialRole + '</div>' : '') + (role.secretRole ? '<div class="muted">Secret: ' + role.secretRole + '</div>' : '') + responsibilities + actions + resources + victory + '</div>';
+      return '<div class="item"><strong class="roleTitle"><span class="actionIcon">' + roleIcon(session, role) + '</span> ' + role.name + '</strong>' + (role.officialRole ? '<div>' + role.officialRole + '</div>' : '') + (role.secretRole ? '<div class="muted">Secret: ' + role.secretRole + '</div>' : '') + renderRoleSheet(role) + responsibilities + actions + resources + victory + '</div>';
     }
     function renderDashboardCharacters(session) {
       const roles = session.characterReference?.roles || [];
@@ -4627,9 +4702,34 @@ function renderParticipantApp(): string {
     function roleLabel(model, roleId) {
       return model.module.roles.find((role) => role.id === roleId)?.name || roleId || "role a attribuer";
     }
+    function renderRoleSheetBlock(title, value) {
+      return value ? '<h3>' + title + '</h3><div>' + value + '</div>' : "";
+    }
+    function renderRoleSheetList(title, values) {
+      return (values || []).length ? '<h3>' + title + '</h3><ul>' + values.map((item) => '<li>' + item + '</li>').join("") + '</ul>' : "";
+    }
+    function renderRoleSheet(role) {
+      const sheet = role.roleSheet || {};
+      const phaseFocus = (sheet.phaseFocus || []).length
+        ? '<h3>Par phase</h3>' + sheet.phaseFocus.map((focus) => '<div class="item"><strong>' + (focus.title || focus.phase || "Phase") + '</strong><ul>' + (focus.bullets || []).map((item) => '<li>' + item + '</li>').join("") + '</ul></div>').join("")
+        : "";
+      return renderRoleSheetBlock("Univers", sheet.universe)
+        + renderRoleSheetBlock("Qui vous etes", sheet.identity)
+        + renderRoleSheetBlock("Facade publique", sheet.publicFace)
+        + renderRoleSheetBlock("Brief secret", sheet.secretBriefing)
+        + renderRoleSheetBlock("Objectif", sheet.objective)
+        + renderRoleSheetBlock("Comment gagner", sheet.howToWin)
+        + renderRoleSheetBlock("Comment jouer", sheet.howToPlay)
+        + renderRoleSheetList("Premiers gestes", sheet.firstMoves)
+        + renderRoleSheetList("Regles clefs", sheet.keyRules)
+        + phaseFocus
+        + renderRoleSheetList("Accroches de negociation", sheet.negotiationHooks)
+        + renderRoleSheetList("Risques", sheet.risks)
+        + renderRoleSheetList("Rappels", sheet.reminders);
+    }
     function renderRoleDetails(model) {
       const role = model.characterReference?.ownRole || model.ownRole;
-      if (!role) return '<div class="muted">Role de jeu a attribuer par l'hote</div>';
+      if (!role) return '<div class="muted">Role de jeu a attribuer par l hote</div>';
       const responsibilities = (role.responsibilities || []).length ? '<h3>Responsabilites</h3><ul>' + role.responsibilities.map((item) => '<li>' + item + '</li>').join("") + '</ul>' : "";
       const actions = (role.actions || []).length ? '<h3>Actions</h3><div>' + role.actions.map((item) => '<span class="pill">' + item + '</span>').join("") + '</div>' : "";
       const resources = role.startingResources && Object.keys(role.startingResources).length ? '<h3>Depart</h3><div>' + Object.entries(role.startingResources).map(([key, value]) => '<span class="pill">' + resourceLabel(model, key) + ': ' + value + '</span>').join("") + '</div>' : "";
@@ -4637,7 +4737,7 @@ function renderParticipantApp(): string {
       return '<div class="item"><strong class="roleTitle"><span class="actionIcon">' + roleIcon(model, role) + '</span> ' + role.name + '</strong>'
         + (role.officialRole ? '<div>' + role.officialRole + '</div>' : '')
         + (role.secretRole ? '<div class="muted">Secret: ' + role.secretRole + '</div>' : '')
-        + responsibilities + actions + resources + victory
+        + renderRoleSheet(role) + responsibilities + actions + resources + victory
         + '</div>';
     }
     function formatClock(clock) {

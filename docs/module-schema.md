@@ -229,8 +229,28 @@ Role objects are the source for character references:
 - `secretRole`;
 - `responsibilities`;
 - `actions`;
+- `roleSheet`;
 - `victoryCondition`;
 - `startingResources`.
+
+`roleSheet` is the preferred player-facing character sheet for live play. It lets an imported module explain the game through the current character instead of dumping neutral rules text. Supported fields:
+
+- `universe`: short setting reminder from this character's point of view;
+- `identity`: who the player is;
+- `publicFace`: what other players may believe or see;
+- `secretBriefing`: hidden role, agenda, or private premise;
+- `objective`: immediate goal in plain language;
+- `howToWin`: practical scoring or victory route;
+- `howToPlay`: table behavior and tactical posture;
+- `tableBehavior`: optional tone cue for roleplay and facilitation;
+- `firstMoves`: opening checklist;
+- `keyRules`: rules this character must remember;
+- `phaseFocus`: per-phase reminders with `title` and `bullets`;
+- `negotiationHooks`: offers, threats, and social levers;
+- `risks`: common mistakes or dangers;
+- `reminders`: final short prompts.
+
+Participant rules references automatically prepend a `Pour vous` section when the bound role has enough `roleSheet` data. This keeps the `Regles` tab focused on what the current player can actually do now, while the `Personnage` tab remains the complete private sheet.
 
 Dashboard read models receive:
 

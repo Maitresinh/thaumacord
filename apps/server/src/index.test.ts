@@ -406,11 +406,15 @@ test("lets a participant join with a chosen role and receive a filtered read mod
   assert.equal(joined.readModel.sessionRoleAssignments, undefined);
   assert.equal(joined.readModel.aggregates, undefined);
   assert.equal(joined.readModel.ownRole.name, "General");
+  assert.equal(joined.readModel.rulesReference.sections[0].id, "your-role-focus");
+  assert.match(joined.readModel.rulesReference.sections[0].body, /force armee supplementaire/);
   assert.equal(joined.readModel.rulesReference.sections.some((section: JsonObject) => section.id === "phases"), true);
   assert.equal(joined.readModel.rulesReference.sections.some((section: JsonObject) => section.id === "coup"), true);
   assert.equal(joined.readModel.rulesReference.sections.some((section: JsonObject) => section.id === "market"), true);
   assert.equal(joined.readModel.rulesReference.sections.some((section: JsonObject) => section.id === "setup"), true);
   assert.equal(joined.readModel.characterReference.ownRole.name, "General");
+  assert.match(joined.readModel.characterReference.ownRole.roleSheet.howToWin, /Accumulez argent/);
+  assert.equal(joined.readModel.characterReference.ownRole.roleSheet.phaseFocus.length > 0, true);
   assert.equal(joined.readModel.characterReference.roles, undefined);
   assert.equal(joined.readModel.tableStatuses.copperPrice, 1000);
 
@@ -547,6 +551,8 @@ test("loads module mechanics and links actions to them", async () => {
   assert.equal(putsch.roles.find((role: JsonObject) => role.id === "facilitator-capitalist").name, "Le Roi");
   assert.equal(putsch.roles.find((role: JsonObject) => role.id === "facilitator-capitalist").officialRole, "Roi de Banana Republic, proprietaire politique des mines de cuivre et meneur de jeu.");
   assert.equal(putsch.roles.find((role: JsonObject) => role.id === "facilitator-capitalist").startingResources.copperShares, 50);
+  assert.match(putsch.roles.find((role: JsonObject) => role.id === "gag-agent").roleSheet.howToWin, /putsch/);
+  assert.equal(putsch.rules.sections.some((section: JsonObject) => section.id === "coup" && section.bullets.length >= 8), true);
   assert.equal(putsch.sessionRoles.find((role: JsonObject) => role.id === "host").canInjectGameElements, false);
   assert.equal(putsch.sessionRoles.find((role: JsonObject) => role.id === "host").defaultRoleId, "facilitator-capitalist");
   assert.equal(putsch.sessionRoles.find((role: JsonObject) => role.id === "game-authority").defaultRoleId, "facilitator-capitalist");
@@ -713,6 +719,7 @@ test("returns a dashboard read model with the complete live state", async () => 
   assert.equal(dashboard.rulesReference.sections.some((section: JsonObject) => section.id === "setup" && String(section.body || "").includes("salle d attente")), true);
   assert.equal(dashboard.rulesReference.sections.some((section: JsonObject) => section.id === "election"), true);
   assert.equal(dashboard.characterReference.roles.some((role: JsonObject) => role.id === "facilitator-capitalist" && role.secretRole === "Aucun role secret."), true);
+  assert.equal(dashboard.characterReference.roles.some((role: JsonObject) => role.id === "facilitator-capitalist" && String(role.roleSheet?.howToPlay || "").includes("Vous animez sans vous sacrifier")), true);
   assert.equal(dashboard.aggregates.participants.total, 2);
   assert.equal(dashboard.aggregates.participants.byRole.general, 1);
   assert.equal(dashboard.aggregates.resources.money.total, 20);
